@@ -16,3 +16,15 @@ finally to get it running on your local host
 npm start 
 ```
 # Server 
+To run the server
+```bash
+cd server 
+```
+then download the react dependencies by running 
+```bash
+npm install 
+```
+finally to get it running on your local host  
+```bash
+npm start 
+```
