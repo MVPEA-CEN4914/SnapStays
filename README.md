@@ -18,7 +18,7 @@ npm start
 # Server 
 To run the server
 ```bash
-cd server 
+cd backend 
 ```
 then download the react dependencies by running 
 ```bash
