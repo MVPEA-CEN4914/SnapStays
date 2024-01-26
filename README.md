@@ -11,6 +11,9 @@ then download the react dependencies by running
 ```bash
 npm install 
 ```
+```bash
+npm install @mui/material @emotion/react @emotion/styled
+```
 finally to get it running on your local host  
 ```bash
 npm start 
