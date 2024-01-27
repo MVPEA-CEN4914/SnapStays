@@ -1,8 +1,9 @@
 import React from 'react'
 
+
 function Landing() {
   return (
-    <div>Landing</div>
+    <div>Landing hi </div>
   )
 }
 
