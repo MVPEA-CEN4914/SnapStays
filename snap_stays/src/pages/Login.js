@@ -119,7 +119,7 @@ export default function Login() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2" sx={{color:'black'}}>
+                  <Link href="/register" variant="body2" sx={{color:'black'}}>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

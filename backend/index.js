@@ -7,6 +7,7 @@ const UserSchema = require('./models/user.model');
 
 //set json as the default data type
 app.use(express.json());
+app.use(cors());
 
 mongoose.connect("mongodb+srv://SnapStaysDev:CIS4914_SnapStays@snapstays.dpdpanv.mongodb.net/SnapStays")
 
