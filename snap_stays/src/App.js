@@ -5,14 +5,24 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Layout from './pages/Layout';
+import FindStay from './pages/FindStay';
+import ListStay from './pages/ListStay';
 import {ThemeProvider, createTheme} from '@mui/material/styles'
+import { CssBaseline } from '@mui/material';
 
 const theme = createTheme({
   palette:{
+    background: {
+      default:'#E6E6DD'
+    },
     primary: {
       light: '#E6E6DD',
-      main: '#AF8C53'
+      main: '#AF8C53',
+    },
+    secondary:{
+      main:'#2B2B2B'
     }
+    
   }
 });
 
@@ -26,6 +36,8 @@ function App() {
         <Route index element={<Landing />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="FindStay" element = {<FindStay/>} />
+        <Route path="ListStay" element = {<ListStay/>} />
         </Route>
       </Routes>
     </BrowserRouter>
