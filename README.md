@@ -29,5 +29,5 @@ npm install
 ```
 finally to get it running on your local host  
 ```bash
-npm start 
+npm run dev
 ```
