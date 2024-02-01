@@ -2,6 +2,7 @@ const express = require('express');
 const app = express()
 const cors = require('cors');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = require('./models/user.model');
 
@@ -33,6 +34,14 @@ app.post("/api/login", async (req, res) => {
         password: req.body.password
     })
     if (user){
+        //auth with jwt
+        const token = jwt.sign(
+            {
+                //add any other information we would want to encrypt in the token
+                email: user.email
+            },
+             "SnapStaysSecret"
+        )
         return res.json({status: "ok" , user: true})
     }
     else{
