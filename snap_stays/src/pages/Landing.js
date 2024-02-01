@@ -1,6 +1,8 @@
 import React from 'react'
 import houseImage from '../images/Houses.png'; 
 import dogImage from '../images/DogImage.png'; 
+import { Button } from '@mui/material';
+import {Router, Link as RouterLink} from "react-router-dom";
 
 function Landing() {
   return (
@@ -13,10 +15,42 @@ function Landing() {
           </div>
         </div>
         <div style={{width: '225px', height: '75px', left: '0px', top: '450px', position: 'absolute'}}>
-          <button style={{width: '225px', height: '75px', left: '0px', top: '0px', position: 'absolute', textAlign: 'center', color: 'black', fontSize: '30px', fontFamily: 'Josefin Sans', fontWeight: '400', wordWrap: 'break-word', borderRadius: '37.5px'}}>Find a Stay</button>
+         <Button variant = 'outlined' color="secondary" component= {RouterLink} to= "/FindStay"
+               sx={{
+                width: '225px',
+                height: '75px',
+                position: 'absolute',
+                left: '0px',
+                top: '0px',
+                textAlign: 'center',
+                fontSize: '24px',
+                fontFamily: 'Josefin Sans',
+                fontWeight: '300',
+                wordWrap: 'break-word',
+                borderRadius: '37.5px',
+                border: '2px solid black'
+              }}>
+          Find a Stay
+         </Button>
         </div>
         <div style={{width: '225px', height: '75px', left: '269px', top: '450px', position: 'absolute'}}>
-          <button style={{width: '225px', height: '75px', left: '0px', top: '0px', position: 'absolute', textAlign: 'center', color:'clear', fontSize: '30px', fontFamily: 'Josefin Sans', fontWeight: '400', wordWrap: 'break-word', borderRadius: '37.5px'}}>List a Stay</button>
+        <Button variant = 'outlined' color="secondary" component= {RouterLink} to= "/ListStay"
+               sx={{
+                width: '225px',
+                height: '75px',
+                position: 'absolute',
+                left: '0px',
+                top: '0px',
+                textAlign: 'center',
+                fontSize: '24px',
+                fontFamily: 'Josefin Sans',
+                fontWeight: '300',
+                wordWrap: 'break-word',
+                borderRadius: '37.5px',
+                border: '2px solid black'
+              }}>
+          List a Stay
+         </Button>
         </div>
         <img style={{width: '564px', height: '490px', left: '546px', top: '0px', position: 'absolute'}} src={houseImage} alt="House Image" />
       </div>
