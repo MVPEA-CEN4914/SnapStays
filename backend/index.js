@@ -1,55 +1,38 @@
-const express = require('express');
-const app = express()
-const cors = require('cors');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+const express = require("express");
+const cors = require("cors");
+const http = require("http");
+const { ApolloServer } = require("@apollo/server");
+const { buildSubgraphSchema } = require("@apollo/subgraph");
+const { expressMiddleware } = require("@apollo/server/express4");
+const mongoose = require("mongoose");
+const typeDefs = require("./graphql/typeDefs.js");
+const resolvers = require("./graphql/resolvers");
+require("dotenv").config();
 
-const UserSchema = require('./models/user.model');
+const port = process.env.PORT || 5050;
 
-//set json as the default data type
-app.use(express.json());
-app.use(cors());
+startApolloServer = async () => {
+  const app = express();
+  const httpServer = http.createServer(app);
+  const server = new ApolloServer({
+    schema: buildSubgraphSchema({ typeDefs, resolvers }),
+  });
+  await server.start();
 
-mongoose.connect("mongodb+srv://SnapStaysDev:CIS4914_SnapStays@snapstays.dpdpanv.mongodb.net/SnapStays")
+  app.use(cors(), express.json(), expressMiddleware(server));
+  await new Promise((resolve) => httpServer.listen({ port }, resolve));
+  const addr = httpServer.address();
+  const host = addr.address === "::" ? "localhost" : addr.address;
+  const hport = addr.port;
+  console.log(`SERVER RUNNING AT http://${host}:${hport}/`);
+};
 
-//define apis for user authentication
-//missing get this information from the front end
-//missing validation and don't store password as plain text
-app.post("/api/register", async (req, res) => { 
-    try{
-        const user = await UserSchema.create({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
-        })
-        res.json( {status: "ok" });
-    } catch(err){
-        res.status().json({error: err})
-    }
-})
-
-app.post("/api/login", async (req, res) => { 
-    const user = await UserSchema.findOne({
-        email: req.body.email,
-        password: req.body.password
-    })
-    if (user){
-        //auth with jwt
-        const token = jwt.sign(
-            {
-                //add any other information we would want to encrypt in the token
-                email: user.email
-            },
-             "SnapStaysSecret"
-        )
-        return res.json({status: "ok" , user: true})
-    }
-    else{
-        return res.json({status: "error", user: false})
-    }
-})
-
-app.listen(1337, () => {
-    console.log("Server started on port 1337")
-})
-
+mongoose
+  .connect(process.env.URI, {})
+  .then(() => {
+    console.log("\nSUCCESS: CONNECTED TO DATABASE");
+    startApolloServer();
+  })
+  .catch((err) => {
+    console.error(err);
+  });
