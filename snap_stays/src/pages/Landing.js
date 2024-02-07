@@ -65,7 +65,7 @@ function Landing() {
             width: "5vw",
             height: "10vh",
             left: "5%",
-            top: "450px",
+            top: "60vh",
             position: "absolute",
           }}
         >
@@ -95,7 +95,7 @@ function Landing() {
             width: "75vw",
             height: "100vw",
             left: "25%",
-            top: "450px",
+            top: "60vh",
             position: "absolute",
           }}
         >
@@ -153,7 +153,7 @@ function Landing() {
         ></div>
         <div
           style={{
-            width: "90vw",
+            width: "0vw",
             height: "3vh",
             left: "3vw",
             top: "0px",
@@ -199,11 +199,11 @@ function Landing() {
             style={{
               width: "14vw",
               height: "5vh",
-              left: "0px",
-              top: "24vh",
+              left: "0vw",
+              top: "12vh",
               position: "absolute",
               transform: "rotate(-65deg)",
-              transformOrigin: "0 0",
+              transformOrigin: "center",
               background: "#2B2B2B",
               borderRadius: "10px",
               border: "3px #2B2B2B solid",
@@ -213,11 +213,11 @@ function Landing() {
             style={{
               width: "14vw",
               height: "5vh",
-              left: "91vw",
-              top: "0px",
+              left: "83vw",
+              top: "7vw",
               position: "absolute",
               transform: "rotate(65deg)",
-              transformOrigin: "0 0",
+              transformOrigin: "center",
               background: "#2B2B2B",
               borderRadius: "10px",
               border: "3px #2B2B2B solid",
@@ -249,10 +249,10 @@ function Landing() {
               width: "73vw",
               height: "75vh",
               left: "5vw",
-              top: "0vh",
+              //top: "0vh",
               position: "absolute",
               background: "#2B2B2B",
-              borderRadius: "30px",
+              borderRadius: "10vh",
               border: "5px black solid",
             }}
           ></div>
