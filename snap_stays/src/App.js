@@ -30,6 +30,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme = {theme}>
+        <CssBaseline />
     <BrowserRouter>
       <Routes>
         <Route path = "/" element={<Layout />}>
