@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const { GraphQLError } = require("graphql");
 
 const User = require("../../models/User");
@@ -23,6 +24,28 @@ function generateToken(user) {
     }
   );
 }
+
+const sendMail = (to) => {
+  const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE,
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const options = {
+    from: process.env.EMAIL_USERNAME,
+    to,
+    subject: "SnapStays: Verify Your Email",
+    text: "Thank you for choosing SnapStays! Finish the registration procress by verifying your email through this link: [link]",
+  };
+
+  transporter.sendMail(options, (error, info) => {
+    if (error) console.log(error);
+    else console.log(info);
+  });
+};
 
 module.exports = {
   Query: {
@@ -115,6 +138,8 @@ module.exports = {
       });
 
       const res = await newUser.save();
+
+      sendMail(newUser.email);
 
       const token = generateToken(res);
 
