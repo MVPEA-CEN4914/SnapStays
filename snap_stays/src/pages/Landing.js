@@ -294,11 +294,12 @@ function Landing() {
         </div>
       </div>
       <div
+      //grey background on bottom
         style={{
           width: "100%",
-          height: "220%",
+          height: "120vh",
           left: "0px",
-          top: "1691px",
+          top: "250vh",
           position: "absolute",
         }}
       >
