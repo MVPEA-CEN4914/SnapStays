@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Layout from './pages/Layout';
 import FindStay from './pages/FindStay';
 import ListStay from './pages/ListStay';
+import Verify from "./pages/Verify";
 import {ThemeProvider, createTheme} from '@mui/material/styles'
 import { CssBaseline } from '@mui/material';
 
@@ -39,6 +40,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="FindStay" element = {<FindStay/>} />
         <Route path="ListStay" element = {<ListStay/>} />
+        <Route exact path="/verify/:id" element={<Verify/>} />
         </Route>
       </Routes>
     </BrowserRouter>
