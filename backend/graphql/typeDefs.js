@@ -19,9 +19,13 @@ module.exports = gql`
   }
   type Query {
     getUsers: [User]
+    getListing: [Listing]
+    getListing(listingId: ID!): Listing
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(email: String!, password: String!): User!
+    createListing(): Listing!
+    deleteListing(listingId: ID!): String!
   }
 `;
