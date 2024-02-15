@@ -277,7 +277,7 @@ function Landing() {
           style={{
             width: "65vw",
             left: "17vw",
-            top: "50vh",
+            top: "60vh",
             position: "absolute",
             color: "#E6E6DD",
             fontSize: "3vw",
@@ -288,17 +288,16 @@ function Landing() {
         >
           We aim to streamline and simplify the process of renting and
           subletting for college students by providing a platform tailored to
-          meet student’s short-term accommodation needs. We aim to alleviate the
-          stress associated with finding temporary housing solutions, so our
-          users can focus on their education and enjoy their college experience.
+          meet student’s short-term accommodation needs.
         </div>
       </div>
       <div
+      //grey background on bottom
         style={{
           width: "100%",
-          height: "220%",
+          height: "120vh",
           left: "0px",
-          top: "1691px",
+          top: "250vh",
           position: "absolute",
         }}
       >
@@ -330,13 +329,16 @@ function Landing() {
             position: "absolute",
             textAlign: "right",
             color: "#E6E6DD",
-            fontSize: "5vw",
+            fontSize: "10vw",
             fontFamily: "Josefin Sans",
-            fontWeight: "700",
+            fontWeight: "900",
             wordWrap: "break-word",
           }}
         >
-          Something something use this app yay slay whatever
+          <div>Connect.</div>
+          <div>Unlock.</div>
+          <div>Live.</div>
+
         </div>
         <div
           style={{
@@ -351,8 +353,9 @@ function Landing() {
             fontWeight: "400",
             wordWrap: "break-word",
           }}
+        //text was below
         >
-          fs hsdfohu fhsod sdh dudh fdhh dufho jhsdfou fh fh hd hhf diufh uds
+          
         </div>
       </div>
     </div>

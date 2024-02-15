@@ -9,6 +9,7 @@ module.exports = gql`
     username: String!
     password: String!
     createdAt: String!
+    verified: Boolean!
   }
   input RegisterInput {
     fullName: String!
@@ -27,5 +28,6 @@ module.exports = gql`
     login(email: String!, password: String!): User!
     createListing(): Listing!
     deleteListing(listingId: ID!): String!
+    verifyUser(id: String!): User!
   }
 `;
