@@ -2,7 +2,7 @@ const Listing = require('../../models/Listing');
 
 module.exports = {
     Query: {
-        async getListing() {
+        async getListings() {
         try {
             const listings = await Listing.find();
             return listings;
@@ -23,12 +23,18 @@ module.exports = {
             }
     },
     Mutation: {
-        async createListing(_, { title, description, price, location }) {
+        async createListing(_, { listingInput}) {
         const newListing = new Listing({
-            title,
-            description,
-            price,
-            location,
+            title: listingInput.title,
+            price: listingInput.price,
+            numberOfRoommates: listingInput.numberOfRoommates,
+            bathroomType: listingInput.bathroomType,
+            location: listingInput.location,
+            leaseDurationMonths: listingInput.leaseDurationMonths,
+            isFurnished: listingInput.isFurnished,
+            utilitiesIncluded: listingInput.utilitiesIncluded,
+            petsAllowed: listingInput.petsAllowed,
+            // owner : listingInput.owner,
             createdAt: new Date().toISOString(),
         });
     

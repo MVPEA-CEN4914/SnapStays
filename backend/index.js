@@ -16,7 +16,8 @@ startApolloServer = async () => {
   const httpServer = http.createServer(app);
   const server = new ApolloServer({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-  });
+    context: ({ req }) => ({ req }),
+    });
   await server.start();
 
   app.use(cors(), express.json(), expressMiddleware(server));
