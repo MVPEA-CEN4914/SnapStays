@@ -1,6 +1,6 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema } = require("mongoose");
 
-const SubleaseSchema = new Schema({
+const subleaseSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -38,6 +38,10 @@ const SubleaseSchema = new Schema({
     type: Boolean,
     default: false
   },
+  createdAt: {
+    type: String,
+    required: true
+  },
   //link it to a User denoting the listing is by this user
   // owner: {
   //   type: mongoose.Schema.Types.ObjectId,
@@ -45,4 +49,4 @@ const SubleaseSchema = new Schema({
   // }
 });
 
-module.exports = mongoose.model('Sublease', SubleaseSchema);
+module.exports = model("Sublease", subleaseSchema);
