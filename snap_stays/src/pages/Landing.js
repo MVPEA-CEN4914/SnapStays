@@ -20,7 +20,7 @@ function Landing() {
         style={{
           width: "100vw",
           height: "5vh",
-          top: "100%",
+          top: "10vh",
           position: "absolute",
         }}
       >
@@ -28,7 +28,7 @@ function Landing() {
           style={{
             width: "50vw",
             height: "10vh",
-            top: "50%",
+            top: "6vh",
             position: "absolute",
           }}
         >
@@ -58,26 +58,26 @@ function Landing() {
             >
               in a snap
             </span>
-          </div>
-        </div>
-        <div
-          style={{
-            width: "5vw",
+           
+           <div style={{
+            width: "50vw",
             height: "10vh",
-            left: "5%",
+            //left: "vw",
             top: "60vh",
-            position: "absolute",
-          }}
-        >
-          <Button
+            //position: "absolute",
+            display: 'flex', 
+            justifyContent: 'center',
+            marginRight: '10vw'
+           }}>
+            <Button
             variant="outlined"
             color="secondary"
             component={RouterLink}
             to="/FindStay"
             sx={{
-              width: "17vw",
+              width: "20vw",
               height: "10vh",
-              position: "absolute",
+              //position: "absolute",
               textAlign: "center",
               fontSize: "2vw",
               fontFamily: "Josefin Sans",
@@ -85,30 +85,23 @@ function Landing() {
               wordWrap: "break-word",
               borderRadius: "37.5px",
               border: "2px solid black",
+              //left: "5vw",
+              
             }}
           >
             Find a Stay
           </Button>
-        </div>
-        <div
-          style={{
-            width: "75vw",
-            height: "100vw",
-            left: "25%",
-            top: "60vh",
-            position: "absolute",
-          }}
-        >
+
           <Button
             variant="outlined"
             color="secondary"
             component={RouterLink}
             to="/ListStay"
             sx={{
-              width: "17vw",
+              width: "20vw",
               height: "10vh",
-              position: "absolute",
-              left: "0px",
+              //position: "absolute",
+              //left: "22vw",
               top: "0px",
               textAlign: "center",
               fontSize: "2vw",
@@ -118,10 +111,16 @@ function Landing() {
               borderRadius: "37.5px",
               border: "2px solid black",
             }}
+          
           >
             List a Stay
-          </Button>
+            </Button> 
+          </div>
         </div>
+      </div>
+        
+    
+        
         <img
           style={{
             width: "45vw",
