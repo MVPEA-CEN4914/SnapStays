@@ -54,6 +54,7 @@ module.exports = gql`
     register(registerInput: RegisterInput): User!
     login(email: String!, password: String!): User!
     createListing(listingInput: ListingInput): Listing!
+    createTestListing: Listing!
     deleteListing(listingId: ID!): String!
     verifyUser(id: String!): User!
   }

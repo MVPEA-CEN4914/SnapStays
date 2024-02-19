@@ -49,4 +49,4 @@ const subleaseSchema = new Schema({
   // }
 });
 
-module.exports = model("Sublease", subleaseSchema);
+module.exports = model("Subleases", subleaseSchema);
