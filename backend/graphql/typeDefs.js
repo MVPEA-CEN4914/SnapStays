@@ -24,8 +24,8 @@ module.exports = gql`
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
     createdAt: String!
-    owner: User!
   }
+
   input RegisterInput {
     fullName: String!
     email: String!
@@ -33,6 +33,7 @@ module.exports = gql`
     password: String!
     confirmPassword: String!
   }
+
   input ListingInput {
     title: String!
     price: Float!
@@ -50,11 +51,11 @@ module.exports = gql`
     getListings: [Listing]
     getListing(listingId: ID!): Listing
   }
+
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(email: String!, password: String!): User!
-    createListing(listingInput: ListingInput): Listing!
-    createTestListing: Listing!
+    createListing(listingInput: ListingInput): [Listing]
     deleteListing(listingId: ID!): String!
     verifyUser(id: String!): User!
   }
