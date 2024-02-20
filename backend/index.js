@@ -15,8 +15,8 @@ startApolloServer = async () => {
   const app = express();
   const httpServer = http.createServer(app);
   const server = new ApolloServer({
-    schema: buildSubgraphSchema({ typeDefs, resolvers }),
     context: ({ req }) => ({ req }),
+    schema: buildSubgraphSchema({ typeDefs, resolvers }),
     });
   await server.start();
 

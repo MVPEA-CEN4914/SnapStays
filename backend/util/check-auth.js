@@ -1,5 +1,3 @@
-const {AuthenticationError} = require('apollo-server');
-
 const jwt = require('jsonwebtoken');
 
 module.exports = (context) => {
@@ -21,4 +19,5 @@ module.exports = (context) => {
         }
         throw new Error('Authentication token must be \'Bearer [token]');
     }
+    throw new Error('Authorization header must be provided');
 };

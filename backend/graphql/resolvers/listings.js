@@ -1,4 +1,5 @@
 const Listing = require("../../models/Listing");
+const checkAuth = require("../../util/check-auth");
 
 const { GraphQLError } = require("graphql");
 
@@ -40,9 +41,14 @@ module.exports = {
           utilitiesIncluded,
           petsAllowed,
         },
-      }
+      }, context
     ) {
+      
+      console.log(context);
+      //const user = checkAuth(context);
+
       const newListing = new Listing({
+        user: user.id,
         title,
         price,
         numberOfRoommates,

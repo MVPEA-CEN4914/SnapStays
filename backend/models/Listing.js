@@ -42,10 +42,10 @@ const listingSchema = new Schema({
     type: String,
     required: true,
   },
-  // owner: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'users'
-  // }
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'users'
+  }
 });
 
 module.exports = model("Listing", listingSchema);
