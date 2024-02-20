@@ -1,4 +1,5 @@
 const Listing = require("../../models/Listing");
+const { findByIdAndDelete } = require("../../models/User");
 const checkAuth = require("../../util/check-auth");
 
 const { GraphQLError } = require("graphql");
@@ -72,12 +73,16 @@ module.exports = {
       const user = checkAuth(context);
 
       try {
-        const post = await Listing.findById(listingId);
-        //user should only be able to delete their own post:
-        if (user.username === post.username) {
-          await post.delete();
+        const listing = await Listing.findById(listingId);
+
+        console.log(listing);
+        //user should only be able to delete their own posts
+        if (user.id == listing.user) 
+        {
+          await Listing.findByIdAndDelete(listingId);
           return "Listing deleted successfully";
-        } else {
+        } else 
+        {
           throw new Error("This is not your listing");
         }
       } catch (err) {
