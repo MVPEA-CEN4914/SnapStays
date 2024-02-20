@@ -44,8 +44,9 @@ module.exports = {
       }, context
     ) {
       
-      console.log(context);
-      //const user = checkAuth(context);
+      //console.log(context.req.headers.authorization);
+      const user = checkAuth(context);
+      console.log(user);
 
       const newListing = new Listing({
         user: user.id,
@@ -62,19 +63,27 @@ module.exports = {
       });
       await newListing.save();
 
-      const listings = await Listing.find();
+      //const listings = await Listing.find();
 
-      return listings;
+      return newListing;
     },
 
-    async deleteListing(_, { listingId }) {
+    async deleteListing(_, { listingId }, context) {
+      const user = checkAuth(context);
+
       try {
-        const listing = await Listing.findById(listingId);
-        await listing.delete();
-        return "Listing deleted successfully";
+        const post = await Listing.findById(listingId);
+        //user should only be able to delete their own post:
+        if (user.username === post.username) {
+          await post.delete();
+          return "Listing deleted successfully";
+        } else {
+          throw new Error("This is not your listing");
+        }
       } catch (err) {
         throw new Error(err);
       }
+
     },
   },
 };
