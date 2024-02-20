@@ -12,6 +12,9 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Houses from '../images/Houses.png'
 import axios from 'axios';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import { Token } from 'graphql';
 
 function Copyright(props) {
   return (
@@ -140,4 +143,28 @@ function Register() {
   );
 }
 
+
+// const REGISTER_USER = gql '
+// mutation register(
+//   $username: String!
+//   $email: String!
+//   $password: String!
+//   $confirmPassword: String!
+// ) {
+//   register(
+//     registerInput: {
+//       username: $username
+//       email: $email
+//       password: $password
+//       confirmPassword: $confirmPassword
+//     }
+
+//   ){
+//     id email username createdAt Token
+
+//   }
+// }
+
+
+// '
 export default Register;
