@@ -13,6 +13,7 @@ npm install
 ```
 ```bash
 npm install @mui/material @emotion/react @emotion/styled
+npm install @apollo/react-hooks
 ```
 finally to get it running on your local host  
 ```bash
