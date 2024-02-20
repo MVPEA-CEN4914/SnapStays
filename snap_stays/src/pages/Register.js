@@ -57,7 +57,9 @@ function Register(props) {
     },
     onError(err){
       console.log('Mutation error:', err);
-      setErrors(err.validationErrors || {});
+      //setErrors(err.validationErrors || {});
+      setErrors(err.graphQLErrors.map(error => error.message));
+      //setErrors(err.graphQLErrors[0].extensions.exception.validationErrors);
     },
     variables:values
   });
@@ -65,6 +67,7 @@ function Register(props) {
     event.preventDefault();
     console.log('Form values:', values);
     registerUser();
+    
   };
 
 
@@ -183,12 +186,12 @@ function Register(props) {
                   </Link>
                 </Grid>
                 {Object.keys(errors).length > 0 && (
-                  <div className="ui error message">
+                  <div className="ui error message" sx={{ color: 'red' }}>
                     <ul className="list">
-                      {Object.values(errors).map((value) => (
-                        <li key={value}>{value}</li>
-                      ))}
-                    </ul>
+                    {Object.values(errors).map((value, index) => (
+                      <li key={index}>{value}</li>
+                    ))}
+                  </ul>
                   </div>
                 )}
               </Grid>
