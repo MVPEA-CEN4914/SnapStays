@@ -14,10 +14,10 @@ module.exports.validateRegisterInput = (
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,32}$/;
 
   if (fullName.trim() === "") {
-    errors.username = "Name must not be empty";
+    errors.fullName = "Name must not be empty";
   } else {
     if (!fullName.match(nameRegex)) {
-      errors.username = "Name must be a valid name";
+      errors.fullName = "Name must be a valid name";
     }
   }
   if (username.trim() === "") {
