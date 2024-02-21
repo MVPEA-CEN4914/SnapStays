@@ -14,6 +14,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Houses from '../images/Houses.png'
+import axios from 'axios';
 
 function Copyright(props) {
   return (
@@ -33,13 +34,26 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const userData = {
+        email: data.get('email'),
+        password: data.get('password'),
+    };
+    try {
+        const response = await axios.post('http://localhost:1337/api/login', userData);
+        if (response.data.status === 'ok') {
+            console.log('User Found');
+            window.location.href = '/layout';
+        } 
+        else if (response.data.status === 'error') {
+            console.log('User Not Found');
+        }
+    } catch (error) {
+        console.error('There was an error!', error);
+    }
+    
   };
 
   return (

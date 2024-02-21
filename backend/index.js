@@ -16,10 +16,15 @@ startApolloServer = async () => {
   const httpServer = http.createServer(app);
   const server = new ApolloServer({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-  });
+    context: ({ req }) => ({ req })
+    });
   await server.start();
 
-  app.use(cors(), express.json(), expressMiddleware(server));
+  app.use(cors());
+  app.use(express.json());
+  app.use(expressMiddleware(server, {
+    context: ({ req }) => ({ req })
+  }));
   await new Promise((resolve) => httpServer.listen({ port }, resolve));
   const addr = httpServer.address();
   const host = addr.address === "::" ? "localhost" : addr.address;
