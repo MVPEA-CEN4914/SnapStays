@@ -19,11 +19,13 @@ module.exports = gql`
     numberOfRoommates: Int!
     bathroomType: String!
     location: String!
-    leaseDurationMonths: Int!
+    leaseStartDate: String!
+    leaseEndDate: String!
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
     createdAt: String!
+    user: User!
   }
 
   input RegisterInput {
@@ -40,7 +42,8 @@ module.exports = gql`
     numberOfRoommates: Int!
     bathroomType: String!
     location: String!
-    leaseDurationMonths: Int!
+    leaseStartDate: String!
+    leaseEndDate: String!
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
