@@ -10,6 +10,7 @@ import ListStay from './pages/ListStay';
 import Verify from "./pages/Verify";
 import {ThemeProvider, createTheme} from '@mui/material/styles'
 import { CssBaseline } from '@mui/material';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 const theme = createTheme({
   palette:{
@@ -29,6 +30,7 @@ const theme = createTheme({
 
 function App() {
   return (
+    <ApolloProvider>
     <div className="App">
       <ThemeProvider theme = {theme}>
         <CssBaseline />
@@ -46,7 +48,7 @@ function App() {
     </BrowserRouter>
     </ThemeProvider>
     </div>
-   
+   </ApolloProvider>
   );
 }
 

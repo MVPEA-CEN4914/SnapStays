@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +13,10 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Houses from '../images/Houses.png'
 import axios from 'axios';
+import { gql } from 'graphql-tag';
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { pink } from '@mui/material/colors';
 
 function Copyright(props) {
   return (
@@ -28,27 +33,54 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-function Register() {
-  const handleSubmit = async (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      const userData = {
-          name: data.get('name'),
-          email: data.get('email'),
-          password: data.get('password'),
-      };
+function Register(props) {
+  const navigate = useNavigate();
+  const[errors, setErrors] = useState({});
+  const[values, setValues] = useState({
+    fullName:'',
+    username:'',
+    email:'',
+    password: '',
+    confirmPassword: '',
+  });
 
-      try {
-          const response = await axios.post('http://localhost:1337/api/register', userData);
-          if (response.data.status === 'ok') {
-              console.log('User registered successfully');
-          } else {
-              console.log('Registration failed');
-          }
-      } catch (error) {
-          console.error('There was an error!', error);
+  const onChange = (event) => {
+    const { name, value } = event.target; // Destructure name and value from event.target
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value, // Update the corresponding state property using computed property syntax
+    }));
+  };  
+  const [registerUser, {loading}] = useMutation(REGISTER, {
+    update(_,result){
+      console.log('Mutation result:', result);
+      navigate('/');
+    },
+    onError(err){
+      console.log('Mutation error:', err);
+      //setErrors(err.validationErrors || {});
+      //setErrors(err.graphQLErrors.map(error => error.message));
+      //setErrors(err.graphQLErrors[0].extensions.exception.validationErrors);
+      if (err.graphQLErrors && err.graphQLErrors.length > 0) {
+        const validationErrors = err.graphQLErrors[0]?.extensions?.exception?.validationErrors;
+        if (validationErrors) {
+          setErrors(validationErrors);
+        } else {
+          setErrors({ general: 'An error occurred' });
+        }
+      } else {
+        setErrors({ general: 'An error occurred' });
       }
+    },
+    variables:values
+  });
+  const handleSubmit = (event) =>{
+    event.preventDefault();
+    console.log('Form values:', values);
+    registerUser();
+    
   };
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -89,20 +121,39 @@ function Register() {
                 margin="normal"
                 required
                 fullWidth
-                id="name"
-                label="Name"
-                name="name"
-                autoComplete="name"
-                autoFocus
+                id="fullName"
+                label="Full Name"
+                name="fullName"
+                autoComplete="fullName"
+                //autoFocus
+                value={values.fullName}
+                onChange={onChange}
+                error={errors.fullName ? true : false}
+                helperText={errors.fullName}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                value={values.username} // Use the value from state
+                onChange={onChange} // Update the state when the input changes
+               // errors={errors.username ? true : false}
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="School Email Address"
                 name="email"
                 autoComplete="email"
+                value={values.email} // Use the value from state
+                onChange={onChange} // Update the state when the input changes
+                //errors={errors.email ? true : false}
               />
               <TextField
                 margin="normal"
@@ -113,6 +164,22 @@ function Register() {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                value={values.password} // Use the value from state
+                onChange={onChange} // Update the state when the input changes
+               // errors={errors.password ? true : false}
+              />
+               <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                autoComplete="new-password"
+                value={values.confirmPassword} // Use the value from state
+                onChange={onChange} // Update the state when the input changes
+                //errors={errors.confirmPassword ? true : false}
               />
               <Button
                 type="submit"
@@ -130,6 +197,17 @@ function Register() {
                     {"Have an account? Sign In"}
                   </Link>
                 </Grid>
+                <Box>
+                  {Object.keys(errors).length > 0 && (
+                  <div className="ui error message">
+                    <ul className="list" sx={{color:'red'}}>
+                    {Object.values(errors).map((value, index) => (
+                      <li key={index}>{value}</li>
+                    ))}
+                  </ul>
+                  </div>
+                )}
+                </Box>
               </Grid>
               <Copyright sx={{ mt: 5, color: 'black' }} />
             </Box>
@@ -139,5 +217,32 @@ function Register() {
     </ThemeProvider>
   );
 }
+const REGISTER = gql`
+  mutation register(
+    $fullName: String!
+    $email: String!
+    $username: String!
+    $password: String!
+    $confirmPassword: String!
+    
+  ){
+    register(
+      registerInput: {
+        fullName: $fullName
+        email: $email
+        username: $username
+        password: $password
+        confirmPassword: $confirmPassword
+      }
+    ){
+      id
+      email
+      username
+      createdAt
+      token
+      fullName
+    }
+  }
+  `;
 
 export default Register;
