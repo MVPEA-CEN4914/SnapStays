@@ -1,5 +1,6 @@
 
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,6 +16,10 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Houses from '../images/Houses.png'
 import axios from 'axios';
+import { useForm } from '../hooks/hooks';
+import { gql } from 'graphql-tag';
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
 
 function Copyright(props) {
   return (
@@ -33,27 +38,48 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function Login() {
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const userData = {
-        email: data.get('email'),
-        password: data.get('password'),
-    };
-    try {
-        const response = await axios.post('http://localhost:1337/api/login', userData);
-        if (response.data.status === 'ok') {
-            console.log('User Found');
-            window.location.href = '/layout';
-        } 
-        else if (response.data.status === 'error') {
-            console.log('User Not Found');
+ function Login(props) {
+  const navigate = useNavigate();
+  const[errors, setErrors] = useState({});
+  const [values, setValues] = useState({
+    email:'',
+    password: '',
+  });
+
+  const onChange = (event) => {
+    const { name, value } = event.target; // Destructure name and value from event.target
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value, // Update the corresponding state property using computed property syntax
+    }));
+  }; 
+  const[loginUser, {loading}] = useMutation(LOGIN, {
+    update(_,result){
+      console.log('Mutation result:', result);
+      navigate('/');
+    },
+    onError(err){
+      console.log('Mutation error:', err);
+      if (err.graphQLErrors && err.graphQLErrors.length > 0) {
+        const extensionErrors = err.graphQLErrors[0]?.extensions?.errors;
+        if (extensionErrors) {
+          // Populate errors state with extension error messages
+          setErrors(extensionErrors);
+        } else {
+          // If extension errors not found, set a generic error message
+          setErrors({ general: 'An error occurred' });
         }
-    } catch (error) {
-        console.error('There was an error!', error);
-    }
-    
+      } else {
+        // If there are no GraphQL errors, set a generic error message
+        setErrors({ general: 'An error occurred' });
+      }
+    },
+    variables:values
+  });
+  const handleSubmit = (event) => {
+    event.preventDefault();  
+    console.log('Form values:', values);
+    loginUser();
   };
 
   return (
@@ -100,6 +126,10 @@ export default function Login() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value = {values.email}
+                error = {errors.email ? true :false}
+                onChange={onChange}
+                helperText={errors.email ? errors.email:''}
               />
               <TextField
                 margin="normal"
@@ -110,6 +140,10 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value = {values.password}
+                error = {errors.password ? true : false}
+                onChange = {onChange}
+                helperText={errors.email ? errors.email:''}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -138,6 +172,15 @@ export default function Login() {
                   </Link>
                 </Grid>
               </Grid>
+              {Object.keys(errors).length > 0 && (
+  <div className="ui error message">
+    <ul className="list" sx={{ color: 'red' }}>
+      {Object.entries(errors).map(([fieldName, errorMessage], index) => (
+        <li key={index}>{errorMessage}</li>
+      ))}
+    </ul>
+  </div>
+)}
               <Copyright sx={{ mt: 5, color: 'black' }} />
             </Box>
           </Box>
@@ -146,3 +189,21 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+const LOGIN = gql`
+mutation loginUser(
+  $email: String!
+  $password: String!
+  ){
+    login(
+      email: $email
+      password: $password
+    ){
+      id
+      token
+      fullName
+    }
+  }
+ 
+`;
+
+export default Login; 
