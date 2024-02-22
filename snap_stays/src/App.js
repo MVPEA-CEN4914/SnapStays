@@ -15,14 +15,14 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 const theme = createTheme({
   palette:{
     background: {
-      default:'#E6E6DD'
+      default:'#E6E6DD' // Beige
     },
     primary: {
       light: '#E6E6DD',
-      main: '#AF8C53',
+      main: '#AF8C53', // Mustard
     },
     secondary:{
-      main:'#2B2B2B'
+      main:'#2B2B2B' // Black
     }
     
   }
