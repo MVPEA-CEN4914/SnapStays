@@ -16,6 +16,7 @@ import axios from 'axios';
 import { gql } from 'graphql-tag';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { useForm } from '../hooks/hooks';
 import { pink } from '@mui/material/colors';
 
 function Copyright(props) {
@@ -53,22 +54,28 @@ function Register(props) {
   };  
   const [registerUser, {loading}] = useMutation(REGISTER, {
     update(_,result){
-      console.log('Mutation result:', result);
+      //console.log('Mutation result:', result);
       navigate('/');
     },
     onError(err){
       console.log('Mutation error:', err);
       //setErrors(err.validationErrors || {});
       //setErrors(err.graphQLErrors.map(error => error.message));
+      //console.log('Errors:', errors);
+      //console.log('graph ql object:', err.graphQLErrors);
       //setErrors(err.graphQLErrors[0].extensions.exception.validationErrors);
+      console.log('Mutation error:', err);
       if (err.graphQLErrors && err.graphQLErrors.length > 0) {
-        const validationErrors = err.graphQLErrors[0]?.extensions?.exception?.validationErrors;
-        if (validationErrors) {
-          setErrors(validationErrors);
+        const extensionErrors = err.graphQLErrors[0]?.extensions?.errors;
+        if (extensionErrors) {
+          // Populate errors state with extension error messages
+          setErrors(extensionErrors);
         } else {
+          // If extension errors not found, set a generic error message
           setErrors({ general: 'An error occurred' });
         }
       } else {
+        // If there are no GraphQL errors, set a generic error message
         setErrors({ general: 'An error occurred' });
       }
     },
@@ -127,9 +134,10 @@ function Register(props) {
                 autoComplete="fullName"
                 //autoFocus
                 value={values.fullName}
-                onChange={onChange}
                 error={errors.fullName ? true : false}
-                helperText={errors.fullName}
+                onChange={onChange}
+                helperText={errors.fullName ? errors.fullName: ''}
+                
               />
               <TextField
                 margin="normal"
@@ -140,8 +148,9 @@ function Register(props) {
                 name="username"
                 autoComplete="username"
                 value={values.username} // Use the value from state
+                error={errors.username ? true : false}
                 onChange={onChange} // Update the state when the input changes
-               // errors={errors.username ? true : false}
+                
               />
               <TextField
                 margin="normal"
@@ -153,7 +162,7 @@ function Register(props) {
                 autoComplete="email"
                 value={values.email} // Use the value from state
                 onChange={onChange} // Update the state when the input changes
-                //errors={errors.email ? true : false}
+                error={errors.email ? true : false}
               />
               <TextField
                 margin="normal"
@@ -166,7 +175,7 @@ function Register(props) {
                 autoComplete="new-password"
                 value={values.password} // Use the value from state
                 onChange={onChange} // Update the state when the input changes
-               // errors={errors.password ? true : false}
+                error={errors.password ? true : false}
               />
                <TextField
                 margin="normal"
@@ -179,7 +188,7 @@ function Register(props) {
                 autoComplete="new-password"
                 value={values.confirmPassword} // Use the value from state
                 onChange={onChange} // Update the state when the input changes
-                //errors={errors.confirmPassword ? true : false}
+                error={errors.confirmPassword ? true : false}
               />
               <Button
                 type="submit"
@@ -198,15 +207,15 @@ function Register(props) {
                   </Link>
                 </Grid>
                 <Box>
-                  {Object.keys(errors).length > 0 && (
-                  <div className="ui error message">
-                    <ul className="list" sx={{color:'red'}}>
-                    {Object.values(errors).map((value, index) => (
-                      <li key={index}>{value}</li>
-                    ))}
-                  </ul>
-                  </div>
-                )}
+                {Object.keys(errors).length > 0 && (
+  <div className="ui error message">
+    <ul className="list" sx={{ color: 'red' }}>
+      {Object.entries(errors).map(([fieldName, errorMessage], index) => (
+        <li key={index}>{errorMessage}</li>
+      ))}
+    </ul>
+  </div>
+)}
                 </Box>
               </Grid>
               <Copyright sx={{ mt: 5, color: 'black' }} />
