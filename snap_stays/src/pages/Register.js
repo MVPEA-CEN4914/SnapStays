@@ -16,6 +16,7 @@ import axios from 'axios';
 import { gql } from 'graphql-tag';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { pink } from '@mui/material/colors';
 
 function Copyright(props) {
   return (
@@ -58,8 +59,18 @@ function Register(props) {
     onError(err){
       console.log('Mutation error:', err);
       //setErrors(err.validationErrors || {});
-      setErrors(err.graphQLErrors.map(error => error.message));
+      //setErrors(err.graphQLErrors.map(error => error.message));
       //setErrors(err.graphQLErrors[0].extensions.exception.validationErrors);
+      if (err.graphQLErrors && err.graphQLErrors.length > 0) {
+        const validationErrors = err.graphQLErrors[0]?.extensions?.exception?.validationErrors;
+        if (validationErrors) {
+          setErrors(validationErrors);
+        } else {
+          setErrors({ general: 'An error occurred' });
+        }
+      } else {
+        setErrors({ general: 'An error occurred' });
+      }
     },
     variables:values
   });
@@ -117,7 +128,8 @@ function Register(props) {
                 //autoFocus
                 value={values.fullName}
                 onChange={onChange}
-                //errors={errors.fullName ? true : false}
+                error={errors.fullName ? true : false}
+                helperText={errors.fullName}
               />
               <TextField
                 margin="normal"
@@ -185,15 +197,17 @@ function Register(props) {
                     {"Have an account? Sign In"}
                   </Link>
                 </Grid>
-                {Object.keys(errors).length > 0 && (
-                  <div className="ui error message" sx={{ color: 'red' }}>
-                    <ul className="list">
+                <Box>
+                  {Object.keys(errors).length > 0 && (
+                  <div className="ui error message">
+                    <ul className="list" sx={{color:'red'}}>
                     {Object.values(errors).map((value, index) => (
                       <li key={index}>{value}</li>
                     ))}
                   </ul>
                   </div>
                 )}
+                </Box>
               </Grid>
               <Copyright sx={{ mt: 5, color: 'black' }} />
             </Box>
