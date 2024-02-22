@@ -5,43 +5,63 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
+import { useTheme } from "@mui/material/styles";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+
 import TempListing from "../images/TempListing.jpg";
 
-function StayCard() {
+function StayCard({ listing }) {
+  const theme = useTheme();
   return (
     <Card
-      sx={{ maxWidth: 240, border: "1px solid black", borderRadius: "15px" }}
+      sx={{
+        maxWidth: "16rem",
+        border: "3px solid black",
+        borderRadius: "1rem",
+        margin: "0.5rem",
+      }}
     >
       <CardMedia component="div" sx={{ position: "relative" }}>
         <IconButton
           aria-label="add to favorites"
-          sx={{ position: "absolute", top: "8px", right: "8px" }}
+          sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
         >
-          <FavoriteIcon />
+          <StarBorderIcon />
         </IconButton>
         <img
           src={TempListing}
-          height={230}
-          maxWidth={200}
-          style={{ borderRadius: "5px" }}
+          style={{
+            height: "15rem",
+            width: "100%",
+            objectFit: "cover",
+            borderRadius: "1rem",
+            position: "center",
+            padding: "0.5rem",
+          }}
         />
       </CardMedia>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar
+            sx={{ bgcolor: theme.palette.primary.main }}
+            aria-label="user profile picture"
+          >
             R
           </Avatar>
         }
-        title="$650/month 1BR"
-        subheader="Your Mom's House | University Park"
+        title={listing.title}
+        subheader={listing.location}
+        sx={{ paddingY: "0" }}
       />
+      <CardContent sx={{ paddingBottom: "0" }}>
+        <Typography variant="body2" color="text.secondary">
+          {listing.leaseStartDate} - {listing.leaseEndDate}
+        </Typography>
+        <Typography variant="h5">${listing.price}/month</Typography>
+      </CardContent>
     </Card>
   );
 }
