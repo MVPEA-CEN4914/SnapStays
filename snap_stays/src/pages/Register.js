@@ -126,8 +126,8 @@ function Register(props) {
               
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'black' }}>
-              <LockOutlinedIcon color = "primary"/>
+            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+              <LockOutlinedIcon color = "grey"/>
             </Avatar>
             <Typography component="h1" variant="h5" color = "primary">
               Sign Up
@@ -300,7 +300,7 @@ function Register(props) {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2, bgcolor: 'black', '&:hover': {
+                sx={{ mt: 3, mb: 2, bgcolor: 'primary.main', '&:hover': {
                   bgcolor: "primary.light",
                 }}}
                 
