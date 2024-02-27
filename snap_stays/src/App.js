@@ -1,6 +1,7 @@
 import './App.css';
 import ReactDom from "react-dom/client";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
+import { AuthProvider } from './context/auth';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -30,6 +31,7 @@ const theme = createTheme({
 
 function App() {
   return (
+    <AuthProvider>
     <ApolloProvider>
     <div className="App">
       <ThemeProvider theme = {theme}>
@@ -49,6 +51,8 @@ function App() {
     </ThemeProvider>
     </div>
    </ApolloProvider>
+   </AuthProvider>
+  
   );
 }
 
