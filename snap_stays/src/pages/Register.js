@@ -24,7 +24,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        SnapStays
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -32,7 +32,17 @@ function Copyright(props) {
   );
 }
 
-const defaultTheme = createTheme();
+
+const defaultTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#AF8C53', // Mustard
+    },
+    secondary: {
+      main: '#2B2B2B', // Black
+    },
+  },
+});
 
 function Register(props) {
   const navigate = useNavigate();
@@ -91,7 +101,7 @@ function Register(props) {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh' }}>
+      <Grid container component="main" sx={{ height: '100vh' , bgcolor: '#E6E6DD'}}>
         <CssBaseline />
         <Grid
           item
@@ -101,13 +111,11 @@ function Register(props) {
           sx={{
             backgroundImage: `url(${Houses})`,
             backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
             backgroundSize: '75% 75%',
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={0} square sx={{backgroundColor:  '#E6E6DD'}} >
           <Box
             sx={{
               my: 8,
@@ -115,16 +123,36 @@ function Register(props) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: 'black' }}>
-              <LockOutlinedIcon />
+              <LockOutlinedIcon color = "primary"/>
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" color = "primary">
               Sign Up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
+                sx={{ '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: 'black', // Change this to your desired hover color
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black', // Change this to your desired focus color
+                  },
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                }
+               
+              }}
                 margin="normal"
                 required
                 fullWidth
@@ -140,6 +168,25 @@ function Register(props) {
                 
               />
               <TextField
+                sx={{ '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: 'black', // Change this to your desired hover color
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black', // Change this to your desired focus color
+                  },
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                }
+               
+              }}
                 margin="normal"
                 required
                 fullWidth
@@ -153,6 +200,25 @@ function Register(props) {
                 
               />
               <TextField
+                sx={{ '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: 'black', // Change this to your desired hover color
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black', // Change this to your desired focus color
+                  },
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                }
+               
+              }}
                 margin="normal"
                 required
                 fullWidth
@@ -163,8 +229,28 @@ function Register(props) {
                 value={values.email} // Use the value from state
                 onChange={onChange} // Update the state when the input changes
                 error={errors.email ? true : false}
+                
               />
               <TextField
+                sx={{ '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: 'black', // Change this to your desired hover color
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black', // Change this to your desired focus color
+                  },
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                }
+               
+              }}
                 margin="normal"
                 required
                 fullWidth
@@ -178,6 +264,25 @@ function Register(props) {
                 error={errors.password ? true : false}
               />
                <TextField
+                sx={{ '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: 'black', // Change this to your desired hover color
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black', // Change this to your desired focus color
+                  },
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'grey',
+                }
+               
+              }}
                 margin="normal"
                 required
                 fullWidth
@@ -189,14 +294,16 @@ function Register(props) {
                 value={values.confirmPassword} // Use the value from state
                 onChange={onChange} // Update the state when the input changes
                 error={errors.confirmPassword ? true : false}
+               
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: 'black', '&:hover': {
-                  bgcolor: 'grey',
+                  bgcolor: "primary.light",
                 }}}
+                
               >
                 Sign Up
               </Button>
