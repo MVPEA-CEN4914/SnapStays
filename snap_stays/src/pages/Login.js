@@ -18,8 +18,10 @@ import Houses from '../images/Houses.png'
 import axios from 'axios';
 import { useForm } from '../hooks/hooks';
 import { gql } from 'graphql-tag';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useMutation } from '@apollo/client';
+
+import { AuthContext } from '../context/auth';
 
 function Copyright(props) {
   return (
@@ -40,6 +42,7 @@ const defaultTheme = createTheme();
 
  function Login(props) {
   const navigate = useNavigate();
+  const context = useContext(AuthContext);
   const[errors, setErrors] = useState({});
   const [values, setValues] = useState({
     email:'',
@@ -54,8 +57,8 @@ const defaultTheme = createTheme();
     }));
   }; 
   const[loginUser, {loading}] = useMutation(LOGIN, {
-    update(_,result){
-      console.log('Mutation result:', result);
+    update(_, {data:{login: userData}}){
+      context.login(userData);
       navigate('/');
     },
     onError(err){

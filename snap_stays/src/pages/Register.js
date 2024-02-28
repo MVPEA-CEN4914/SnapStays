@@ -14,8 +14,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Houses from '../images/Houses.png'
 import axios from 'axios';
 import { gql } from 'graphql-tag';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useMutation } from '@apollo/client';
+import { AuthContext } from '../context/auth';
 import { useForm } from '../hooks/hooks';
 import { pink } from '@mui/material/colors';
 
@@ -36,6 +37,7 @@ const defaultTheme = createTheme();
 
 function Register(props) {
   const navigate = useNavigate();
+  const context = useContext(AuthContext);
   const[errors, setErrors] = useState({});
   const[values, setValues] = useState({
     fullName:'',
@@ -53,17 +55,12 @@ function Register(props) {
     }));
   };  
   const [registerUser, {loading}] = useMutation(REGISTER, {
-    update(_,result){
+    update(_,{data:{register: userData}}){
       //console.log('Mutation result:', result);
+      context.login(userData);
       navigate('/');
     },
     onError(err){
-      console.log('Mutation error:', err);
-      //setErrors(err.validationErrors || {});
-      //setErrors(err.graphQLErrors.map(error => error.message));
-      //console.log('Errors:', errors);
-      //console.log('graph ql object:', err.graphQLErrors);
-      //setErrors(err.graphQLErrors[0].extensions.exception.validationErrors);
       console.log('Mutation error:', err);
       if (err.graphQLErrors && err.graphQLErrors.length > 0) {
         const extensionErrors = err.graphQLErrors[0]?.extensions?.errors;

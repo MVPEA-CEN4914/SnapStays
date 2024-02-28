@@ -1,7 +1,6 @@
 import './App.css';
 import ReactDom from "react-dom/client";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import { AuthProvider } from './context/auth';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -12,6 +11,7 @@ import Verify from "./pages/Verify";
 import {ThemeProvider, createTheme} from '@mui/material/styles'
 import { CssBaseline } from '@mui/material';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { AuthProvider } from './context/auth';
 
 const theme = createTheme({
   palette:{
@@ -52,7 +52,6 @@ function App() {
     </div>
    </ApolloProvider>
    </AuthProvider>
-  
   );
 }
 
