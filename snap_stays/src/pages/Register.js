@@ -135,6 +135,9 @@ function Register(props) {
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 sx={{ '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderRadius: '15px', // Adjust this value to your liking
+                  },
                   '&:hover fieldset': {
                     borderColor: 'black', // Change this to your desired hover color
                   },
@@ -169,6 +172,9 @@ function Register(props) {
               />
               <TextField
                 sx={{ '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderRadius: '15px', // Adjust this value to your liking
+                  },
                   '&:hover fieldset': {
                     borderColor: 'black', // Change this to your desired hover color
                   },
@@ -201,6 +207,9 @@ function Register(props) {
               />
               <TextField
                 sx={{ '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderRadius: '15px', // Adjust this value to your liking
+                  },
                   '&:hover fieldset': {
                     borderColor: 'black', // Change this to your desired hover color
                   },
@@ -233,6 +242,9 @@ function Register(props) {
               />
               <TextField
                 sx={{ '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderRadius: '15px', // Adjust this value to your liking
+                  },
                   '&:hover fieldset': {
                     borderColor: 'black', // Change this to your desired hover color
                   },
@@ -265,6 +277,9 @@ function Register(props) {
               />
                <TextField
                 sx={{ '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderRadius: '15px', // Adjust this value to your liking
+                  },
                   '&:hover fieldset': {
                     borderColor: 'black', // Change this to your desired hover color
                   },
