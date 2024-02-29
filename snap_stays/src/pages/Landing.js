@@ -30,6 +30,12 @@ function Landing() {
             height: "10vh",
             top: "6vh",
             position: "absolute",
+            //display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center'
+            
           }}
         >
           <div>
