@@ -34,8 +34,8 @@ function HomeNavbar() {
           </IconButton>
 
         <Stack direction = 'row' spacing={2} sx={{ ml: 'auto' }}>
-          <Button variant = 'contained' component= {RouterLink} to= "/ListStay">List A Stay</Button>
-          <Button variant = 'contained' component= {RouterLink} to= "/FindStay">Find A Stay</Button>
+          <Button variant = 'text' component= {RouterLink} to= "/ListStay">List A Stay</Button>
+          <Button variant = 'text' component= {RouterLink} to= "/FindStay">Find A Stay</Button>
           <Button variant = 'contained' component= {RouterLink} to= "/login">Login</Button>
         </Stack>
         
