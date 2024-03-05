@@ -9,20 +9,21 @@ import Grid from "@mui/material/Grid";
 import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
 import Houses from "../images/Houses.png";
-import axios from "axios";
-import { useForm } from "../hooks/hooks";
 import { gql } from "graphql-tag";
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
+import { useParams } from "react-router-dom";
 
 /*TO DO: Make the 5rem padding less or none for smaller screens*/
 
 function ResetPassword() {
   const theme = useTheme();
   const navigate = useNavigate();
+  let { id } = useParams(); //gets the id from the unique link
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
+    id: id,
     password: "",
     confirmPassword: "",
   });
@@ -35,7 +36,7 @@ function ResetPassword() {
     }));
   };
 
-  const [sendRecoveryEmail, { loading }] = useMutation(FORGOT_PASSWORD, {
+  const [resetPassword, { loading }] = useMutation(RESET_PASSWORD, {
     update(_, result) {
       console.log("Mutation result:", result);
       navigate("/login");
@@ -61,7 +62,7 @@ function ResetPassword() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Form values:", values);
-    sendRecoveryEmail();
+    resetPassword();
   };
   return (
     <Grid
@@ -188,10 +189,21 @@ function ResetPassword() {
   );
 }
 
-const FORGOT_PASSWORD = gql`
-  mutation forgotPassword($email: String!) {
-    forgotPassword(email: $email) {
+const RESET_PASSWORD = gql`
+  mutation ResetPassword(
+    $id: ID!
+    $password: String!
+    $confirmPassword: String!
+  ) {
+    resetPassword(
+      resetPasswordInput: {
+        id: $id
+        password: $password
+        confirmPassword: $confirmPassword
+      }
+    ) {
       id
+      fullName
       password
     }
   }

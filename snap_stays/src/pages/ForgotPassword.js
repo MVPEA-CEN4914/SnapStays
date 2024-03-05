@@ -9,8 +9,6 @@ import Grid from "@mui/material/Grid";
 import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
 import Houses from "../images/Houses.png";
-import axios from "axios";
-import { useForm } from "../hooks/hooks";
 import { gql } from "graphql-tag";
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
