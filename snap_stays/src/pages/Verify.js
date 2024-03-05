@@ -122,7 +122,7 @@ function Verify() {
 }
 
 const VERIFY_USER = gql`
-  mutation verify($verifyUserId: String!) {
+  mutation verify($verifyUserId: ID!) {
     verifyUser(id: $verifyUserId) {
       id
       fullName

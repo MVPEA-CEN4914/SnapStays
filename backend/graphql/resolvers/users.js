@@ -9,6 +9,7 @@ const {
   validateRegisterInput,
   validateLoginInput,
   validateForgotPasswordInput,
+  validateResetPasswordInput,
 } = require("../../util/validators");
 
 function generateToken(user) {
@@ -216,6 +217,37 @@ module.exports = {
       }
 
       sendMail(user._id, user.email, "forgotPassword");
+
+      return user;
+    },
+    async resetPassword(
+      _,
+      { resetPasswordInput: { id, password, confirmPassword } }
+    ) {
+      //validate user data
+      const { valid, errors } = validateResetPasswordInput(
+        password,
+        confirmPassword
+      );
+      if (!valid) {
+        throw new GraphQLError("Errors", {
+          extensions: { errors },
+        });
+      }
+
+      //hash password
+      password = await bcrypt.hash(password, 12);
+
+      //find user and reset their password
+      const user = await User.findOneAndUpdate({ _id: id }, { password: password });
+
+      if (!user) {
+        throw new GraphQLError("User not found", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
 
       return user;
     },
