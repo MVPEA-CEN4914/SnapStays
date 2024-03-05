@@ -18,12 +18,13 @@ import { useTheme } from "@mui/material/styles";
 
 /*TO DO: Make the 5rem padding less or none for smaller screens*/
 
-function ForgotPassword() {
+function ResetPassword() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
-    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const onChange = (event) => {
@@ -109,10 +110,7 @@ function ForgotPassword() {
             variant="h4"
             sx={{ paddingY: "1rem", fontWeight: "bold" }}
           >
-            Forgot Password
-          </Typography>
-          <Typography variant="body1" sx={{ textAlign: "center" }}>
-            Input your email to receive a recovery email.
+            Reset Password
           </Typography>
           <Typography variant="body1" sx={{ textAlign: "center" }}>
             You will be redirected to the login page after.
@@ -128,15 +126,35 @@ function ForgotPassword() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
               autoFocus
-              value={values.email}
+              value={values.password}
               onChange={onChange}
-              error={(errors.email || errors.message) ? true : false}
-              helperText={errors.email ? errors.email : errors.message}
+              error={errors.password ? true : false}
+              helperText={errors.password ? errors.password : ""}
+              InputProps={{
+                style: {
+                  borderRadius: "30px",
+                },
+              }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="new-password"
+              value={values.confirmPassword}
+              onChange={onChange}
+              error={errors.confirmPassword ? true : false}
+              helperText={errors.confirmPassword ? errors.confirmPassword : ""}
               InputProps={{
                 style: {
                   borderRadius: "30px",
@@ -158,8 +176,11 @@ function ForgotPassword() {
                 },
               }}
             >
-              Send Recovery Email
+              Reset Password
             </Button>
+            <Typography variant="body1" sx={{ textAlign: "center" }}>
+              {errors.message}
+            </Typography>
           </Box>
         </Box>
       </Grid>
@@ -176,4 +197,4 @@ const FORGOT_PASSWORD = gql`
   }
 `;
 
-export default ForgotPassword;
+export default ResetPassword;

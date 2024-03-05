@@ -9,6 +9,7 @@ import FindStay from "./pages/FindStay";
 import ListStay from "./pages/ListStay";
 import Verify from "./pages/Verify";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword.js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
@@ -45,6 +46,8 @@ function App() {
                 <Route path="list-stay" element={<ListStay />} />
                 <Route exact path="/verify/:id" element={<Verify />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route exact path="/reset-password/:id" element={<ResetPassword />}
+                />
               </Route>
             </Routes>
           </BrowserRouter>
