@@ -8,6 +8,7 @@ const User = require("../../models/User");
 const {
   validateRegisterInput,
   validateLoginInput,
+  validateForgotPasswordInput,
 } = require("../../util/validators");
 
 function generateToken(user) {
@@ -25,7 +26,7 @@ function generateToken(user) {
   );
 }
 
-const sendMail = (id, to) => {
+const sendMail = (id, to, purpose) => {
   const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE,
     auth: {
@@ -34,15 +35,33 @@ const sendMail = (id, to) => {
     },
   });
 
+  let optionData = {};
+
+  if (purpose == "verify") {
+    optionData = {
+      subject: "SnapStays: Verify Your Email",
+      html:
+        "<h1>Thank you for choosing SnapStays!</h1>" +
+        "<p>Finish the registration process by verifying your email:\n</p>" +
+        `<a href=${process.env.CLIENT_URL}verify/${id}>` +
+        `${process.env.CLIENT_URL}verify/${id}`,
+    };
+  } else if (purpose == "forgotPassword") {
+    optionData = {
+      subject: "SnapStays: Reset Your Password",
+      html:
+        "<p>Please use the following link to reset your password.</p>" +
+        "<p>If you did not ask to reset your password, you may ignore this email:\n</p>" +
+        `<a href=${process.env.CLIENT_URL}reset-password/${id}>` +
+        `${process.env.CLIENT_URL}reset-password/${id}`,
+    };
+  }
+
   const options = {
     from: process.env.EMAIL_USERNAME,
     to,
-    subject: "SnapStays: Verify Your Email",
-    html:
-      "<h1>Thank you for choosing SnapStays!</h1>" +
-      "<p>Finish the registration process by verifying your email:\n</p>" +
-      `<a href=${process.env.CLIENT_URL}verify/${id}>` +
-      `${process.env.CLIENT_URL}verify/${id}`,
+    subject: optionData.subject,
+    html: optionData.html,
   };
 
   transporter.sendMail(options, (error, info) => {
@@ -152,7 +171,7 @@ module.exports = {
       //send verification email using newly made user's id
       const user = await User.findOne({ email });
 
-      sendMail(user._id, user.email);
+      sendMail(user._id, user.email, "verify");
 
       //create auth token
       const token = generateToken(res);
@@ -173,6 +192,30 @@ module.exports = {
           },
         });
       }
+
+      return user;
+    },
+    async forgotPassword(_, { email }) {
+      //validate user data
+      const { valid, errors } = validateForgotPasswordInput(email);
+      if (!valid) {
+        throw new GraphQLError("Errors", {
+          extensions: { errors },
+        });
+      }
+
+      //find user to send email to
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        throw new GraphQLError("User not found", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      sendMail(user._id, user.email, "forgotPassword");
 
       return user;
     },

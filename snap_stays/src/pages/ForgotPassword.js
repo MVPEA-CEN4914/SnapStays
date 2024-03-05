@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -52,6 +49,7 @@ function ForgotPassword() {
         if (extensionErrors) {
           // Populate errors state with extension error messages
           setErrors(extensionErrors);
+          console.log(extensionErrors);
         } else {
           // If extension errors not found, set a generic error message
           setErrors({ general: "An error occurred" });
@@ -126,7 +124,7 @@ function ForgotPassword() {
           <Box
             component="form"
             noValidate
-            textAlign='center'
+            textAlign="center"
             onSubmit={handleSubmit}
             sx={{ mt: 1 }}
           >
@@ -146,7 +144,7 @@ function ForgotPassword() {
               InputProps={{
                 style: {
                   borderRadius: "30px",
-                }
+                },
               }}
             />
             <Button
@@ -166,17 +164,6 @@ function ForgotPassword() {
             >
               Send Recovery Email
             </Button>
-            {Object.keys(errors).length > 0 && (
-              <div className="ui error message">
-                <ul className="list" sx={{ color: "red" }}>
-                  {Object.entries(errors).map(
-                    ([fieldName, errorMessage], index) => (
-                      <li key={index}>{errorMessage}</li>
-                    )
-                  )}
-                </ul>
-              </div>
-            )}
           </Box>
         </Box>
       </Grid>

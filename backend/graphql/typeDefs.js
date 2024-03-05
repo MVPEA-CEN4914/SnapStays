@@ -61,5 +61,7 @@ module.exports = gql`
     createListing(listingInput: ListingInput): Listing!
     deleteListing(listingId: ID!): String!
     verifyUser(id: String!): User!
+    forgotPassword(email: String!): User!
+    resetPassword(password: String!, confirmPassword: String!): User!
   }
 `;
