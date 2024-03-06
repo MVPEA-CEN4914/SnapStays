@@ -53,10 +53,44 @@ module.exports.validateLoginInput = (email, password) => {
   const errors = {};
 
   if (email.trim() === "") {
-    errors.username = "Email must not be empty";
+    errors.email = "Email must not be empty";
   }
   if (password.trim() === "") {
     errors.password = "Password must not be empty";
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  };
+};
+
+module.exports.validateForgotPasswordInput = (email) => {
+  const errors = {};
+
+  if (email.trim() === "") {
+    errors.email = "Email must not be empty";
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  };
+};
+
+module.exports.validateResetPasswordInput = (password, confirmPassword) => {
+  const errors = {};
+
+  const passwordRegex =
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,32}$/;
+
+  if (password === "") {
+    errors.password = "Password must not empty";
+  } else if (password !== confirmPassword) {
+    errors.confirmPassword = "Passwords must match";
+  } else if (!password.match(passwordRegex)) {
+    errors.password =
+      "Password must have at least 1 uppercase character, 1 lowercase character, 1 digit, 1 special character, and 8-32 characters in length";
   }
 
   return {

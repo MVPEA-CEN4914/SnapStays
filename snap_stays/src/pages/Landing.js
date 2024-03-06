@@ -73,7 +73,7 @@ function Landing() {
             variant="outlined"
             color="secondary"
             component={RouterLink}
-            to="/FindStay"
+            to="/find-stay"
             sx={{
               width: "20vw",
               height: "10vh",
@@ -96,7 +96,7 @@ function Landing() {
             variant="outlined"
             color="secondary"
             component={RouterLink}
-            to="/ListStay"
+            to="/list-stay"
             sx={{
               width: "20vw",
               height: "10vh",
