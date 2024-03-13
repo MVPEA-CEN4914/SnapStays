@@ -214,7 +214,7 @@ const defaultTheme = createTheme({
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2" sx={{color:'black'}}>
+                  <Link href="/forgot-password" variant="body2" sx={{color:'black'}}>
                     Forgot password?
                   </Link>
                 </Grid>
@@ -241,6 +241,7 @@ const defaultTheme = createTheme({
     </ThemeProvider>
   );
 }
+
 const LOGIN = gql`
 mutation loginUser(
   $email: String!

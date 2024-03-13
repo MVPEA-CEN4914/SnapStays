@@ -2,38 +2,63 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
 import Houses from "../images/Houses.png";
 import { gql } from "graphql-tag";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
 
-function Verify() {
+/*TO DO: Make the 5rem padding less or none for smaller screens*/
+
+function ForgotPassword() {
   const theme = useTheme();
   const navigate = useNavigate();
-  let { id } = useParams(); //gets the id from the unique link
+  const [errors, setErrors] = useState({});
+  const [values, setValues] = useState({
+    email: "",
+  });
 
-  const [verifyUser, { loading }] = useMutation(VERIFY_USER, {
+  const onChange = (event) => {
+    const { name, value } = event.target; // Destructure name and value from event.target
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value, // Update the corresponding state property using computed property syntax
+    }));
+  };
+
+  const [sendRecoveryEmail, { loading }] = useMutation(FORGOT_PASSWORD, {
     update(_, result) {
       console.log("Mutation result:", result);
       navigate("/login");
     },
     onError(err) {
       console.log("Mutation error:", err);
+      if (err.graphQLErrors && err.graphQLErrors.length > 0) {
+        const extensionErrors = err.graphQLErrors[0]?.extensions?.errors;
+        if (extensionErrors) {
+          // Populate errors state with extension error messages
+          setErrors(extensionErrors);
+        } else {
+          // If extension errors not found, prob bad user input, show actual error message
+          setErrors(err.graphQLErrors[0]);
+        }
+      } else {
+        // If there are no GraphQL errors, set a generic error message
+        setErrors({ general: "An error occurred" });
+      }
     },
-    variables: {
-      verifyUserId: id,
-    },
+    variables: values,
   });
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    verifyUser();
+    console.log("Form values:", values);
+    sendRecoveryEmail();
   };
   return (
     <Grid
@@ -76,16 +101,16 @@ function Verify() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
-            <VerifiedIcon />
+            <PasswordIcon />
           </Avatar>
           <Typography
             variant="h4"
             sx={{ paddingY: "1rem", fontWeight: "bold" }}
           >
-            Verify Your Account
+            Forgot Password
           </Typography>
           <Typography variant="body1" sx={{ textAlign: "center" }}>
-            Click below to finish verifying your account!
+            Input your email to receive a recovery email.
           </Typography>
           <Typography variant="body1" sx={{ textAlign: "center" }}>
             You will be redirected to the login page after.
@@ -97,6 +122,25 @@ function Verify() {
             onSubmit={handleSubmit}
             sx={{ mt: 1 }}
           >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={values.email}
+              onChange={onChange}
+              error={(errors.email || errors.message) ? true : false}
+              helperText={errors.email ? errors.email : errors.message}
+              InputProps={{
+                style: {
+                  borderRadius: "30px",
+                },
+              }}
+            />
             <Button
               type="submit"
               variant="contained"
@@ -112,7 +156,7 @@ function Verify() {
                 },
               }}
             >
-              Verify
+              Send Recovery Email
             </Button>
           </Box>
         </Box>
@@ -121,13 +165,13 @@ function Verify() {
   );
 }
 
-const VERIFY_USER = gql`
-  mutation verify($verifyUserId: ID!) {
-    verifyUser(id: $verifyUserId) {
+const FORGOT_PASSWORD = gql`
+  mutation forgotPassword($email: String!) {
+    forgotPassword(email: $email) {
       id
-      fullName
-      verified
+      password
     }
   }
 `;
-export default Verify;
+
+export default ForgotPassword;
