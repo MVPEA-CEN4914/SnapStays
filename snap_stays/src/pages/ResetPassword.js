@@ -1,16 +1,21 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import PasswordIcon from "@mui/icons-material/Password";
 import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import PasswordIcon from "@mui/icons-material/Password";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Houses from "../images/Houses.png";
 import { gql } from "graphql-tag";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
@@ -21,12 +26,18 @@ function ResetPassword() {
   const theme = useTheme();
   const navigate = useNavigate();
   let { id } = useParams(); //gets the id from the unique link
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     id: id,
     password: "",
     confirmPassword: "",
   });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const onChange = (event) => {
     const { name, value } = event.target; // Destructure name and value from event.target
@@ -59,11 +70,13 @@ function ResetPassword() {
     },
     variables: values,
   });
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Form values:", values);
     resetPassword();
   };
+
   return (
     <Grid
       container
@@ -124,42 +137,67 @@ function ResetPassword() {
             sx={{ mt: 1 }}
           >
             <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
               id="password"
+              label="Password"
+              name="password"
               autoComplete="current-password"
-              autoFocus
+              required
+              type={showPassword ? "text" : "password"}
               value={values.password}
-              onChange={onChange}
               error={errors.password ? true : false}
+              onChange={onChange}
               helperText={errors.password ? errors.password : ""}
               InputProps={{
-                style: {
-                  borderRadius: "30px",
-                },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlinedIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{ marginRight: "0rem" }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
             <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
               id="confirmPassword"
+              label="Confirm Password"
+              name="confirmPassword"
               autoComplete="new-password"
+              required
+              type={showPassword ? "text" : "password"}
               value={values.confirmPassword}
-              onChange={onChange}
               error={errors.confirmPassword ? true : false}
+              onChange={onChange}
               helperText={errors.confirmPassword ? errors.confirmPassword : ""}
               InputProps={{
-                style: {
-                  borderRadius: "30px",
-                },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlinedIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{ marginRight: "0rem" }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
             <Button
@@ -168,9 +206,6 @@ function ResetPassword() {
               sx={{
                 mt: 3,
                 mb: 2,
-                paddingY: "0.5rem",
-                paddingX: "1rem",
-                borderRadius: "30px",
                 bgcolor: theme.palette.primary.main,
                 "&:hover": {
                   bgcolor: theme.palette.primary.light,

@@ -1,5 +1,4 @@
 import "./App.css";
-import ReactDom from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -12,9 +11,40 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword.js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
 
 const theme = createTheme({
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        root: {
+          paddingY: "0.5rem",
+          paddingX: "1rem",
+          borderRadius: "30px",
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        fullWidth: true,
+        variant: "outlined",
+        margin: "normal",
+      },
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderWidth: 2,
+              borderRadius: "30px",
+            },
+          },
+        },
+      },
+    },
+  },
   palette: {
     background: {
       default: "#E6E6DD", // Beige
@@ -24,7 +54,7 @@ const theme = createTheme({
       main: "#AF8C53", // Mustard
     },
     secondary: {
-      light: "#2B2B2B", // Gray
+      light: "#D9D9D9", // Gray
       main: "#2B2B2B", // Black
     },
   },
@@ -46,7 +76,10 @@ function App() {
                 <Route path="list-stay" element={<ListStay />} />
                 <Route exact path="/verify/:id" element={<Verify />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route exact path="/reset-password/:id" element={<ResetPassword />}
+                <Route
+                  exact
+                  path="/reset-password/:id"
+                  element={<ResetPassword />}
                 />
               </Route>
             </Routes>

@@ -103,9 +103,6 @@ function Verify() {
               sx={{
                 mt: 3,
                 mb: 2,
-                paddingY: "0.5rem",
-                paddingX: "1rem",
-                borderRadius: "30px",
                 bgcolor: theme.palette.primary.main,
                 "&:hover": {
                   bgcolor: theme.palette.primary.light,
