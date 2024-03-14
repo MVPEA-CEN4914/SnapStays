@@ -8,6 +8,7 @@ import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
@@ -181,7 +182,7 @@ function Login(props) {
                 ),
               }}
             />
-            <Grid container>
+            <Grid container sx={{mb: 1}}>
               <Grid item xs={12}>
                 {/*if there's going to be a remember me check, don't we need the functionality for it?*/}
                 <FormControlLabel
@@ -220,9 +221,11 @@ function Login(props) {
                 </Link>
               </Grid>
             </Grid>
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {errors.message}
-            </Typography>
+            {errors.message && (
+              <Alert variant="filled" severity="error">
+                {"Error: " + errors.message}
+              </Alert>
+            )}
           </Box>
         </Box>
       </Grid>

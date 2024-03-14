@@ -5,10 +5,13 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import Snackbar from '@mui/material/Snackbar';
 import Typography from "@mui/material/Typography";
+import Alert from '@mui/material/Alert';
+import VerifiedIcon from "@mui/icons-material/Verified";
 import Houses from "../images/Houses.png";
 import { gql } from "graphql-tag";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
@@ -17,11 +20,20 @@ function Verify() {
   const theme = useTheme();
   const navigate = useNavigate();
   let { id } = useParams(); //gets the id from the unique link
+  const [open, setOpen] = useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+    navigate("/login");
+  };
 
   const [verifyUser, { loading }] = useMutation(VERIFY_USER, {
     update(_, result) {
       console.log("Mutation result:", result);
-      navigate("/login");
+      setOpen(true);
     },
     onError(err) {
       console.log("Mutation error:", err);
@@ -35,6 +47,15 @@ function Verify() {
     event.preventDefault();
     verifyUser();
   };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        GO TO LOGIN
+      </Button>
+    </React.Fragment>
+  );
+
   return (
     <Grid
       container
@@ -111,6 +132,17 @@ function Verify() {
             >
               Verify
             </Button>
+            <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+              <Alert
+                onClose={handleClose}
+                severity="success"
+                variant="filled"
+                sx={{ width: "100%" }}
+                action={action}
+              >
+                Your account is now verified!
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
       </Grid>

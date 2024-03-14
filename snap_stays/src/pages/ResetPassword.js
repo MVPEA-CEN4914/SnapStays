@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
@@ -214,9 +215,11 @@ function ResetPassword() {
             >
               Reset Password
             </Button>
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
-              {errors.message}
-            </Typography>
+            {errors.message && (
+              <Alert variant="filled" severity="error">
+                {"Error: " + errors.message}
+              </Alert>
+            )}
           </Box>
         </Box>
       </Grid>

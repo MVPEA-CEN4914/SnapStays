@@ -146,10 +146,19 @@ module.exports = {
         });
       }
 
-      //make sure user doesn't already exist
-      const existingUser = await User.findOne({ username });
-      if (existingUser) {
+      //make sure username doesn't already exist
+      const existingUsername = await User.findOne({ username });
+      if (existingUsername) {
         throw new GraphQLError("Username is taken", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      const existingEmail = await User.findOne({ email });
+      if (existingEmail) {
+        throw new GraphQLError("An account with this email already exists", {
           extensions: {
             code: "BAD_USER_INPUT",
           },
