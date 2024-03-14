@@ -6,7 +6,9 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import InputAdornment from "@mui/material/InputAdornment";
 import PasswordIcon from "@mui/icons-material/Password";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import Typography from "@mui/material/Typography";
 import Houses from "../images/Houses.png";
 import { gql } from "graphql-tag";
@@ -123,22 +125,22 @@ function ForgotPassword() {
             sx={{ mt: 1 }}
           >
             <TextField
-              margin="normal"
-              required
-              fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
+              required
               value={values.email}
               onChange={onChange}
-              error={(errors.email || errors.message) ? true : false}
+              error={errors.email || errors.message ? true : false}
               helperText={errors.email ? errors.email : errors.message}
               InputProps={{
-                style: {
-                  borderRadius: "30px",
-                },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <MailOutlineIcon color="red" />
+                  </InputAdornment>
+                ),
+                endAdornment: <InputAdornment position="end" sx={{ marginRight: "2.5rem"}} />,
               }}
             />
             <Button
@@ -147,9 +149,6 @@ function ForgotPassword() {
               sx={{
                 mt: 3,
                 mb: 2,
-                paddingY: "0.5rem",
-                paddingX: "1rem",
-                borderRadius: "30px",
                 bgcolor: theme.palette.primary.main,
                 "&:hover": {
                   bgcolor: theme.palette.primary.light,

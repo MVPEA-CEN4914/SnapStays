@@ -1,49 +1,46 @@
-import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Houses from '../images/Houses.png'
-import axios from 'axios';
-import { gql } from 'graphql-tag';
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { useForm } from '../hooks/hooks';
-import { pink } from '@mui/material/colors';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const defaultTheme = createTheme();
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
+import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PersonIcon from "@mui/icons-material/Person";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Houses from "../images/Houses.png";
+import { useTheme } from "@mui/material/styles";
+import { gql } from "graphql-tag";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client";
 
 function Register(props) {
+  const theme = useTheme();
   const navigate = useNavigate();
-  const[errors, setErrors] = useState({});
-  const[values, setValues] = useState({
-    fullName:'',
-    username:'',
-    email:'',
-    password: '',
-    confirmPassword: '',
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [values, setValues] = useState({
+    fullName: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const onChange = (event) => {
     const { name, value } = event.target; // Destructure name and value from event.target
@@ -51,179 +48,256 @@ function Register(props) {
       ...prevValues,
       [name]: value, // Update the corresponding state property using computed property syntax
     }));
-  };  
-  const [registerUser, {loading}] = useMutation(REGISTER, {
-    update(_,result){
-      //console.log('Mutation result:', result);
-      navigate('/');
+  };
+
+  const [registerUser, { loading }] = useMutation(REGISTER, {
+    update(_, result) {
+      console.log("Mutation result:", result);
+      navigate("/");
     },
-    onError(err){
-      console.log('Mutation error:', err);
-      //setErrors(err.validationErrors || {});
-      //setErrors(err.graphQLErrors.map(error => error.message));
-      //console.log('Errors:', errors);
-      //console.log('graph ql object:', err.graphQLErrors);
-      //setErrors(err.graphQLErrors[0].extensions.exception.validationErrors);
-      console.log('Mutation error:', err);
+    onError(err) {
+      console.log("Mutation error:", err);
       if (err.graphQLErrors && err.graphQLErrors.length > 0) {
         const extensionErrors = err.graphQLErrors[0]?.extensions?.errors;
         if (extensionErrors) {
           // Populate errors state with extension error messages
           setErrors(extensionErrors);
         } else {
-          // If extension errors not found, set a generic error message
-          setErrors({ general: 'An error occurred' });
+          // If extension errors not found, prob bad user input, show actual error message
+          setErrors(err.graphQLErrors[0]);
         }
       } else {
         // If there are no GraphQL errors, set a generic error message
-        setErrors({ general: 'An error occurred' });
+        setErrors({ general: "An error occurred" });
       }
     },
-    variables:values
+    variables: values,
   });
-  const handleSubmit = (event) =>{
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Form values:', values);
+    console.log("Form values:", values);
     registerUser();
-    
   };
 
-
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh' }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
+    <Grid
+      container
+      component="main"
+      sx={{
+        height: "90vh",
+        paddingX: "5rem",
+        backgroundColor: theme.palette.background.default,
+      }}
+    >
+      <Grid
+        item
+        xs={false}
+        sm={6}
+        md={6}
+        sx={{
+          backgroundImage: `url(${Houses})`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      />
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        md={6}
+        component={Paper}
+        elevation={6}
+        square
+        sx={{ backgroundColor: theme.palette.background.default, boxShadow: 0 }}
+      >
+        <Box
           sx={{
-            backgroundImage: `url(${Houses})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: '75% 75%',
-            backgroundPosition: 'center',
+            my: 8,
+            mx: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography
+            variant="h4"
+            sx={{ paddingY: "1rem", fontWeight: "bold" }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'black' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign Up
-            </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="fullName"
-                label="Full Name"
-                name="fullName"
-                autoComplete="fullName"
-                //autoFocus
-                value={values.fullName}
-                error={errors.fullName ? true : false}
-                onChange={onChange}
-                helperText={errors.fullName ? errors.fullName: ''}
-                
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
-                value={values.username} // Use the value from state
-                error={errors.username ? true : false}
-                onChange={onChange} // Update the state when the input changes
-                
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="School Email Address"
-                name="email"
-                autoComplete="email"
-                value={values.email} // Use the value from state
-                onChange={onChange} // Update the state when the input changes
-                error={errors.email ? true : false}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                value={values.password} // Use the value from state
-                onChange={onChange} // Update the state when the input changes
-                error={errors.password ? true : false}
-              />
-               <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                id="confirmPassword"
-                autoComplete="new-password"
-                value={values.confirmPassword} // Use the value from state
-                onChange={onChange} // Update the state when the input changes
-                error={errors.confirmPassword ? true : false}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2, bgcolor: 'black', '&:hover': {
-                  bgcolor: 'grey',
-                }}}
-              >
-                Sign Up
-              </Button>
-              <Grid container>
-                <Grid item>
-                  <Link href="/login" variant="body2" sx={{color:'black'}}>
-                    {"Have an account? Sign In"}
-                  </Link>
-                </Grid>
-                <Box>
-                {Object.keys(errors).length > 0 && (
-  <div className="ui error message">
-    <ul className="list" sx={{ color: 'red' }}>
-      {Object.entries(errors).map(([fieldName, errorMessage], index) => (
-        <li key={index}>{errorMessage}</li>
-      ))}
-    </ul>
-  </div>
-)}
-                </Box>
+            Sign Up
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit}>
+            <TextField
+              id="fullName"
+              label="Full Name"
+              name="fullName"
+              autoComplete="fullName"
+              required
+              value={values.fullName}
+              error={errors.fullName ? true : false}
+              onChange={onChange}
+              helperText={errors.fullName ? errors.fullName : ""}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    sx={{ marginRight: "2.5rem" }}
+                  />
+                ),
+              }}
+            />
+            <TextField
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              required
+              value={values.username}
+              error={errors.username ? true : false}
+              onChange={onChange}
+              helperText={errors.username ? errors.username : ""}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AlternateEmailIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    sx={{ marginRight: "2.5rem" }}
+                  />
+                ),
+              }}
+            />
+            <TextField
+              id="email"
+              label="School Email Address"
+              name="email"
+              autoComplete="email"
+              required
+              value={values.email}
+              onChange={onChange}
+              error={errors.email ? true : false}
+              helperText={errors.email ? errors.email : ""}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <MailOutlineIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    sx={{ marginRight: "2.5rem" }}
+                  />
+                ),
+              }}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              name="password"
+              autoComplete="current-password"
+              required
+              type={showPassword ? "text" : "password"}
+              value={values.password}
+              error={errors.password ? true : false}
+              onChange={onChange}
+              helperText={errors.password ? errors.password : ""}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlinedIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{ marginRight: "0rem" }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              id="confirmPassword"
+              label="Confirm Password"
+              name="confirmPassword"
+              autoComplete="new-password"
+              required
+              type={showPassword ? "text" : "password"}
+              value={values.confirmPassword}
+              error={errors.confirmPassword ? true : false}
+              onChange={onChange}
+              helperText={errors.confirmPassword ? errors.confirmPassword : ""}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlinedIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{ marginRight: "0rem" }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Grid container sx={{mb: 1}}>
+              <Grid item xs={12} style={{ textAlign: "center" }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    mt: 1,
+                    mb: 2,
+                    bgcolor: theme.palette.primary.main,
+                    "&:hover": {
+                      bgcolor: theme.palette.primary.light,
+                    },
+                  }}
+                >
+                  Sign Up
+                </Button>
               </Grid>
-              <Copyright sx={{ mt: 5, color: 'black' }} />
-            </Box>
+              <Grid item xs>
+                <Link href="/login" variant="body2" sx={{ color: "black" }}>
+                  {"Have an account? Sign In"}
+                </Link>
+              </Grid>
+            </Grid>
+            {errors.message && (
+              <Alert variant="filled" severity="error">
+                {"Error: " + errors.message}
+              </Alert>
+            )}
           </Box>
-        </Grid>
+        </Box>
       </Grid>
-    </ThemeProvider>
+    </Grid>
   );
 }
 const REGISTER = gql`
@@ -233,8 +307,7 @@ const REGISTER = gql`
     $username: String!
     $password: String!
     $confirmPassword: String!
-    
-  ){
+  ) {
     register(
       registerInput: {
         fullName: $fullName
@@ -243,7 +316,7 @@ const REGISTER = gql`
         password: $password
         confirmPassword: $confirmPassword
       }
-    ){
+    ) {
       id
       email
       username
@@ -252,6 +325,6 @@ const REGISTER = gql`
       fullName
     }
   }
-  `;
+`;
 
 export default Register;
