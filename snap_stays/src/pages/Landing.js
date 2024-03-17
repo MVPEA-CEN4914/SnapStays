@@ -30,6 +30,12 @@ function Landing() {
             height: "10vh",
             top: "6vh",
             position: "absolute",
+            //display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center'
+            
           }}
         >
           <div>
@@ -73,7 +79,7 @@ function Landing() {
             variant="outlined"
             color="secondary"
             component={RouterLink}
-            to="/FindStay"
+            to="/find-stay"
             sx={{
               width: "20vw",
               height: "10vh",
@@ -96,7 +102,7 @@ function Landing() {
             variant="outlined"
             color="secondary"
             component={RouterLink}
-            to="/ListStay"
+            to="/list-stay"
             sx={{
               width: "20vw",
               height: "10vh",

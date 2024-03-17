@@ -1,58 +1,96 @@
-import './App.css';
-import ReactDom from "react-dom/client";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Layout from './pages/Layout';
-import FindStay from './pages/FindStay';
-import ListStay from './pages/ListStay';
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Layout from "./pages/Layout";
+import FindStay from "./pages/FindStay";
+import ListStay from "./pages/ListStay";
 import Verify from "./pages/Verify";
 import UserProfile from './pages/UserProfile';
-import {ThemeProvider, createTheme} from '@mui/material/styles'
-import { CssBaseline } from '@mui/material';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword.js";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import { ApolloProvider } from "@apollo/client";
 import { AuthProvider } from './context/auth';
 
 const theme = createTheme({
-  palette:{
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        root: {
+          paddingY: "0.5rem",
+          paddingX: "1rem",
+          borderRadius: "30px",
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        fullWidth: true,
+        variant: "outlined",
+        margin: "normal",
+      },
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderWidth: 2,
+              borderRadius: "30px",
+            },
+          },
+        },
+      },
+    },
+  },
+  palette: {
     background: {
-      default:'#E6E6DD' // Beige
+      default: "#E6E6DD", // Beige
     },
     primary: {
-      light: '#E6E6DD',
-      main: '#AF8C53', // Mustard
+      light: "#CDB285", // Light Mustard (for hover effect)
+      main: "#AF8C53", // Mustard
     },
-    secondary:{
-      main:'#2B2B2B' // Black
-    }
-    
-  }
+    secondary: {
+      light: "#D9D9D9", // Gray
+      main: "#2B2B2B", // Black
+    },
+  },
 });
 
 function App() {
   return (
-    <AuthProvider>
+  <AuthProvider>
     <ApolloProvider>
-    <div className="App">
-      <ThemeProvider theme = {theme}>
-        <CssBaseline />
-    <BrowserRouter>
-      <Routes>
-        <Route path = "/" element={<Layout />}>
-        <Route index element={<Landing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="FindStay" element = {<FindStay/>} />
-        <Route path="ListStay" element = {<ListStay/>} />
+      <div className="App">
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Landing />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="find-stay" element={<FindStay />} />
+                <Route path="list-stay" element={<ListStay />} />
         <Route path="UserProfile" element = {<UserProfile/>} />
-        <Route exact path="/verify/:id" element={<Verify/>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-    </ThemeProvider>
-    </div>
-   </ApolloProvider>
+                <Route exact path="/verify/:id" element={<Verify />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route
+                  exact
+                  path="/reset-password/:id"
+                  element={<ResetPassword />}
+                />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
+      </div>
+    </ApolloProvider>
    </AuthProvider>
   );
 }

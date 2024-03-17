@@ -36,6 +36,12 @@ module.exports = gql`
     confirmPassword: String!
   }
 
+  input ResetPasswordInput {
+    id: ID!
+    password: String!
+    confirmPassword: String!
+  }
+
   input ListingInput {
     title: String!
     price: Float!
@@ -60,6 +66,8 @@ module.exports = gql`
     login(email: String!, password: String!): User!
     createListing(listingInput: ListingInput): Listing!
     deleteListing(listingId: ID!): String!
-    verifyUser(id: String!): User!
+    verifyUser(id: ID!): User!
+    forgotPassword(email: String!): User!
+    resetPassword(resetPasswordInput: ResetPasswordInput): User!
   }
 `;
