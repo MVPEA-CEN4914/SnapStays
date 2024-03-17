@@ -35,7 +35,9 @@ function HomeNavbar() {
               aria-label="account of current user"
               aria-controls="primary-search-account-menu"
               aria-haspopup="true"
-              color="inherit"
+              color="black"
+              component = {RouterLink} to = "/UserProfile"
+
             >
             <AccountCircle />
             </IconButton>

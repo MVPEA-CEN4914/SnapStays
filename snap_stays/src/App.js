@@ -8,6 +8,7 @@ import Layout from './pages/Layout';
 import FindStay from './pages/FindStay';
 import ListStay from './pages/ListStay';
 import Verify from "./pages/Verify";
+import UserProfile from './pages/UserProfile';
 import {ThemeProvider, createTheme} from '@mui/material/styles'
 import { CssBaseline } from '@mui/material';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
@@ -44,6 +45,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="FindStay" element = {<FindStay/>} />
         <Route path="ListStay" element = {<ListStay/>} />
+        <Route path="UserProfile" element = {<UserProfile/>} />
         <Route exact path="/verify/:id" element={<Verify/>} />
         </Route>
       </Routes>
