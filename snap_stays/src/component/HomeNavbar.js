@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
@@ -12,10 +12,11 @@ import BlackLogo from "../images/BlackLogo.png";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
+import { useState } from "react";
 
 function HomeNavbar() {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,10 +38,34 @@ function HomeNavbar() {
         </IconButton>
 
         <Stack direction="row" spacing={2} sx={{ ml: "auto" }}>
-          <Button variant="text" component={RouterLink} to="/list-stay">
+          <Button
+            variant="text"
+            component={RouterLink}
+            to="/list-stay"
+            sx={{
+              color: theme.palette.secondary.main,
+              "&:hover": {
+                bgcolor: theme.palette.background.default,
+                fontWeight: "bold",
+                textDecoration: "underline"
+              },
+            }}
+          >
             List A Stay
           </Button>
-          <Button variant="text" component={RouterLink} to="/find-stay">
+          <Button
+            variant="text"
+            component={RouterLink}
+            to="/find-stay"
+            sx={{
+              color: theme.palette.secondary.main,
+              "&:hover": {
+                bgcolor: theme.palette.background.default,
+                fontWeight: "bold",
+                textDecoration: "underline"
+              },
+            }}
+          >
             Find A Stay
           </Button>
           <Button
