@@ -260,5 +260,24 @@ module.exports = {
 
       return user;
     },
+    async addListingToFavorites(_, { listingId }, context) {
+      const user = checkAuth(context);
+      if (!user) throw new Error('Authentication required');
+    
+      const listing = await Listing.findById(listingId);
+      if (!listing) throw new Error('Listing not found');
+    
+      //check if already favorited
+      const isAlreadyFavorited = user.favorites.some(favoriteId => favoriteId.toString() === listingId);
+      if (isAlreadyFavorited) {
+        throw new Error('Listing already in favorites');
+      }
+    
+      //add the listing to favorites
+      user.favorites.push(listingId);
+      await user.save();
+    
+      return User.findById(user.id).populate('favorites');
+    }
   },
 };

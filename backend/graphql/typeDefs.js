@@ -69,5 +69,6 @@ module.exports = gql`
     verifyUser(id: ID!): User!
     forgotPassword(email: String!): User!
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
+    addListingToFavorites(listingId: ID!): User!
   }
 `;

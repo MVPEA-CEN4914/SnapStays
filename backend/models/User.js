@@ -30,6 +30,10 @@ const userSchema = new Schema({
     required: true,
     default: false,
   },
+  favorites: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Listing'
+  }]
 });
 
 module.exports = model("User", userSchema);
