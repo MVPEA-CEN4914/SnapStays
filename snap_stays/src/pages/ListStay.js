@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const defaultTheme = createTheme({
@@ -82,6 +84,14 @@ function ListStay() {
     ...prevValues,
     images: files,
   }));
+  };
+
+  const handleDelete = (index) => {
+    setValues((prevValues) => {
+      const newImages = [...prevValues.images];
+      newImages.splice(index, 1);
+      return { ...prevValues, images: newImages };
+    });
   };
 
   return (
@@ -468,8 +478,14 @@ function ListStay() {
                   {/* Display uploaded pictures here */}
                   <Grid container spacing={2} justifyContent="flex-end">
                   {values.images.map((image, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index} sx={{position: 'relative',top: '-450px', paddingRight: '70px'}}>
+                    <Grid item xs={12} sm={6} md={2} key={index} sx={{position: 'relative',top: '-450px', paddingRight: '70px'}}>
                       <img src={URL.createObjectURL(image)} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
+                      <IconButton 
+                        style={{ position: 'absolute', top: 0, left: 0 }} 
+                        onClick={() => handleDelete(index)}
+                      >
+                        <CloseIcon />
+                      </IconButton>
                     </Grid>
                   ))}
                 </Grid>
