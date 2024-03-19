@@ -23,7 +23,7 @@ import { gql } from "graphql-tag";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../context/auth';
 
 function Register(props) {
@@ -55,7 +55,7 @@ function Register(props) {
 
   const [registerUser, { loading }] = useMutation(REGISTER, {
     update(_, {data:{register: userData}}) {
-      console.log("Mutation result:", result);
+      //console.log("Mutation result:", result);
       context.login(userData);
       navigate("/");
     },

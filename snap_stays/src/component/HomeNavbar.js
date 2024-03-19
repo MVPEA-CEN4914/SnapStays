@@ -12,6 +12,10 @@ import { Router, Link as RouterLink } from "react-router-dom";
 import BlackLogo from "../images/BlackLogo.png";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Logout from '@mui/icons-material/Logout';
+import Divider from '@mui/material/Divider';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import { useTheme } from "@mui/material/styles";
 
 import { AuthContext } from '../context/auth';
@@ -20,7 +24,7 @@ import { AuthContext } from '../context/auth';
 function HomeNavbar() {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -44,20 +48,71 @@ function HomeNavbar() {
             />
           </IconButton>
           <Stack direction="row" spacing={2} sx={{ ml: "auto" }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
+          <Button variant="text" component={RouterLink} to="/list-stay">
+            List A Stay
+          </Button>
+          <Button variant="text" component={RouterLink} to="/find-stay">
+            Find A Stay
+          </Button>
+          <Tooltip title= "My profile">
+          <IconButton
+              onClick={handleClick}
+              size="small"
+              aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
-              color="black"
-              component = {RouterLink} to = "/UserProfile"
-
+              aria-expanded={open ? 'true' : undefined}
+              style={{ padding: '6px' }} 
             >
-            <AccountCircle />
+           <Avatar
+           style={{backgroundColor: '#AF8C53', width: '32px', 
+           height: '32px'}}
+           />
             </IconButton>
-            <Button variant="contained" onClick={logout}>
-              Logout 
-            </Button>
+          </Tooltip>
+          <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              bgcolor:'#E6E6DD',
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: '#E6E6DD',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          <MenuItem component={RouterLink} to ="userprofile">
+          <Avatar />  My Profile
+        </MenuItem>
+          <Divider/>
+          <MenuItem onClick={logout}> Logout 
+          </MenuItem>
+          </Menu>
+
           </Stack>
         </Toolbar>
       </AppBar>

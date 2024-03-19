@@ -77,7 +77,7 @@ function App() {
                 <Route path="register" element={<Register />} />
                 <Route path="find-stay" element={<FindStay />} />
                 <Route path="list-stay" element={<ListStay />} />
-        <Route path="UserProfile" element = {<UserProfile/>} />
+        <Route path="userprofile" element = {<UserProfile/>} />
                 <Route exact path="/verify/:id" element={<Verify />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
