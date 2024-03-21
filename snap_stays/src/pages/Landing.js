@@ -1,369 +1,312 @@
-import React from "react";
-import houseImage from "../images/Houses.png";
+import React, { useContext } from "react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Houses from "../images/Houses.png";
 import dogImage from "../images/DogImage.png";
 import { Button } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Router, Link as RouterLink } from "react-router-dom";
 
+import { AuthContext } from "../context/auth";
+
 function Landing() {
+  const theme = useTheme();
+  const { user } = useContext(AuthContext);
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "5vh",
-        //top: "50%",
-        position: "relative",
-        background: "#E6E6DD",
-        paddingTop: "20px"
-      }}
-    >
-      <div
-        style={{
-          width: "100vw",
-          height: "5vh",
-          top: "10vh",
-          position: "absolute",
+    <>
+      <Grid
+        container
+        component="main"
+        sx={{
+          height: "90vh",
+          paddingX: "5rem",
+          backgroundColor: theme.palette.background.default,
         }}
       >
-        <div
-          style={{
-            width: "50vw",
-            height: "10vh",
-            top: "6vh",
-            position: "absolute",
-            //display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center'
-            
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          component={Paper}
+          square
+          sx={{
+            backgroundColor: theme.palette.background.default,
+            boxShadow: 0,
           }}
         >
-          <div>
-            <span
-              style={{
-                display: "block",
-                color: "black",
-                fontSize: "6vw",
-                fontFamily: "Josefin Sans",
-                fontWeight: "400",
-                wordWrap: "break-word",
-              }}
-            >
-              Subleases and short-term housing{" "}
-            </span>
-            <span
-              style={{
-                display: "block",
-                color: "#AF8C53",
-                fontSize: "5vw",
-                fontFamily: "Josefin Sans",
+          <Box
+            sx={{
+              mt: 5,
+              mx: 4,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "left",
+            }}
+          >
+            <Typography variant="h1" sx={{ lineHeight: "100%" }}>
+              Subleases and short- term housing
+            </Typography>
+            <Typography
+              variant="h1"
+              sx={{
                 fontStyle: "italic",
-                fontWeight: "700",
-                wordWrap: "break-word",
+                lineHeight: "100%",
+                fontWeight: "bold",
+                color: theme.palette.primary.main,
               }}
             >
               in a snap
-            </span>
-           
-           <div style={{
-            width: "50vw",
-            height: "10vh",
-            //left: "vw",
-            top: "60vh",
-            //position: "absolute",
-            display: 'flex', 
-            justifyContent: 'center',
-            marginRight: '10vw'
-           }}>
-            <Button
-            variant="outlined"
-            color="secondary"
-            component={RouterLink}
-            to="/find-stay"
-            sx={{
-              width: "20vw",
-              height: "10vh",
-              //position: "absolute",
-              textAlign: "center",
-              fontSize: "2vw",
-              fontFamily: "Josefin Sans",
-              fontWeight: "300",
-              wordWrap: "break-word",
-              borderRadius: "37.5px",
-              border: "2px solid black",
-              //left: "5vw",
-              
-            }}
-          >
-            Find a Stay
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="secondary"
-            component={RouterLink}
-            to="/list-stay"
-            sx={{
-              width: "20vw",
-              height: "10vh",
-              //position: "absolute",
-              //left: "22vw",
-              top: "0px",
-              textAlign: "center",
-              fontSize: "2vw",
-              fontFamily: "Josefin Sans",
-              fontWeight: "300",
-              wordWrap: "break-word",
-              borderRadius: "37.5px",
-              border: "2px solid black",
-            }}
-          
-          >
-            List a Stay
-            </Button> 
-          </div>
-        </div>
-      </div>
-        
-    
-        
-        <img
-          style={{
-            width: "45vw",
-            left: "50vw",
-            top: "5vh",
-            position: "absolute",
+            </Typography>
+            <Grid container sx={{ mt: 5 }}>
+              <Grid item xs={6} sx={{ paddingX: 3 }}>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  fullWidth
+                  href="/find-stay"
+                  sx={{
+                    padding: 1,
+                    fontSize: "1.5rem",
+                    color: theme.palette.secondary.main,
+                    borderWidth: 3,
+                    borderColor: theme.palette.secondary.main,
+                    "&:hover": {
+                      borderWidth: 3,
+                      borderColor: theme.palette.primary.main,
+                      color: theme.palette.primary.main,
+                    },
+                  }}
+                >
+                  Find a Stay
+                </Button>
+              </Grid>
+              <Grid item xs={6} sx={{ paddingX: 3 }}>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  fullWidth
+                  href={user ? "/list-stay" : "/login"}
+                  sx={{
+                    padding: 1,
+                    fontSize: "1.5rem",
+                    color: theme.palette.secondary.main,
+                    borderWidth: 3,
+                    borderColor: theme.palette.secondary.main,
+                    "&:hover": {
+                      borderWidth: 3,
+                      borderColor: theme.palette.primary.main,
+                      color: theme.palette.primary.main,
+                    },
+                  }}
+                >
+                  List a Stay
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={false}
+          sm={6}
+          md={6}
+          sx={{
+            backgroundImage: `url(${Houses})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
           }}
-          src={houseImage}
-          alt="House Image"
         />
-      </div>
-      <div
-        style={{
-          width: "100vw",
-          height: "3vh",
-          left: "0%",
-          top: "100vh",
-          position: "absolute",
+      </Grid>
+      <Grid
+        container
+        component="main"
+        sx={{
+          height: "100vh",
+          backgroundColor: theme.palette.background.default,
         }}
       >
-        <div //tan background
+        <div //left dark brown bar
           style={{
-            width: "100vw",
-            height: "200vh",
-            top: "13.4vh",
+            width: "12vw",
+            height: "5vh",
+            left: "0vw",
+            top: "110vh",
             position: "absolute",
-            background: "#AF8C53",
-          }}
-        ></div>
-        <div
-          style={{
-            width: "0vw",
-            height: "3vh",
-            left: "3vw",
-            top: "0px",
-            position: "absolute",
-          }}
-        >
-          <div //bottom of 3 bars
-            style={{
-              width: "96vw",
-              height: "5vh",
-              top: "13vh",
-              position: "absolute",
-              background: "#AF8C53",
-              borderRadius: "10px",
-              border: "3px #2B2B2B solid",
-            }}
-          ></div>
-          <div //middle of 3 bars
-            style={{
-              width: "93vw",
-              height: "5vh",
-              left: "2vw",
-              top: "9vh",
-              position: "absolute",
-              background: "#AF8C53",
-              borderRadius: "10px",
-              border: "3px #2B2B2B solid",
-            }}
-          ></div>
-          <div
-            style={{ //top of 3 bars
-              width: "89vw",
-              height: "5vh",
-              left: "4vw",
-              top: "5vh",
-              position: "absolute",
-              background: "#AF8C53",
-              borderRadius: "10px",
-              border: "3px #2B2B2B solid",
-            }}
-          ></div>
-          <div //left dark brown bar
-            style={{
-              width: "14vw",
-              height: "5vh",
-              left: "0vw",
-              top: "12vh",
-              position: "absolute",
-              transform: "rotate(-65deg)",
-              transformOrigin: "center",
-              background: "#2B2B2B",
-              borderRadius: "10px",
-              border: "3px #2B2B2B solid",
-            }}
-          ></div>
-          <div //right dark brown bar
-            style={{
-              width: "14vw",
-              height: "5vh",
-              left: "83vw",
-              top: "7vw",
-              position: "absolute",
-              transform: "rotate(65deg)",
-              transformOrigin: "center",
-              background: "#2B2B2B",
-              borderRadius: "10px",
-              border: "3px #2B2B2B solid",
-            }}
-          ></div>
-        </div>
-        <div //grey box on second page
-          style={{
-            width: "80vw",
-            height: "2.5vh",
-            left: "8vw",
-            top: "35vh",
-            position: "absolute",
-          }}
-        >
-          <div
-            style={{
-              width: "86vw",
-              height: "0vh",
-              left: "28vw",
-              top: "0vh",
-              position: "absolute",
-              background: "black",
-              borderRadius: "30px",
-            }}
-          ></div>
-          <div //grey box on second page
-            style={{
-              width: "73vw",
-              height: "75vh",
-              left: "5vw",
-              //top: "0vh",
-              position: "absolute",
-              background: "#2B2B2B",
-              borderRadius: "10vh",
-              border: "5px black solid",
-            }}
-          ></div>
-        </div>
-        <div //"welcome in enjoy your stay" text
-          style={{
-            width: "70vw",
-            left: "15vw",
-            top: "40vh",
-            position: "absolute",
-            color: "#E6E6DD",
-            fontSize: "4vw",
-            fontFamily: "Josefin Sans",
-            fontStyle: "italic",
-            fontWeight: "700",
-            wordWrap: "break-word",
-          }}
-        >
-          Welcome In, Enjoy Your Stay!
-        </div>
-        <div //paragraph text
-          style={{
-            width: "65vw",
-            left: "17vw",
-            top: "60vh",
-            position: "absolute",
-            color: "#E6E6DD",
-            fontSize: "3vw",
-            fontFamily: "Josefin Sans",
-            fontWeight: "400",
-            wordWrap: "break-word",
-          }}
-        >
-          We aim to streamline and simplify the process of renting and
-          subletting for college students by providing a platform tailored to
-          meet student’s short-term accommodation needs.
-        </div>
-      </div>
-      <div
-      //grey background on bottom
-        style={{
-          width: "100%",
-          height: "120vh",
-          left: "0px",
-          top: "250vh",
-          position: "absolute",
-        }}
-      >
-        <div
-        //grey background on bottom
-          style={{
-            width: "100%",
-            height: "120vh",
-            position: "absolute",
+            transform: "rotate(-65deg)",
+            transformOrigin: "center",
             background: "#2B2B2B",
+            borderRadius: "10px",
+            border: "3px #2B2B2B solid",
           }}
         ></div>
-        <img //dog image
+        <div //right dark brown bar
           style={{
-            width: "40vw",
-            height: "70vh",
-            left: "5vw",
-            top: "30vh",
+            width: "12vw",
+            height: "5vh",
+            left: "87vw",
+            top: "50vw",
             position: "absolute",
+            transform: "rotate(65deg)",
+            transformOrigin: "center",
+            background: "#2B2B2B",
+            borderRadius: "10px",
+            border: "3px #2B2B2B solid",
           }}
-          src={dogImage}
-          alt="Dog Image"
+        ></div>
+        <Grid //a bit of white space for stair transition
+          item
+          xs={12}
+          style={{
+            height: "5vh",
+            background: theme.palette.background.default,
+          }}
+        ></Grid>
+        <Grid //top bar
+          item
+          xs={12}
+          sx={{
+            height: "5vh",
+            background: theme.palette.primary.main,
+            borderRadius: "10px",
+            border: "3px #2B2B2B solid",
+            marginLeft: 8,
+            marginRight: 8,
+          }}
+        ></Grid>
+        <Grid //middle bar
+          item
+          xs={12}
+          sx={{
+            height: "5vh",
+            background: theme.palette.primary.main,
+            borderRadius: "10px",
+            border: "3px #2B2B2B solid",
+            marginLeft: 4,
+            marginRight: 4,
+          }}
+        ></Grid>
+        <Grid //bottom bar
+          item
+          xs={12}
+          style={{
+            height: "5vh",
+            background: theme.palette.primary.main,
+            borderRadius: "10px",
+            border: "3px #2B2B2B solid",
+            marginLeft: 2,
+            marginRight: 2,
+          }}
+        ></Grid>
+        <Grid //floor
+          item
+          xs={12}
+          style={{
+            height: "80vh",
+            background: theme.palette.primary.main,
+          }}
+        >
+          <Box
+            sx={{
+              marginX: "15rem",
+              marginY: "5rem",
+              padding: "2rem",
+              boxShadow: "10px 10px",
+              borderRadius: "30px",
+              border: "5px black solid",
+              background: theme.palette.secondary.main,
+            }}
+          >
+            <Typography
+              variant="h3"
+              align="center"
+              sx={{
+                fontWeight: "bold",
+                fontStyle: "italic",
+                color: theme.palette.background.default,
+              }}
+            >
+              Welcome In, Enjoy Your Stay!
+            </Typography>
+            <Typography
+              sx={{
+                paddingTop: "1rem",
+                color: theme.palette.background.default,
+              }}
+              variant="h4"
+            >
+              We aim to streamline and simplify the process of renting and
+              subletting for college students by providing a platform tailored
+              to meet student’s short-term accommodation needs. We aim to
+              alleviate the stress associated with finding temporary housing
+              solutions, so our users can focus on their education and enjoy
+              their college experience.
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        component="main"
+        sx={{
+          width: "100%",
+          height: "110vh",
+          paddingX: "5rem",
+          backgroundColor: theme.palette.secondary.main,
+        }}
+      >
+        <Grid
+          item
+          xs={false}
+          sm={6}
+          md={6}
+          sx={{
+            backgroundImage: `url(${dogImage})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
         />
-        <div
-          style={{
-            width: "80vw",
-            left: "10vw",
-            top: "10vh",
-            position: "absolute",
-            textAlign: "right",
-            color: "#E6E6DD",
-            fontSize: "10vw",
-            fontFamily: "Josefin Sans",
-            fontWeight: "900",
-            wordWrap: "break-word",
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          component={Paper}
+          elevation={6}
+          square
+          sx={{
+            backgroundColor: theme.palette.secondary.main,
+            boxShadow: 0,
           }}
         >
-          <div>Connect.</div>
-          <div>Unlock.</div>
-          <div>Live.</div>
-
-        </div>
-        <div
-          style={{
-            width: "40vw",
-            left: "50vw",
-            top: "40vh",
-            position: "absolute",
-            textAlign: "right",
-            color: "#E6E6DD",
-            fontSize: "4vw",
-            fontFamily: "Josefin Sans",
-            fontWeight: "400",
-            wordWrap: "break-word",
-          }}
-        //text was below
-        >
-          
-        </div>
-      </div>
-    </div>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: "flex",
+              flexDirection: "column",
+              textAlign: "right",
+            }}
+          >
+            <Typography
+              variant="h1"
+              sx={{
+                paddingY: "1rem",
+                fontSize: "9rem",
+                fontWeight: "bold",
+                fontStyle: "italic",
+                whiteSpace: "pre-line",
+                color: theme.palette.background.default,
+              }}
+            >
+              Connect. Unlock. Live.
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    </>
   );
 }
 
