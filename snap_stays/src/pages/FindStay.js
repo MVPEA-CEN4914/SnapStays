@@ -2,6 +2,7 @@ import { Container, Grid } from "@mui/material";
 import React from "react";
 import StayCard from "../component/StayCard";
 import { useQuery, gql } from "@apollo/client";
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 function FindStay() {
   const { loading, error, data } = useQuery(GET_LISTINGS_QUERY);
@@ -21,7 +22,17 @@ function FindStay() {
           </div>
         </Grid>
         <Grid item xs={12} md={4}>
-          <div className="map"> Map content here</div>
+          <div className="map"> Map content here
+          <LoadScript googleMapsApiKey="AIzaSyC6S5cWS_2Bt8JurLZuM3VOWTtGaWkRXyU">
+              <GoogleMap
+                mapContainerStyle={{ width: '100%', height: '400px' }}
+                center={{ lat: -34.397, lng: 150.644 }}
+                zoom={10}
+              >
+                {/* You can add markers here using the Marker component */}
+              </GoogleMap>
+            </LoadScript>
+          </div>
         </Grid>
       </Grid>
     </div>
