@@ -37,8 +37,11 @@ function ListStay() {
     description: '',
     address: '',
     monthlyRent: '',
+    leaseStartDate: '',
+    leaseEndDate: '',
     roommates: '',
     furnished: '',
+    utilitiesIncluded: '',
     bathroom: '',
     pets: '',
     images: [],
@@ -211,6 +214,72 @@ function ListStay() {
               error={errors.monthlyRent ? true : false}
               onChange={onChange}
             />
+            <TextField
+              sx={{ '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderRadius: '15px', // Adjust this value to your liking
+                },
+                '&:hover fieldset': {
+                  borderColor: 'black', // Change this to your desired hover color
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black', // Change this to your desired focus color
+                },
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              }
+            }}
+              margin="normal"
+              required
+              fullWidth
+              id="leaseStartDate"
+              label="Lease Start Date"
+              name="leaseStartDate"
+              autoComplete="leaseStartDate"
+              value={values.leaseStartDate}
+              error={errors.leaseStartDate ? true : false}
+              onChange={onChange}
+            />
+            <TextField
+              sx={{ '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderRadius: '15px', // Adjust this value to your liking
+                },
+                '&:hover fieldset': {
+                  borderColor: 'black', // Change this to your desired hover color
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black', // Change this to your desired focus color
+                },
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              }
+            }}
+              margin="normal"
+              required
+              fullWidth
+              id="leaseEndDate"
+              label="Lease End Date"
+              name="leaseEndDate"
+              autoComplete="leaseEndDate"
+              value={values.leaseEndDate}
+              error={errors.leaseEndDate ? true : false}
+              onChange={onChange}
+            />
             <Typography component="h1" variant="h5" sx={{ fontFamily: "Josefin Sans" }}>
               Details
             </Typography>
@@ -307,6 +376,57 @@ function ListStay() {
                 </Select>
               </FormControl>
               </Grid>
+
+              
+            <Grid item xs={5}>
+          
+              <FormControl variant="outlined" sx={{width: "100%", marginTop: '16px'}}>
+              
+                <InputLabel id="demo-simple-select-label" required>Utilities Included</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={values.utilitiesIncluded}
+                label="utilitiesIncluded"
+                onChange={onChange}
+                name="utilitiesIncluded"
+                input={
+                  <OutlinedInput
+                    name="utilitiesIncluded"
+                    id="outlined-utilitiesIncluded"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderRadius: '15px',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'black',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: 'black',
+                        },
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'grey',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'grey',
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'grey',
+                      },
+                    }}
+                  />
+                }
+              >
+                <MenuItem value={10}>Yes</MenuItem>
+                <MenuItem value={20}>No</MenuItem>
+                </Select>
+              </FormControl>
+              </Grid>
+
+
+
 
               <Grid item xs={4}>
           
@@ -495,8 +615,11 @@ const LIST_STAY = gql`
     $description: String!
     $address: String!
     $monthlyRent: String!
+    $leaseStartDate: String!
+    $leaseEndDate: String!
     $roommates: String!
     $furnished: String!
+    $utilitiesIncluded: String!
     $bathroom: String!
     $pets: String!
     $images: [Upload!]!
@@ -507,8 +630,11 @@ const LIST_STAY = gql`
         description: $description
         address: $address
         monthlyRent: $monthlyRent
+        leaseStartDate: $leaseStartDate
+        leaseEndDate: $leaseEndDate
         roommates: $roommates
         furnished: $furnished
+        utilitiesIncluded: $utilitiesIncluded
         bathroom: $bathroom
         pets: $pets
         images: $images
@@ -519,8 +645,11 @@ const LIST_STAY = gql`
       description
       address
       monthlyRent
+      leaseStartDate
+      leaseEndDate
       roommates
       furnished
+      utilitiesIncluded
       bathroom
       pets
       images
