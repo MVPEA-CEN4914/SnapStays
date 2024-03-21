@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react";
+import { useQuery, gql } from "@apollo/client";
 
 function UserProfile() {
-  return (
-    <div>UserProfile</div>
-  )
+  const { loading, error, data } = useQuery(GET_USER_QUERY);
+  return <div>UserProfile</div>;
 }
 
-export default UserProfile
+const GET_USER_QUERY = gql`
+  {
+    getUsers {
+      id
+      email
+      fullName
+    }
+  }
+`;
+
+export default UserProfile;
