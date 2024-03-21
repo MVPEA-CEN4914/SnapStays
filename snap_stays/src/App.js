@@ -7,11 +7,13 @@ import Layout from "./pages/Layout";
 import FindStay from "./pages/FindStay";
 import ListStay from "./pages/ListStay";
 import Verify from "./pages/Verify";
+import UserProfile from './pages/UserProfile';
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword.js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
+import { AuthProvider } from './context/auth';
 
 const theme = createTheme({
   components: {
@@ -62,6 +64,7 @@ const theme = createTheme({
 
 function App() {
   return (
+  <AuthProvider>
     <ApolloProvider>
       <div className="App">
         <ThemeProvider theme={theme}>
@@ -74,6 +77,7 @@ function App() {
                 <Route path="register" element={<Register />} />
                 <Route path="find-stay" element={<FindStay />} />
                 <Route path="list-stay" element={<ListStay />} />
+        <Route path="userprofile" element = {<UserProfile/>} />
                 <Route exact path="/verify/:id" element={<Verify />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
@@ -87,6 +91,7 @@ function App() {
         </ThemeProvider>
       </div>
     </ApolloProvider>
+   </AuthProvider>
   );
 }
 

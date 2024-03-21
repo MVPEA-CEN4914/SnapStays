@@ -1,31 +1,55 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import Alert from "@mui/material/Alert";
-import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Houses from "../images/Houses.png";
+import Typography from '@mui/material/Typography';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Houses from '../images/Houses.png'
 import { useTheme } from "@mui/material/styles";
-import { gql } from "graphql-tag";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import axios from 'axios';
+import { useForm } from '../hooks/hooks';
+import { gql } from 'graphql-tag';
+import { useState, useContext } from 'react';
+import { useMutation } from '@apollo/client';
+import { AuthContext } from '../context/auth';
+
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
+
+// TODO remove, this demo shouldn't need to reset the theme.
+
+const defaultTheme = createTheme();
 
 function Login(props) {
   const theme = useTheme();
   const navigate = useNavigate();
+  const context = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
@@ -44,12 +68,11 @@ function Login(props) {
       ...prevValues,
       [name]: value, // Update the corresponding state property using computed property syntax
     }));
-  };
-
-  const [loginUser, { loading }] = useMutation(LOGIN, {
-    update(_, result) {
-      console.log("Mutation result:", result);
-      navigate("/");
+  }; 
+  const[loginUser, {loading}] = useMutation(LOGIN, {
+    update(_, {data:{login: userData}}){
+      context.login(userData);
+      navigate('/');
     },
     onError(err) {
       console.log("Mutation error:", err);
@@ -81,7 +104,7 @@ function Login(props) {
       container
       component="main"
       sx={{
-        height: "90vh",
+        height: "83vh",
         paddingX: "5rem",
         backgroundColor: theme.palette.background.default,
       }}
@@ -242,5 +265,4 @@ const LOGIN = gql`
     }
   }
 `;
-
 export default Login;
