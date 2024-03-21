@@ -10,11 +10,45 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
+import { gql } from "graphql-tag";
+import { useMutation } from "@apollo/client";
+//import { useContext } from "react";
+import { AuthContext } from "../context/auth";
 
 import TempListing from "../images/TempListing.jpg";
 
 function StayCard({ listing }) {
   const theme = useTheme();
+  const [addToFavorites, { loading, error }] = useMutation(FAVORITE);
+
+  const handleFavorite = () => {
+    console.log(listing.id);
+    console.log(listing.title);
+
+    const token = localStorage.getItem("jwtToken"); // Or access it via `user.token` if available
+    if (!token) {
+      console.log("No JWT found. User might not be logged in.");
+      return;
+    }
+
+    addToFavorites({
+      variables: { listingId: listing.id },
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    }).then(response => {
+      console.log('Added to favorites:', response.data);
+    }).catch(err => {
+      console.error('Error adding to favorites:', err.message);
+    });
+
+    if (error) {
+      console.error('Error adding to favorites:', error.message);
+    }
+  };
+
   return (
     <Card
       sx={{
@@ -28,6 +62,7 @@ function StayCard({ listing }) {
         <IconButton
           aria-label="add to favorites"
           sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
+          onClick={handleFavorite}
         >
           <StarBorderIcon />
         </IconButton>
@@ -65,5 +100,16 @@ function StayCard({ listing }) {
     </Card>
   );
 }
+
+const FAVORITE = gql`
+mutation AddListingToFavorites($listingId: ID!) {
+  addListingToFavorites(listingId: $listingId) {
+    favorites {
+      id
+      title
+    }
+  }
+}
+`;
 
 export default StayCard;
