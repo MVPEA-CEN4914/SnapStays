@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import IconButton from '@material-ui/core/IconButton';
+//import CloseIcon from '@material-ui/icons/Close';
 
 
 const defaultTheme = createTheme({
@@ -82,6 +84,14 @@ function ListStay() {
     ...prevValues,
     images: files,
   }));
+  };
+
+  const handleDelete = (index) => {
+    setValues((prevValues) => {
+      const newImages = [...prevValues.images];
+      newImages.splice(index, 1);
+      return { ...prevValues, images: newImages };
+    });
   };
 
   return (
@@ -443,39 +453,37 @@ function ListStay() {
         </Grid>
       <Grid item xs={12} sm={6}>
         {/*leave empty space for upload images*/}
+       </Grid>
+
+       <Grid item xs={12} sm={6} style={{ marginLeft: 'auto', marginTop: '-600px' ,  justifyContent: 'flex-end' }}>
+       <Grid container direction="column" alignItems="center" >
+        <input
+          accept="image/*"
+          id="contained-button-file"
+          multiple
+          type="file"
+          onChange={handleFileChange}
+          style={{ display: 'none' , alignItems: 'center'}}
+        />
+        <label htmlFor="contained-button-file">
+          <Button variant="contained" component="span">
+            Upload Images
+          </Button>
+        </label>
+        </Grid>
+        {/* Display uploaded pictures here */}
+        <Grid container spacing={2} paddingTop={'10px'}>
+          {values.images.map((image, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index} >
+              <img src={URL.createObjectURL(image)} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
+              <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(index)}>
+                Delete
+              </Button>
+            </Grid>
+          ))}
         </Grid>
       </Grid>
-      
-      <Grid container spacing={2} justifyContent="flex-end">
-        <Grid item xs={12} sm={6} md={4} sx={{position: 'relative',top: '-500px'}}>
-              
-              
-                  <input
-                    accept="image/*"
-                    id="contained-button-file"
-                    multiple
-                    type="file"
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                  />
-                  <label htmlFor="contained-button-file">
-                    <Button variant="contained" component="span">
-                      Upload Images
-                    </Button>
-                  </label>
-                
-              </Grid>
-                  {/* Display uploaded pictures here */}
-                  <Grid container spacing={2} justifyContent="flex-end">
-                  {values.images.map((image, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index} sx={{position: 'relative',top: '-450px', paddingRight: '70px'}}>
-                      <img src={URL.createObjectURL(image)} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
-                    </Grid>
-                  ))}
-                </Grid>
-             
-                
-              </Grid>
+    </Grid>
            
     </ThemeProvider>
   );
