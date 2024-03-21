@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -9,8 +9,11 @@ import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Router, Link as RouterLink } from "react-router-dom";
 
+import { AuthContext } from "../context/auth";
+
 function Landing() {
   const theme = useTheme();
+  const { user } = useContext(AuthContext);
   return (
     <>
       <Grid
@@ -85,7 +88,7 @@ function Landing() {
                   type="submit"
                   variant="outlined"
                   fullWidth
-                  href="/list-stay"
+                  href={user ? "/list-stay" : "/login"}
                   sx={{
                     padding: 1,
                     fontSize: "1.5rem",

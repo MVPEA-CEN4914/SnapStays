@@ -14,7 +14,7 @@ function Footer() {
     <Paper>
       <BottomNavigation
         onChange={(event, newValue) => {}}
-        sx={{ background: theme.palette.primary.main }}
+        sx={{ height: "7vh", background: theme.palette.primary.main }}
       >
         <Typography
           variant="h6"
