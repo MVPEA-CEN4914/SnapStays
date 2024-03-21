@@ -23,7 +23,7 @@ function FindStay() {
         </Grid>
         <Grid item xs={12} md={4}>
           <div className="map"> Map content here
-          <LoadScript googleMapsApiKey="AIzaSyC6S5cWS_2Bt8JurLZuM3VOWTtGaWkRXyU">
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
               <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '400px' }}
                 center={{ lat: -34.397, lng: 150.644 }}
