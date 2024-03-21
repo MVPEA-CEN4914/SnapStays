@@ -10,6 +10,7 @@ module.exports = gql`
     password: String!
     createdAt: String!
     verified: Boolean!
+    favorites: [Listing]
   }
 
   type Listing {

@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { GraphQLError } = require("graphql");
+const checkAuth = require("../../util/check-auth");
+const Listing = require("../../models/Listing");
 
 const User = require("../../models/User");
 
@@ -261,23 +263,32 @@ module.exports = {
       return user;
     },
     async addListingToFavorites(_, { listingId }, context) {
-      const user = checkAuth(context);
-      if (!user) throw new Error('Authentication required');
+      const authUser = checkAuth(context);
+      if (!authUser) throw new Error('Authentication required');
+    
+      const user = await User.findById(authUser.id);
+    
+     //console.log(user);
+     //console.log(listingId);
     
       const listing = await Listing.findById(listingId);
+     //console.log(listing);
       if (!listing) throw new Error('Listing not found');
+      
+      //find the index of the listing in the user's favorites
+      const index = user.favorites.findIndex(favoriteId => favoriteId.toString() === listingId);
     
-      //check if already favorited
-      const isAlreadyFavorited = user.favorites.some(favoriteId => favoriteId.toString() === listingId);
-      if (isAlreadyFavorited) {
-        throw new Error('Listing already in favorites');
+      if (index !== -1) {
+        //listing is already favorited, so remove it
+        user.favorites.splice(index, 1);
+      } else {
+        //listing is not in favorites, so add it
+        user.favorites.push(listingId);
       }
     
-      //add the listing to favorites
-      user.favorites.push(listingId);
       await user.save();
     
-      return User.findById(user.id).populate('favorites');
-    }
+      return User.findById(authUser.id).populate('favorites');
+    }    
   },
 };
