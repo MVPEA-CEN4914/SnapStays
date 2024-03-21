@@ -109,7 +109,7 @@ function HomeNavbar() {
           <Avatar />  My Profile
         </MenuItem>
           <Divider/>
-          <MenuItem onClick={logout}> Logout 
+          <MenuItem onClick={logout} component={RouterLink} to = "/"> Logout 
           </MenuItem>
           </Menu>
 
