@@ -58,6 +58,7 @@ module.exports = gql`
 
   type Query {
     getUsers: [User]
+    getUser(userId: ID!): User 
     getListings: [Listing]
     getListing(listingId: ID!): Listing
     getFavorites(id: ID!): [Listing]
