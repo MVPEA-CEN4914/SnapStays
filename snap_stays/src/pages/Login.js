@@ -104,7 +104,7 @@ function Login(props) {
       container
       component="main"
       sx={{
-        height: "90vh",
+        height: "83vh",
         paddingX: "5rem",
         backgroundColor: theme.palette.background.default,
       }}

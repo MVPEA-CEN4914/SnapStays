@@ -85,223 +85,227 @@ function Register(props) {
   };
 
   return (
-    <Grid
-      container
-      component="main"
-      sx={{
-        height: "90vh",
-        paddingX: "5rem",
-        backgroundColor: theme.palette.background.default,
-      }}
-    >
       <Grid
-        item
-        xs={false}
-        sm={6}
-        md={6}
+        container
+        component="main"
         sx={{
-          backgroundImage: `url(${Houses})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
+          paddingX: "5rem",
+          backgroundColor: theme.palette.background.default,
         }}
-      />
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        md={6}
-        component={Paper}
-        elevation={6}
-        square
-        sx={{ backgroundColor: theme.palette.background.default, boxShadow: 0 }}
       >
-        <Box
+        <Grid
+          item
+          xs={false}
+          sm={6}
+          md={6}
           sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            backgroundImage: `url(${Houses})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        />
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          component={Paper}
+          elevation={6}
+          square
+          sx={{
+            backgroundColor: theme.palette.background.default,
+            boxShadow: 0,
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography
-            variant="h4"
-            sx={{ paddingY: "1rem", fontWeight: "bold" }}
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            Sign Up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit}>
-            <TextField
-              id="fullName"
-              label="Full Name"
-              name="fullName"
-              autoComplete="fullName"
-              required
-              value={values.fullName}
-              error={errors.fullName ? true : false}
-              onChange={onChange}
-              helperText={errors.fullName ? errors.fullName : ""}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment
-                    position="end"
-                    sx={{ marginRight: "2.5rem" }}
-                  />
-                ),
-              }}
-            />
-            <TextField
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              required
-              value={values.username}
-              error={errors.username ? true : false}
-              onChange={onChange}
-              helperText={errors.username ? errors.username : ""}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AlternateEmailIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment
-                    position="end"
-                    sx={{ marginRight: "2.5rem" }}
-                  />
-                ),
-              }}
-            />
-            <TextField
-              id="email"
-              label="School Email Address"
-              name="email"
-              autoComplete="email"
-              required
-              value={values.email}
-              onChange={onChange}
-              error={errors.email ? true : false}
-              helperText={errors.email ? errors.email : ""}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailOutlineIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment
-                    position="end"
-                    sx={{ marginRight: "2.5rem" }}
-                  />
-                ),
-              }}
-            />
-            <TextField
-              id="password"
-              label="Password"
-              name="password"
-              autoComplete="current-password"
-              required
-              type={showPassword ? "text" : "password"}
-              value={values.password}
-              error={errors.password ? true : false}
-              onChange={onChange}
-              helperText={errors.password ? errors.password : ""}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlinedIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{ marginRight: "0rem" }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              id="confirmPassword"
-              label="Confirm Password"
-              name="confirmPassword"
-              autoComplete="new-password"
-              required
-              type={showPassword ? "text" : "password"}
-              value={values.confirmPassword}
-              error={errors.confirmPassword ? true : false}
-              onChange={onChange}
-              helperText={errors.confirmPassword ? errors.confirmPassword : ""}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlinedIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{ marginRight: "0rem" }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Grid container sx={{mb: 1}}>
-              <Grid item xs={12} style={{ textAlign: "center" }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    mt: 1,
-                    mb: 2,
-                    bgcolor: theme.palette.primary.main,
-                    "&:hover": {
-                      bgcolor: theme.palette.primary.light,
-                    },
-                  }}
-                >
-                  Sign Up
-                </Button>
+            <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography
+              variant="h4"
+              sx={{ paddingY: "1rem", fontWeight: "bold" }}
+            >
+              Sign Up
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit}>
+              <TextField
+                id="fullName"
+                label="Full Name"
+                name="fullName"
+                autoComplete="fullName"
+                required
+                value={values.fullName}
+                error={errors.fullName ? true : false}
+                onChange={onChange}
+                helperText={errors.fullName ? errors.fullName : ""}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{ marginRight: "2.5rem" }}
+                    />
+                  ),
+                }}
+              />
+              <TextField
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                required
+                value={values.username}
+                error={errors.username ? true : false}
+                onChange={onChange}
+                helperText={errors.username ? errors.username : ""}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AlternateEmailIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{ marginRight: "2.5rem" }}
+                    />
+                  ),
+                }}
+              />
+              <TextField
+                id="email"
+                label="School Email Address"
+                name="email"
+                autoComplete="email"
+                required
+                value={values.email}
+                onChange={onChange}
+                error={errors.email ? true : false}
+                helperText={errors.email ? errors.email : ""}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailOutlineIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{ marginRight: "2.5rem" }}
+                    />
+                  ),
+                }}
+              />
+              <TextField
+                id="password"
+                label="Password"
+                name="password"
+                autoComplete="current-password"
+                required
+                type={showPassword ? "text" : "password"}
+                value={values.password}
+                error={errors.password ? true : false}
+                onChange={onChange}
+                helperText={errors.password ? errors.password : ""}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlinedIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        sx={{ marginRight: "0rem" }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                id="confirmPassword"
+                label="Confirm Password"
+                name="confirmPassword"
+                autoComplete="new-password"
+                required
+                type={showPassword ? "text" : "password"}
+                value={values.confirmPassword}
+                error={errors.confirmPassword ? true : false}
+                onChange={onChange}
+                helperText={
+                  errors.confirmPassword ? errors.confirmPassword : ""
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlinedIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        sx={{ marginRight: "0rem" }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Grid container sx={{ mb: 1 }}>
+                <Grid item xs={12} style={{ textAlign: "center" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      mt: 1,
+                      mb: 2,
+                      bgcolor: theme.palette.primary.main,
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.light,
+                      },
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </Grid>
+                <Grid item xs>
+                  <Link href="/login" variant="body2" sx={{ color: "black" }}>
+                    {"Have an account? Sign In"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item xs>
-                <Link href="/login" variant="body2" sx={{ color: "black" }}>
-                  {"Have an account? Sign In"}
-                </Link>
-              </Grid>
-            </Grid>
-            {errors.message && (
-              <Alert variant="filled" severity="error">
-                {"Error: " + errors.message}
-              </Alert>
-            )}
+              {errors.message && (
+                <Alert variant="filled" severity="error">
+                  {"Error: " + errors.message}
+                </Alert>
+              )}
+            </Box>
           </Box>
-        </Box>
+        </Grid>
       </Grid>
-    </Grid>
   );
 }
 const REGISTER = gql`
