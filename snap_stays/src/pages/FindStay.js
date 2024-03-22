@@ -1,18 +1,30 @@
 import * as React from "react";
-import { Container, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import StayCard from "../component/StayCard";
-import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useQuery, gql } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
+import { useState } from "react";
+
+import Filter from "../component/Filter";
+import StayCard from "../component/StayCard";
 
 function FindStay() {
+  const [open, setOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
   const theme = useTheme();
   const { loading, error, data } = useQuery(GET_LISTINGS_QUERY);
   if (loading) return "Loading...";
@@ -43,8 +55,20 @@ function FindStay() {
                 alignItems: "center",
               }}
             >
-              <TuneIcon sx={{ paddingLeft: "5px" }} />
-              <Typography variant="h6"> All Filters</Typography>
+              <IconButton
+                aria-label="Select a filter"
+                onClick={handleClickOpen}
+              >
+                <TuneIcon sx={{ color: theme.palette.secondary.main }} />
+              </IconButton>
+              <Typography variant="h6">
+                Filters
+              </Typography>
+              <Filter
+                selectedValue={selectedValue}
+                open={open}
+                onClose={handleClose}
+              />
             </Grid>
             <Grid item xs={4} md={6}>
               <Autocomplete
@@ -93,9 +117,7 @@ function FindStay() {
           </div>
         </Grid>
         <Grid item xs={12} md={4}>
-          <div className="map">
-            Map content here
-          </div>
+          <div className="map">Map content here</div>
         </Grid>
       </Grid>
     </Box>

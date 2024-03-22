@@ -50,21 +50,6 @@ function HomeNavbar() {
             <Button
               variant="text"
               component={RouterLink}
-              to="/list-stay"
-              sx={{
-                color: theme.palette.secondary.main,
-                "&:hover": {
-                  bgcolor: theme.palette.background.default,
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              List A Stay
-            </Button>
-            <Button
-              variant="text"
-              component={RouterLink}
               to="/find-stay"
               sx={{
                 color: theme.palette.secondary.main,
@@ -76,6 +61,21 @@ function HomeNavbar() {
               }}
             >
               Find A Stay
+            </Button>
+            <Button
+              variant="text"
+              component={RouterLink}
+              to="/list-stay"
+              sx={{
+                color: theme.palette.secondary.main,
+                "&:hover": {
+                  bgcolor: theme.palette.background.default,
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              List A Stay
             </Button>
             <Tooltip title="My profile">
               <IconButton
@@ -146,7 +146,7 @@ function HomeNavbar() {
     );
   } else {
     navBar = (
-      <AppBar position="static" sx={{ bgcolor: "#E6E6DD", height: "10vh"}}>
+      <AppBar position="static" sx={{ bgcolor: "#E6E6DD", height: "10vh" }}>
         <Toolbar>
           <IconButton edge="start" component={RouterLink} to="/">
             <img
@@ -157,21 +157,6 @@ function HomeNavbar() {
           </IconButton>
 
           <Stack direction="row" spacing={2} sx={{ ml: "auto" }}>
-            <Button
-              variant="text"
-              component={RouterLink}
-              to="/login"
-              sx={{
-                color: theme.palette.secondary.main,
-                "&:hover": {
-                  bgcolor: theme.palette.background.default,
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              List A Stay
-            </Button>
             <Button
               variant="text"
               component={RouterLink}
@@ -186,6 +171,21 @@ function HomeNavbar() {
               }}
             >
               Find A Stay
+            </Button>
+            <Button
+              variant="text"
+              component={RouterLink}
+              to="/login"
+              sx={{
+                color: theme.palette.secondary.main,
+                "&:hover": {
+                  bgcolor: theme.palette.background.default,
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              List A Stay
             </Button>
             <Button
               variant="contained"
