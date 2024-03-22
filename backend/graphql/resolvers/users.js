@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const { GraphQLError } = require("graphql");
 
 const User = require("../../models/User");
+const { findById } = require("../../models/User");
 
 const {
   validateRegisterInput,
@@ -78,6 +79,20 @@ module.exports = {
         const users = await User.find();
         return users;
       } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getUser(_, {userId}){
+      try{
+        console.log(userId);
+        const user = await User.findById(userId);
+        console.log(user);
+        if(user){
+          return user;
+        }else{
+          throw new Error("User not found");
+        }
+      }catch(err){
         throw new Error(err);
       }
     },
