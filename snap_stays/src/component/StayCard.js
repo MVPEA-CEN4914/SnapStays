@@ -25,7 +25,7 @@ function StayCard({ listing }) {
     console.log(listing.id);
     console.log(listing.title);
 
-    const token = localStorage.getItem("jwtToken"); // Or access it via `user.token` if available
+    const token = localStorage.getItem("jwtToken");
     if (!token) {
       console.log("No JWT found. User might not be logged in.");
       return;

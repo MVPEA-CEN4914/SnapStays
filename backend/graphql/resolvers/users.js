@@ -279,11 +279,8 @@ module.exports = {
     
       const user = await User.findById(authUser.id);
     
-     //console.log(user);
-     //console.log(listingId);
-    
       const listing = await Listing.findById(listingId);
-     //console.log(listing);
+      
       if (!listing) throw new Error('Listing not found');
       
       //find the index of the listing in the user's favorites

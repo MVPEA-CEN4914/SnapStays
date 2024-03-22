@@ -42,4 +42,13 @@ const GET_LISTINGS_QUERY = gql`
   }
 `;
 
+// const GET_USER_FAVORITES = gql`
+//   query GetUserFavorites($userId: ID!) {
+//     getFavorites(id: $userId) {
+//       id
+//       // add other necessary fields
+//     }
+//   }
+// `;
+
 export default FindStay;
