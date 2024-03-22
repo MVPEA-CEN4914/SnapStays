@@ -60,6 +60,7 @@ module.exports = gql`
     getUsers: [User]
     getListings: [Listing]
     getListing(listingId: ID!): Listing
+    getFavorites(id: ID!): [Listing]
   }
 
   type Mutation {
