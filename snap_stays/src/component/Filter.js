@@ -11,13 +11,13 @@ import Checkbox from "@mui/material/Checkbox";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Slider from "@mui/material/Slider";
-import { useQuery, gql } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
 
-const nums = ["1", "2", "3", "4"];
+const nums = ["1", "2", "3", "4", "any"];
 
 function Filter({ onClose, selectedFilters, open }) {
+  const theme = useTheme();
   const [filters, setFilters] = useState(selectedFilters);
 
   const handleChange = (event) => {
@@ -44,9 +44,9 @@ function Filter({ onClose, selectedFilters, open }) {
   };
 
   return (
-    <Dialog fullWidth="true" maxWidth="xs" open={open}>
+    <Dialog fullWidth={true} maxWidth="xs" open={open}>
       <DialogTitle>Select Filter(s):</DialogTitle>
-      <DialogContent dividers sx={{paddingX: "2rem"}}>
+      <DialogContent dividers sx={{ paddingX: "2rem" }}>
         <FormGroup aria-label="filters" name="filters">
           <Typography variant="p">Price Range: </Typography>
           <Slider
@@ -62,13 +62,13 @@ function Filter({ onClose, selectedFilters, open }) {
           />
           <Typography variant="p">Roommates: </Typography>
           <ToggleButtonGroup
-            value={filters.roommates}
+            value={filters.numberOfRoommates}
             exclusive
             onChange={handleChange}
             aria-label="number of roommates"
           >
             {nums.map((num) => (
-              <ToggleButton name="roommates" value={num} key={"r" + num}>
+              <ToggleButton name="numberOfRoommates" value={num} key={num}>
                 {num}
               </ToggleButton>
             ))}
@@ -77,24 +77,28 @@ function Filter({ onClose, selectedFilters, open }) {
             Bathrooms:{" "}
           </Typography>
           <ToggleButtonGroup
-            value={filters.bathrooms}
+            value={filters.bathroomType}
             exclusive
             onChange={handleChange}
-            aria-label="number of bathrooms"
+            aria-label="type of bathroom"
             sx={{ paddingBottom: "0.5rem" }}
           >
-            {nums.map((num) => (
-              <ToggleButton name="bathrooms" value={num} key={"b" + num}>
-                {num}
-              </ToggleButton>
-            ))}
+            <ToggleButton name="bathroomType" value="personal" key="personal">
+              Personal
+            </ToggleButton>
+            <ToggleButton name="bathroomType" value="shared" key="shared">
+              Shared
+            </ToggleButton>
+            <ToggleButton name="bathroomType" value="any" key="any">
+              Any
+            </ToggleButton>
           </ToggleButtonGroup>
           <FormControlLabel
             control={
               <Checkbox
-                checked={filters.furnished}
+                checked={filters.isFurnished}
                 onChange={handleChangeCheck}
-                name="furnished"
+                name="isFurnished"
               />
             }
             label="Furnished"
@@ -102,9 +106,9 @@ function Filter({ onClose, selectedFilters, open }) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={filters.utilities}
+                checked={filters.utilitiesIncluded}
                 onChange={handleChangeCheck}
-                name="utilities"
+                name="utilitiesIncluded"
               />
             }
             label="Utilities Included"
@@ -112,9 +116,9 @@ function Filter({ onClose, selectedFilters, open }) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={filters.pets}
+                checked={filters.petsAllowed}
                 onChange={handleChangeCheck}
-                name="pets"
+                name="petsAllowed"
               />
             }
             label="Pets Allowed"

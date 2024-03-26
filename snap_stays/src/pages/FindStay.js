@@ -14,14 +14,15 @@ import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
 
 function FindStay() {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
     price: [100, 5000],
-    roommates: "1",
-    bathrooms: "1",
-    furnished: false,
-    utilities: false,
-    pets: false,
+    numberOfRoommates: "any",
+    bathroomType: "any",
+    isFurnished: false,
+    utilitiesIncluded: false,
+    petsAllowed: false,
   });
 
   const handleClickOpen = () => {
@@ -32,11 +33,15 @@ function FindStay() {
     setOpen(false);
     setSelectedFilters(filters);
   };
-  const theme = useTheme();
-  const { loading, error, data } = useQuery(GET_LISTINGS_QUERY);
+
+  let { loading, error, data } = useQuery(GET_FILTERED_LISTINGS_QUERY, {
+    variables: selectedFilters,
+  });
+
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
-  const filteredData = data.getListings;
+  const filteredData = data.getFilteredListings;
+  console.log(filteredData);
   return (
     <Box
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}
@@ -79,7 +84,7 @@ function FindStay() {
               <Autocomplete
                 id="listing-search-bar"
                 freeSolo
-                options={data.getListings.map((listing) => listing.title)}
+                options={data.getFilteredListings.map((listing) => listing.title)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -110,7 +115,7 @@ function FindStay() {
             </Grid>
           </Grid>
           <Grid container className="search-list" sx={{ padding: "1rem" }}>
-            {data.getListings.map((listing) => (
+            {data.getFilteredListings.map((listing) => (
               <StayCard listing={listing} />
             ))}
           </Grid>
@@ -123,9 +128,25 @@ function FindStay() {
   );
 }
 
-const GET_LISTINGS_QUERY = gql`
-  {
-    getListings {
+const GET_FILTERED_LISTINGS_QUERY = gql`
+  query getFilteredListings(
+    $price: [Int]!
+    $numberOfRoommates: String!
+    $bathroomType: String!
+    $isFurnished: Boolean!
+    $utilitiesIncluded: Boolean!
+    $petsAllowed: Boolean!
+  ) {
+    getFilteredListings(
+      filteredInput: {
+        price: $price
+        numberOfRoommates: $numberOfRoommates
+        bathroomType: $bathroomType
+        isFurnished: $isFurnished
+        utilitiesIncluded: $utilitiesIncluded
+        petsAllowed: $petsAllowed
+      }
+    ) {
       id
       createdAt
       title

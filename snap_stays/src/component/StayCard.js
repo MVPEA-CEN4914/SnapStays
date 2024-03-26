@@ -31,7 +31,7 @@ function StayCard({ listing }) {
         </IconButton>
         <img
           src={TempListing}
-          alt="Image of listing"
+          alt="Listing"
           style={{
             height: "15rem",
             width: "100%",
