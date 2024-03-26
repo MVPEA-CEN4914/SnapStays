@@ -21,12 +21,12 @@ function FindStay() {
             ))}
           </div>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <div className="map"> Map content here
+        <Grid item xs={15} md={4}>
+          <div className="map"> 
           <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
               <GoogleMap
-                mapContainerStyle={{ width: '100%', height: '400px' }}
-                center={{ lat: -34.397, lng: 150.644 }}
+                mapContainerStyle={{ width: '100%', height: '900px' }}
+                center={{ lat: 29.6520, lng: -82.3250 }}
                 zoom={10}
               >
                 {/* You can add markers here using the Marker component */}
