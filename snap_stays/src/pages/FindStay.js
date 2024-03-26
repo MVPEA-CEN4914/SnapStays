@@ -15,15 +15,22 @@ import StayCard from "../component/StayCard";
 
 function FindStay() {
   const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState({
+    price: [100, 5000],
+    roommates: "1",
+    bathrooms: "1",
+    furnished: false,
+    utilities: false,
+    pets: false,
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = (value) => {
+  const handleClose = (filters) => {
     setOpen(false);
-    setSelectedValue(value);
+    setSelectedFilters(filters);
   };
   const theme = useTheme();
   const { loading, error, data } = useQuery(GET_LISTINGS_QUERY);
@@ -61,11 +68,9 @@ function FindStay() {
               >
                 <TuneIcon sx={{ color: theme.palette.secondary.main }} />
               </IconButton>
-              <Typography variant="h6">
-                Filters
-              </Typography>
+              <Typography variant="h6">Filters</Typography>
               <Filter
-                selectedValue={selectedValue}
+                selectedFilters={selectedFilters}
                 open={open}
                 onClose={handleClose}
               />
@@ -104,17 +109,11 @@ function FindStay() {
               </Typography>
             </Grid>
           </Grid>
-          <div
-            className="search-list"
-            style={{
-              display: "flex",
-              margin: "0 10px 10px 10px",
-            }}
-          >
+          <Grid container className="search-list" sx={{ padding: "1rem" }}>
             {data.getListings.map((listing) => (
               <StayCard listing={listing} />
             ))}
-          </div>
+          </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
           <div className="map">Map content here</div>
