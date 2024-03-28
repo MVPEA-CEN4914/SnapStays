@@ -7,8 +7,8 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { Container, Typography, makeStyles } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import StayCard from "../component/StayCard";
 import MyCard from "../component/MyCard";
+import AddIcon from '@mui/icons-material/Add';
 
 function UserProfile() {
   const { user } = useContext(AuthContext);
@@ -42,6 +42,7 @@ function UserProfile() {
       <Typography variant="h4" textAlign="center">
         <b>Your Profile Information</b>
       </Typography>
+      
       <Grid container
         style={{
           padding: "16px",
@@ -95,13 +96,18 @@ function UserProfile() {
             md={6}
             style={{ border: "1px solid black" }}
             alignItems="center"
+            
             justifyContent="center"
           >
-            <Typography variant="h4" >My Listings</Typography>
-            <MyCard/>
-            <MyCard/>
+            <Typography variant="h4" >My Listings  </Typography>
             
+            <Button variant="contained" color="primary" href="/list-stay" startIcon={<AddIcon />} >
+                
+            </Button>
+            <MyCard/>
+            <MyCard/> 
           </Grid>
+
           {/*Messages grid*/}
           <Grid
             container
