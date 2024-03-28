@@ -55,11 +55,22 @@ module.exports = gql`
     petsAllowed: Boolean!
   }
 
+  input FilteredInput {
+    title: String
+    price: [Int]!
+    numberOfRoommates: String!
+    bathroomType: String!
+    isFurnished: Boolean!
+    utilitiesIncluded: Boolean!
+    petsAllowed: Boolean!
+  }
+
   type Query {
     getUsers: [User]
     getUser(userId: ID!): User 
     getListings: [Listing]
     getListing(listingId: ID!): Listing
+    getFilteredListings(filteredInput: FilteredInput): [Listing]
   }
 
   type Mutation {
