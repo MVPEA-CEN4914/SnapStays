@@ -12,6 +12,7 @@ import { useState } from "react";
 
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 
 function FindStay() {
   const theme = useTheme();
@@ -55,7 +56,7 @@ function FindStay() {
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}
     >
       <Grid container alignItems={"center"}>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={7}>
           <Grid
             container
             alignItems={"center"}
@@ -130,14 +131,36 @@ function FindStay() {
               </Typography>
             </Grid>
           </Grid>
-          <Grid container className="search-list" sx={{ padding: "1rem" }}>
+          <Grid
+            container
+            className="search-list"
+            sx={{
+              paddingTop: "1rem",
+              justifyContent: "space-evenly",
+              justifyItems: "center",
+              alignContent: "space-evenly",
+              alignItems: "center",
+            }}
+          >
             {data.getFilteredListings.map((listing) => (
               <StayCard listing={listing} />
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <div className="map">Map content here</div>
+        <Grid item xs={12} md={5}>
+          <div className="map">
+            <LoadScript
+              googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+            >
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "900px" }}
+                center={{ lat: 29.652, lng: -82.325 }}
+                zoom={10}
+              >
+                {/* You can add markers here using the Marker component */}
+              </GoogleMap>
+            </LoadScript>
+          </div>
         </Grid>
       </Grid>
     </Box>
