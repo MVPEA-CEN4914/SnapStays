@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { Card, CardHeader, CardMedia, CardContent, IconButton, Typography, Avatar } from "@mui/material";
@@ -62,7 +59,6 @@ function StayCard({ listing }) {
             padding: "0.5rem",
           }}
         />
-        <img src={TempListing} alt="Listing" style={{ height: "15rem", width: "100%", objectFit: "cover", borderRadius: "1rem" }} />
       </CardMedia>
       <CardHeader avatar={<Avatar sx={{ bgcolor: "red" }}>R</Avatar>} title={listing.title} subheader={listing.location} />
       <CardContent>
