@@ -50,7 +50,6 @@ function FindStay() {
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
   const filteredData = data.getFilteredListings;
-  console.log(filteredData);
   return (
     <Box
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}

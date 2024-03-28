@@ -7,7 +7,6 @@ const { GraphQLError } = require("graphql");
 module.exports = {
   Query: {
     async getListings() {
-      console.log("in getListings");
       try {
         const listings = await Listing.find();
         return listings;
@@ -90,9 +89,7 @@ module.exports = {
       },
       context
     ) {
-      //console.log(context.req.headers.authorization);
       const user = checkAuth(context);
-      console.log(user);
 
       const newListing = new Listing({
         user: user.id,
@@ -120,8 +117,6 @@ module.exports = {
 
       try {
         const listing = await Listing.findById(listingId);
-
-        console.log(listing);
         //user should only be able to delete their own posts
         if (user.id == listing.user) {
           await Listing.findByIdAndDelete(listingId);
