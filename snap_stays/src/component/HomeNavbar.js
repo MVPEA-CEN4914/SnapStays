@@ -1,18 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Router, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import BlackLogo from "../images/BlackLogo.png";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Logout from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
@@ -50,21 +45,6 @@ function HomeNavbar() {
             <Button
               variant="text"
               component={RouterLink}
-              to="/list-stay"
-              sx={{
-                color: theme.palette.secondary.main,
-                "&:hover": {
-                  bgcolor: theme.palette.background.default,
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              List A Stay
-            </Button>
-            <Button
-              variant="text"
-              component={RouterLink}
               to="/find-stay"
               sx={{
                 color: theme.palette.secondary.main,
@@ -76,6 +56,21 @@ function HomeNavbar() {
               }}
             >
               Find A Stay
+            </Button>
+            <Button
+              variant="text"
+              component={RouterLink}
+              to="/list-stay"
+              sx={{
+                color: theme.palette.secondary.main,
+                "&:hover": {
+                  bgcolor: theme.palette.background.default,
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              List A Stay
             </Button>
             <Tooltip title="My profile">
               <IconButton
@@ -146,7 +141,7 @@ function HomeNavbar() {
     );
   } else {
     navBar = (
-      <AppBar position="static" sx={{ bgcolor: "#E6E6DD", height: "10vh"}}>
+      <AppBar position="static" sx={{ bgcolor: "#E6E6DD", height: "10vh" }}>
         <Toolbar>
           <IconButton edge="start" component={RouterLink} to="/">
             <img
@@ -157,21 +152,6 @@ function HomeNavbar() {
           </IconButton>
 
           <Stack direction="row" spacing={2} sx={{ ml: "auto" }}>
-            <Button
-              variant="text"
-              component={RouterLink}
-              to="/login"
-              sx={{
-                color: theme.palette.secondary.main,
-                "&:hover": {
-                  bgcolor: theme.palette.background.default,
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              List A Stay
-            </Button>
             <Button
               variant="text"
               component={RouterLink}
@@ -186,6 +166,21 @@ function HomeNavbar() {
               }}
             >
               Find A Stay
+            </Button>
+            <Button
+              variant="text"
+              component={RouterLink}
+              to="/login"
+              sx={{
+                color: theme.palette.secondary.main,
+                "&:hover": {
+                  bgcolor: theme.palette.background.default,
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              List A Stay
             </Button>
             <Button
               variant="contained"
