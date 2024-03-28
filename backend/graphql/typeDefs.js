@@ -24,6 +24,8 @@ module.exports = gql`
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
+    description: String
+    images: [String]
     createdAt: String!
     user: User!
   }
@@ -53,6 +55,8 @@ module.exports = gql`
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
+    description: String
+    images: [String]
   }
 
   type Query {

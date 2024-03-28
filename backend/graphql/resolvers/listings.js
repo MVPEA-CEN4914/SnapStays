@@ -42,6 +42,8 @@ module.exports = {
           isFurnished,
           utilitiesIncluded,
           petsAllowed,
+          description,
+          images,
         },
       }, context
     ) {
@@ -62,6 +64,8 @@ module.exports = {
         isFurnished,
         utilitiesIncluded,
         petsAllowed,
+        description,
+        images,
         createdAt: new Date().toISOString(),
       });
       await newListing.save();
