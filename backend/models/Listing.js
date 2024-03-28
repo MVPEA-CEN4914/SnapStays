@@ -42,6 +42,12 @@ const listingSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  description: {
+    type: String,
+  },
+  images: {
+    type: [String],
+  },
   createdAt: {
     type: String,
     required: true,
