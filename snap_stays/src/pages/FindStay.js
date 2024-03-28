@@ -16,7 +16,9 @@ import StayCard from "../component/StayCard";
 function FindStay() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const [selectedFilters, setSelectedFilters] = useState({
+    title: null,
     price: [100, 5000],
     numberOfRoommates: "any",
     bathroomType: "any",
@@ -24,6 +26,13 @@ function FindStay() {
     utilitiesIncluded: false,
     petsAllowed: false,
   });
+
+  const handleSearch = (event, value) => {
+    setSelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      title: value,
+    }));
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -59,7 +68,7 @@ function FindStay() {
             <Grid
               item
               xs={4}
-              md={3}
+              md={2}
               sx={{
                 display: "flex",
                 flexDirection: "row",
@@ -80,11 +89,19 @@ function FindStay() {
                 onClose={handleClose}
               />
             </Grid>
-            <Grid item xs={4} md={6}>
+            <Grid item xs={4} md={7}>
               <Autocomplete
-                id="listing-search-bar"
+                name="title"
                 freeSolo
-                options={data.getFilteredListings.map((listing) => listing.title)}
+                onChange={handleSearch}
+                value={selectedFilters.title}
+                inputValue={inputValue}
+                onInputChange={(event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }}
+                options={data.getFilteredListings.map(
+                  (listing) => listing.title
+                )}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -130,6 +147,7 @@ function FindStay() {
 
 const GET_FILTERED_LISTINGS_QUERY = gql`
   query getFilteredListings(
+    $title: String
     $price: [Int]!
     $numberOfRoommates: String!
     $bathroomType: String!
@@ -139,6 +157,7 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
   ) {
     getFilteredListings(
       filteredInput: {
+        title: $title
         price: $price
         numberOfRoommates: $numberOfRoommates
         bathroomType: $bathroomType

@@ -30,6 +30,7 @@ module.exports = {
     async getFilteredListings(_, args) {
       // Destructure the input arguments
       const {
+        title,
         price,
         numberOfRoommates,
         bathroomType,
@@ -38,8 +39,11 @@ module.exports = {
         petsAllowed,
       } = args.filteredInput;
 
-      console.log(price);
       const filter = {};
+      if (title != null) {
+        const regexPattern = new RegExp(title, "i");
+        filter.title = { $regex: regexPattern};
+      }
       if (price && price.length > 0) {
         filter.price = { $gt: price[0], $lt: price[1] };
       }
@@ -58,7 +62,6 @@ module.exports = {
       if (petsAllowed) {
         filter.petsAllowed = petsAllowed;
       }
-      console.log(filter);
 
       try {
         const listings = await Listing.find(filter);

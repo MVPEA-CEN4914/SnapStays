@@ -56,6 +56,7 @@ module.exports = gql`
   }
 
   input FilteredInput {
+    title: String
     price: [Int]!
     numberOfRoommates: String!
     bathroomType: String!
