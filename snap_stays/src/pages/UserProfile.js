@@ -8,15 +8,19 @@ import Button from "@mui/material/Button";
 import { Container, Typography, makeStyles } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MyCard from "../component/MyCard";
+import MyListCard from "../component/MyListCard";
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
+import Pagination from "@mui/material/Pagination";
 
 function UserProfile() {
   const { user } = useContext(AuthContext);
   const [isEditingAbout, setIsEditingAbout] = useState(false);
   const [aboutContent, setAboutContent] = useState("");
+  const [currentFavoritesPage, setCurrentFavoritesPage] = useState(1);
+  const [currentUserListingsPage, setCurrentUserListingsPage] = useState(1);
   
-  
+
   const {
     loading: userLoading,
     error: userError,
@@ -31,13 +35,17 @@ function UserProfile() {
   } = useQuery(GET_LISTINGS_QUERY);
 
   if (userLoading || listingsLoading) return <p>Loading...</p>;
-  if (userError) return <p>Error: {userError.message}</p>;
-  if (listingsError) return <p>Error: {listingsError.message}</p>;
+  if (userError) return <p>Error: {userError.message} user </p>;
+  if (listingsError) return <p>Error: {listingsError.message} listing </p>;
+
 
   const userDetail = userData.getUser;
-  const userListing = listingsData.getListings.filter(
-    (listing) => listing.userId === user.id
-  );
+
+const favorites = userDetail.favorites || [];
+const favoritesPerPage = 2;
+const indexOfLastFavorite = currentFavoritesPage * favoritesPerPage;
+const indexOfFirstFavorite = indexOfLastFavorite - favoritesPerPage;
+const currentFavorites = favorites.slice(indexOfFirstFavorite, indexOfLastFavorite);
 
   const handleEditAbout = () => {
     setIsEditingAbout(!isEditingAbout);
@@ -49,6 +57,20 @@ function UserProfile() {
     setIsEditingAbout(false);
     // Update the user's about content in the backend with the value of aboutContent
   };
+    // Filter user's listings
+    const userOwnedListings = listingsData.getListings.filter(
+      (listing) => listing.user.id === user.id
+    );
+    //Pagination for the User Listings 
+    const listingsPerPage = 2;
+  const indexOfLastListing = currentUserListingsPage * listingsPerPage;
+  const indexOfFirstListing = indexOfLastListing - listingsPerPage;
+  const currentUserListings = userOwnedListings.slice(
+    indexOfFirstListing,
+    indexOfLastListing
+  );
+
+
 
   return (
     <div style={{ padding: "16px" }}>
@@ -127,11 +149,32 @@ function UserProfile() {
             justifyContent="center"
           >
             <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">My Listing(s)  </Typography>
-            <Button variant="contained" color="primary" href="/list-stay" startIcon={<AddIcon />} >
-              
+            <Button variant="contained" color="primary" href="/list-stay" startIcon={<AddIcon />} > 
             </Button>
-            <MyCard/>
-            <MyCard/> 
+            {currentUserListings.map((listing) => (
+          <MyListCard key={listing.id} listing={listing} />
+        ))}
+                {/* Pagination */}
+                <Pagination
+          count={Math.ceil(userOwnedListings.length / listingsPerPage)}
+          page={currentUserListingsPage}
+          onChange={(event, value) => setCurrentUserListingsPage(value)}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              borderRadius: 0,
+            },
+            "& .MuiPaginationItem-page": {
+              "&.Mui-selected": {
+                backgroundColor: "#AF8C53",
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: "#CDB285",
+                },
+              },
+            },
+          }}
+        />
+
           </Grid>
 
           {/*Messages grid*/}
@@ -157,6 +200,29 @@ function UserProfile() {
             justifyContent={"center"}
           >
             <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">My Favorites</Typography>
+            {currentFavorites.map((favorite) => (
+                   <MyCard listing={favorite} />   
+            ))}
+            {/* Pagination */}
+          <Pagination
+               count={Math.ceil(favorites.length / favoritesPerPage)}
+               page={currentFavoritesPage}
+               onChange={(event, value) => setCurrentFavoritesPage(value)}
+               sx={{ 
+                '& .MuiPaginationItem-root': { 
+                  borderRadius: 0,
+                },
+                '& .MuiPaginationItem-page': {
+                  '&.Mui-selected': {
+                    backgroundColor: '#AF8C53',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#CDB285',
+                    },
+                  },
+                },
+              }}
+          />
           </Grid>
         </Grid>
     </div>
@@ -170,9 +236,18 @@ const GET_USER_QUERY = gql`
       email
       fullName
       username
+      favorites{
+        id
+        title
+        price
+        location
+        leaseStartDate
+        leaseEndDate
+      }
     }
   }
 `;
+
 const GET_LISTINGS_QUERY = gql`
   {
     getListings {
@@ -183,6 +258,10 @@ const GET_LISTINGS_QUERY = gql`
       leaseStartDate
       leaseEndDate
       location
+      user{
+        id
+        fullName
+      }
     }
   }
 `;

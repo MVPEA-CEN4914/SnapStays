@@ -8,17 +8,17 @@ module.exports = {
   Query: {
     async getListings() {
       try {
-        const listings = await Listing.find();
+        const listings = await Listing.find().populate('user');
         return listings;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async getListing(_, { listingId }) {
+    async getListing(_, {listingId}) {
       try {
-        const Listing = await Listing.findById(listingId);
-        if (Listing) {
-          return Listing;
+        const foundListing = await Listing.findById(listingId);
+        if (foundListing) {
+          return foundListing;
         } else {
           throw new Error("Listing not found");
         }

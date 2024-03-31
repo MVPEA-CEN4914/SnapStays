@@ -87,7 +87,7 @@ module.exports = {
     async getUser(_, {userId}){
       try{
         console.log(userId);
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate('favorites');
         console.log(user);
         if(user){
           return user;
@@ -95,17 +95,6 @@ module.exports = {
           throw new Error("User not found");
         }
       }catch(err){
-        throw new Error(err);
-      }
-    },
-    async getFavorites(_, { id }) {
-      try {
-        const user = await User.findById(id).populate('favorites');
-        if (!user) {
-          throw new Error('User not found');
-        }
-        return user.favorites;
-      } catch (err) {
         throw new Error(err);
       }
     },
