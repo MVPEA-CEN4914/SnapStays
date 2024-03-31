@@ -10,6 +10,7 @@ module.exports = gql`
     password: String!
     createdAt: String!
     verified: Boolean!
+    favorites: [Listing]
   }
 
   type Listing {
@@ -24,6 +25,8 @@ module.exports = gql`
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
+    description: String
+    images: [String]
     createdAt: String!
     user: User!
   }
@@ -53,6 +56,18 @@ module.exports = gql`
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
+    description: String
+    images: [String]
+  }
+
+  input FilteredInput {
+    title: String
+    price: [Int]!
+    numberOfRoommates: String!
+    bathroomType: String!
+    isFurnished: Boolean!
+    utilitiesIncluded: Boolean!
+    petsAllowed: Boolean!
   }
 
   type Query {
@@ -60,6 +75,8 @@ module.exports = gql`
     getUser(userId: ID!): User 
     getListings: [Listing]
     getListing(listingId: ID!): Listing
+    getFilteredListings(filteredInput: FilteredInput): [Listing]
+    getFavorites(id: ID!): [Listing]
   }
 
   type Mutation {
@@ -70,5 +87,6 @@ module.exports = gql`
     verifyUser(id: ID!): User!
     forgotPassword(email: String!): User!
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
+    addListingToFavorites(listingId: ID!): User!
   }
 `;

@@ -16,6 +16,11 @@ import { ApolloProvider } from "@apollo/client";
 import { AuthProvider } from './context/auth';
 
 const theme = createTheme({
+  typography: {
+    fontFamily: [
+      '"Josefin Sans"',
+    ].join(','),
+  },
   components: {
     MuiButton: {
       defaultProps: {

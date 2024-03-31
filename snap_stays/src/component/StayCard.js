@@ -1,38 +1,55 @@
-import React from "react";
-import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-
+import { Card, CardHeader, CardMedia, CardContent, IconButton, Typography, Avatar } from "@mui/material";
+import StarIcon from '@mui/icons-material/Star'; // Import for filled star
+import { gql, useMutation } from "@apollo/client";
 import TempListing from "../images/TempListing.jpg";
 
+const FAVORITE = gql`
+mutation AddListingToFavorites($listingId: ID!) {
+  addListingToFavorites(listingId: $listingId) {
+    favorites {
+      id
+      title
+    }
+  }
+}
+`;
+
 function StayCard({ listing }) {
-  const theme = useTheme();
+  const [isFavorite, setIsFavorite] = useState(false); // Initialize as not favorite
+  const [addToFavorites, { loading, error }] = useMutation(FAVORITE, {
+    variables: { listingId: listing.id },
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
+      }
+    },
+    onCompleted: () => setIsFavorite(!isFavorite) // Toggle favorite status on completion
+  });
+
+  const handleFavorite = () => {
+    if (!localStorage.getItem("jwtToken")) {
+      console.log("No JWT found. User might not be logged in.");
+      return;
+    }
+    addToFavorites();
+  };
+
   return (
-    <Card
-      sx={{
-        maxWidth: "16rem",
-        border: "3px solid black",
-        borderRadius: "1rem",
-        margin: "0.5rem",
-      }}
-    >
+    <Card sx={{ maxWidth: "16rem", border: "3px solid black", borderRadius: "1rem", margin: "0.5rem" }}>
       <CardMedia component="div" sx={{ position: "relative" }}>
         <IconButton
           aria-label="add to favorites"
           sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
+          onClick={handleFavorite}
         >
-          <StarBorderIcon />
+          {isFavorite ? <StarIcon style={{ color: "yellow" }} /> : <StarBorderIcon />}
         </IconButton>
         <img
           src={TempListing}
+          alt="Listing"
           style={{
             height: "15rem",
             width: "100%",
@@ -43,23 +60,9 @@ function StayCard({ listing }) {
           }}
         />
       </CardMedia>
-      <CardHeader
-        avatar={
-          <Avatar
-            sx={{ bgcolor: theme.palette.primary.main }}
-            aria-label="user profile picture"
-          >
-            R
-          </Avatar>
-        }
-        title={listing.title}
-        subheader={listing.location}
-        sx={{ paddingY: "0" }}
-      />
-      <CardContent sx={{ paddingBottom: "0" }}>
-        <Typography variant="body2" color="text.secondary">
-          {listing.leaseStartDate} - {listing.leaseEndDate}
-        </Typography>
+      <CardHeader avatar={<Avatar sx={{ bgcolor: "red" }}>R</Avatar>} title={listing.title} subheader={listing.location} />
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">{`${listing.leaseStartDate} - ${listing.leaseEndDate}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>
       </CardContent>
     </Card>
