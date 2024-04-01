@@ -12,6 +12,11 @@ import MyListCard from "../component/MyListCard";
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import Pagination from "@mui/material/Pagination";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+
 
 function UserProfile() {
   const { user } = useContext(AuthContext);
@@ -19,7 +24,11 @@ function UserProfile() {
   const [aboutContent, setAboutContent] = useState("");
   const [currentFavoritesPage, setCurrentFavoritesPage] = useState(1);
   const [currentUserListingsPage, setCurrentUserListingsPage] = useState(1);
-  
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [about, setAbout] = useState("");
+
 
   const {
     loading: userLoading,
@@ -47,16 +56,21 @@ const indexOfLastFavorite = currentFavoritesPage * favoritesPerPage;
 const indexOfFirstFavorite = indexOfLastFavorite - favoritesPerPage;
 const currentFavorites = favorites.slice(indexOfFirstFavorite, indexOfLastFavorite);
 
-  const handleEditAbout = () => {
-    setIsEditingAbout(!isEditingAbout);
-    setAboutContent(userDetail.about || ""); // Set the initial value of about content
-  };
+const handleEditAbout = () => {
+  setIsEditingAbout(true);
+  setAboutContent(userDetail.about || ""); // Set the initial value of about content
+  
+};
 
-  const handleSaveAbout = () => {
-    // You would typically perform an API call here to update the user's about content in the backend
-    setIsEditingAbout(false);
-    // Update the user's about content in the backend with the value of aboutContent
-  };
+const handleSaveAbout = () => {
+  // You would typically perform an API call here to update the user's about content in the backend
+  setIsEditingAbout(false);
+  // Update the user's about content in the backend with the value of aboutContent
+};
+
+const handleClose = () => {
+  setIsEditingAbout(false);
+};
     // Filter user's listings
     const userOwnedListings = listingsData.getListings.filter(
       (listing) => listing.user.id === user.id
@@ -107,6 +121,49 @@ const currentFavorites = favorites.slice(indexOfFirstFavorite, indexOfLastFavori
               <Button variant="contained" color="primary" onClick={handleEditAbout}>
               {isEditingAbout ? "Cancel" : "Edit"}
               </Button>
+              <Dialog open={isEditingAbout} onClose={handleClose}>
+                <DialogTitle>Edit Profile</DialogTitle>
+                <DialogContent>
+                   <TextField
+                      label="Full Name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      variant="outlined"
+                      fullWidth
+                    />
+                    <TextField
+                      label="Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      variant="outlined"
+                      fullWidth
+                    />
+                    <TextField
+                      label="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      variant="outlined"
+                      fullWidth
+                    />
+                    <TextField
+                      label="About"
+                      value={about}
+                      onChange={(e) => setAbout(e.target.value)}
+                      variant="outlined"
+                      fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} color="primary">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSaveAbout} color="primary">
+                    Save
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
+
             </Grid>
 
             <Typography variant="h5" fontFamily="Josefin Sans">
