@@ -16,7 +16,7 @@ module.exports = {
     },
     async getListing(_, {listingId}) {
       try {
-        const foundListing = await Listing.findById(listingId);
+        const foundListing = await Listing.findById(listingId).populate('user');
         if (foundListing) {
           return foundListing;
         } else {
