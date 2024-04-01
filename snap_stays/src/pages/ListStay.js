@@ -1,63 +1,71 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { gql } from 'graphql-tag';
-import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-//import IconButton from '@material-ui/core/IconButton';
-//import CloseIcon from '@material-ui/icons/Close';
+import * as React from "react";
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { gql } from "graphql-tag";
+import { useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import InputAdornment from "@mui/material/InputAdornment";
+import Divider from "@mui/material/Divider";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "@mui/icons-material/Clear";
+import AddIcon from "@mui/icons-material/Add";
+import UploadIcon from "@mui/icons-material/Upload";
 
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const defaultTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#AF8C53', // Mustard
-    },
-    secondary: {
-      main: '#2B2B2B', // Black
-    },
-  },
-});
+const nums = ["1", "2", "3", "4"];
 
 function ListStay() {
+  const theme = useTheme();
   const navigate = useNavigate();
+  const [dateStart, setDateStart] = useState(null);
+  const [dateEnd, setDateEnd] = useState(null);
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
-    title: '',
-    description: '',
-    address: '',
-    monthlyRent: '',
-    leaseStartDate: '',
-    leaseEndDate: '',
-    roommates: '',
-    furnished: '',
-    utilitiesIncluded: '',
-    bathroom: '',
-    pets: '',
+    title: "",
+    description: "",
+    address: "",
+    monthlyRent: "",
+    leaseStartDate: "",
+    leaseEndDate: "",
+    numberOfRoommates: "1",
+    bathroomType: "",
+    isFurnished: false,
+    utilitiesIncluded: false,
+    petsAllowed: false,
     images: [],
   });
 
   const onChange = (event) => {
-    const { name, value } = event.target;
     setValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const handleChangeCheck = (event) => {
+    setValues((prevFilters) => ({
+      ...prevFilters,
+      [event.target.name]: event.target.checked,
     }));
   };
 
   const [listStay, { loading }] = useMutation(LIST_STAY, {
     update(_, result) {
-      navigate('/');
+      navigate("/");
     },
     onError(err) {
       if (err.graphQLErrors && err.graphQLErrors.length > 0) {
@@ -65,10 +73,10 @@ function ListStay() {
         if (extensionErrors) {
           setErrors(extensionErrors);
         } else {
-          setErrors({ general: 'An error occurred' });
+          setErrors({ general: "An error occurred" });
         }
       } else {
-        setErrors({ general: 'An error occurred' });
+        setErrors({ general: "An error occurred" });
       }
     },
     variables: values,
@@ -80,13 +88,14 @@ function ListStay() {
   };
 
   const handleFileChange = (event) => {
-    //const files = event.target.files;
-    // Handle the files...
-    const files = Array.from(event.target.files);
+    let newFile = Array.from(event.target.files);
+    if (values.images.length > 0) {
+      newFile = values.images.concat(newFile);
+    }
     setValues((prevValues) => ({
-    ...prevValues,
-    images: files,
-  }));
+      ...prevValues,
+      images: newFile.length > 10 ? newFile.slice(0, 10) : newFile, // to avoid glitch of adding more at once
+    }));
   };
 
   const handleDelete = (index) => {
@@ -98,514 +107,352 @@ function ListStay() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Grid container >
-        <Grid item xs={12} sm={6}>
-      
-          <Box component="form" noValidate onSubmit={handleSubmit}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '20px',
-            }}
-            >
-            <Typography component="h1" variant="h4" sx={{ fontFamily: "Josefin Sans" }}>
-              List an Apartment for Sublease
-            </Typography>
+    <Grid container sx={{ backgroundColor: theme.palette.background.default }}>
+      <Grid item xs={12} sm={7}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{ paddingY: "1rem", fontWeight: "bold" }}
+          >
+            List an Apartment for Sublease
+          </Typography>
+          <TextField
+            id="title"
+            label="Title"
+            name="title"
+            autoComplete="title"
+            fullWidth
+            required
+            value={values.title}
+            error={errors.title ? true : false}
+            onChange={onChange}
+          />
+          <TextField
+            id="address"
+            label="Address"
+            name="address"
+            autoComplete="address"
+            fullWidth
+            required
+            value={values.address}
+            error={errors.address ? true : false}
+            onChange={onChange}
+          />
+          <Grid display="flex">
             <TextField
-                sx={{ '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderRadius: '15px', // Adjust this value to your liking
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'black', // Change this to your desired hover color
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'black', // Change this to your desired focus color
-                  },
-                },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'grey',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'grey',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'grey',
-                }
-              }}
-              margin="normal"
-              required
-              fullWidth
-              id="title"
-              label="Title"
-              name="title"
-              autoComplete="title"
-              value={values.title}
-              error={errors.title ? true : false}
-              onChange={onChange}
-            />
-            
-            <TextField
-              sx={{ '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderRadius: '15px', // Adjust this value to your liking
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Change this to your desired hover color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Change this to your desired focus color
-                },
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              }
-            }}
-              margin="normal"
-              required
-              fullWidth
-              id="address"
-              label="Address"
-              name="address"
-              autoComplete="address"
-              value={values.address}
-              error={errors.address ? true : false}
-              onChange={onChange}
-            />
-            <TextField
-              sx={{ '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderRadius: '15px', // Adjust this value to your liking
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Change this to your desired hover color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Change this to your desired focus color
-                },
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              }
-            }}
-              margin="normal"
-              required
-              fullWidth
               id="monthlyRent"
-              label="Monthly Rent"
+              label="Montly Rent"
               name="monthlyRent"
               autoComplete="monthlyRent"
+              required
               value={values.monthlyRent}
               error={errors.monthlyRent ? true : false}
               onChange={onChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AttachMoneyIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ width: "10rem" }}
             />
-            <TextField
-              sx={{ '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderRadius: '15px', // Adjust this value to your liking
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Change this to your desired hover color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Change this to your desired focus color
-                },
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              }
-            }}
-              margin="normal"
-              required
-              fullWidth
-              id="leaseStartDate"
-              label="Lease Start Date"
-              name="leaseStartDate"
-              autoComplete="leaseStartDate"
-              value={values.leaseStartDate}
-              error={errors.leaseStartDate ? true : false}
-              onChange={onChange}
-            />
-            <TextField
-              sx={{ '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderRadius: '15px', // Adjust this value to your liking
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Change this to your desired hover color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Change this to your desired focus color
-                },
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              }
-            }}
-              margin="normal"
-              required
-              fullWidth
-              id="leaseEndDate"
-              label="Lease End Date"
-              name="leaseEndDate"
-              autoComplete="leaseEndDate"
-              value={values.leaseEndDate}
-              error={errors.leaseEndDate ? true : false}
-              onChange={onChange}
-            />
-            <Typography component="h1" variant="h5" sx={{ fontFamily: "Josefin Sans" }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer
+                components={["DatePicker"]}
+                sx={{ paddingTop: "1rem", paddingLeft: "1rem" }}
+              >
+                <DatePicker
+                  label="Lease Start Date *"
+                  value={dateStart}
+                  onChange={(newDate) => setDateStart(newDate)}
+                />
+                <Typography variant="h3" sx={{ color: "grey" }}>
+                  -
+                </Typography>
+                <DatePicker
+                  label="Lease End Date *"
+                  value={dateEnd}
+                  onChange={(newDate) => setDateEnd(newDate)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Grid>
+          <Divider variant="middle" sx={{ width: "100%", paddingY: "1rem" }}>
+            <Typography component="h1" variant="h5">
               Details
             </Typography>
-          <Grid container spacing={2} justifyContent="center" alignItems="center">
+          </Divider>
+          <Grid container>
+            <Grid item xs={2} />
+            <Grid item xs={5}>
+              <Grid item>
+                <Typography variant="p" sx={{ paddingRight: "1rem" }}>
+                  Roommates:{" "}
+                </Typography>
+                <ToggleButtonGroup
+                  value={values.numberOfRoommates}
+                  exclusive
+                  onChange={onChange}
+                  aria-label="number of roommates"
+                >
+                  {nums.map((num) => (
+                    <ToggleButton
+                      name="numberOfRoommates"
+                      value={num}
+                      key={num}
+                    >
+                      {num}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Grid>
+              <Grid item sx={{ paddingTop: "1rem" }}>
+                <Typography variant="p" sx={{ paddingRight: "1rem" }}>
+                  Bathrooms:
+                </Typography>
+                <ToggleButtonGroup
+                  value={values.bathroomType}
+                  exclusive
+                  onChange={onChange}
+                  aria-label="type of bathroom"
+                >
+                  <ToggleButton
+                    name="bathroomType"
+                    value="personal"
+                    key="personal"
+                  >
+                    Personal
+                  </ToggleButton>
+                  <ToggleButton name="bathroomType" value="shared" key="shared">
+                    Shared
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+            </Grid>
             <Grid item xs={4}>
-            
-            <FormControl variant="outlined" sx={{width: "100%", marginTop: '16px'}}>
-              
-            <InputLabel id="demo-simple-select-label" required>Roomates</InputLabel>
-            <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={values.roommates}
-            label="Roommates"
-            onChange={onChange}
-            name="roommates"
-            input={
-              <OutlinedInput
-                name="roommates"
-                id="outlined-roommates"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderRadius: '15px',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'black',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'black',
-                    },
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'grey',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'grey',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'grey',
-                  },
-                }}
-              />
-            }
-          >
-            <MenuItem value={10}>Yes</MenuItem>
-            <MenuItem value={20}>No</MenuItem>
-            </Select>
-          </FormControl>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.isFurnished}
+                      onChange={handleChangeCheck}
+                      name="isFurnished"
+                    />
+                  }
+                  label="Furnished"
+                />
+              </Grid>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.utilitiesIncluded}
+                      onChange={handleChangeCheck}
+                      name="utilitiesIncluded"
+                    />
+                  }
+                  label="Utilities Included"
+                />
+              </Grid>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.petsAllowed}
+                      onChange={handleChangeCheck}
+                      name="petsAllowed"
+                    />
+                  }
+                  label="Pets Allowed"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={5}>
-          
-              <FormControl variant="outlined" sx={{width: "100%", marginTop: '16px'}}>
-              
-                <InputLabel id="demo-simple-select-label" required>Furnished</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={values.furnished}
-                label="Furnished"
-                onChange={onChange}
-                name="furnished"
-                input={
-                  <OutlinedInput
-                    name="furnished"
-                    id="outlined-furnished"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderRadius: '15px',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'black',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: 'black',
-                        },
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                    }}
-                  />
-                }
-              >
-                <MenuItem value={10}>Yes</MenuItem>
-                <MenuItem value={20}>No</MenuItem>
-                </Select>
-              </FormControl>
-              </Grid>
-
-              
-            <Grid item xs={5}>
-          
-              <FormControl variant="outlined" sx={{width: "100%", marginTop: '16px'}}>
-              
-                <InputLabel id="demo-simple-select-label" required>Utilities Included</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={values.utilitiesIncluded}
-                label="utilitiesIncluded"
-                onChange={onChange}
-                name="utilitiesIncluded"
-                input={
-                  <OutlinedInput
-                    name="utilitiesIncluded"
-                    id="outlined-utilitiesIncluded"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderRadius: '15px',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'black',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: 'black',
-                        },
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                    }}
-                  />
-                }
-              >
-                <MenuItem value={10}>Yes</MenuItem>
-                <MenuItem value={20}>No</MenuItem>
-                </Select>
-              </FormControl>
-              </Grid>
-
-
-
-
-              <Grid item xs={4}>
-          
-              <FormControl variant="outlined" sx={{width: "100%", marginTop: '16px'}}>
-              
-                <InputLabel id="demo-simple-select-label" required>Bathroom Type</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={values.bathroom}
-                label="Bathroom"
-                onChange={onChange}
-                name="bathroom"
-                input={
-                  <OutlinedInput
-                    name="bathroom"
-                    id="outlined-bathroom"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderRadius: '15px',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'black',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: 'black',
-                        },
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                    }}
-                  />
-                }
-              >
-                <MenuItem value={10}>Shared</MenuItem>
-                <MenuItem value={20}>Private</MenuItem>
-                </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={4}>
-              <FormControl variant="outlined" sx={{width: "100%", marginTop: '16px'}}>
-              
-                <InputLabel id="demo-simple-select-label" required>Pets</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={values.pets}
-                label="Pets"
-                onChange={onChange}
-                name="pets"
-                input={
-                  <OutlinedInput
-                    name="pets"
-                    id="outlined-pets"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderRadius: '15px',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'black',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: 'black',
-                        },
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'grey',
-                      },
-                    }}
-                  />
-                }
-              >
-                <MenuItem value={10}>Allowed</MenuItem>
-                <MenuItem value={20}>Not Allowed</MenuItem>
-                </Select>
-              </FormControl>
-              </Grid>
-
-            </Grid>
-            <TextField
-              sx={{ '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderRadius: '15px', // Adjust this value to your liking
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Change this to your desired hover color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Change this to your desired focus color
+            <Grid item xs={1} />
+          </Grid>
+          <Divider
+            variant="middle"
+            sx={{ width: "100%", paddingBottom: "1rem" }}
+          />
+          <TextField
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderRadius: "15px",
                 },
               },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              }
             }}
-              margin="normal"
-              required
-              fullWidth
-              id="description"
-              label="Description"
-              name="description"
-              autoComplete="description"
-              value={values.description}
-              error={errors.description ? true : false}
-              onChange={onChange}
-              multiline // Add this
-              rows={4}
-            />
-            {/* TODO: Add file input for images */}
-            
-
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              List Apartment
-            </Button>
-          </Box>
-        </Grid>
-      <Grid item xs={12} sm={6}>
-        {/*leave empty space for upload images*/}
-       </Grid>
-
-       <Grid item xs={12} sm={6} style={{ marginLeft: 'auto', marginTop: '-600px' ,  justifyContent: 'flex-end' }}>
-       <Grid container direction="column" alignItems="center" >
-        <input
-          accept="image/*"
-          id="contained-button-file"
-          multiple
-          type="file"
-          onChange={handleFileChange}
-          style={{ display: 'none' , alignItems: 'center'}}
-        />
-        <label htmlFor="contained-button-file">
-          <Button variant="contained" component="span">
-            Upload Images
+            required
+            id="description"
+            label="Description"
+            name="description"
+            autoComplete="description"
+            value={values.description}
+            error={errors.description ? true : false}
+            onChange={onChange}
+            multiline
+            rows={4}
+          />
+          {/* TODO: Add file input for images */}
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              mt: 2,
+              mb: 1,
+              bgcolor: theme.palette.primary.main,
+              "&:hover": {
+                bgcolor: theme.palette.primary.light,
+              },
+            }}
+          >
+            List Apartment
           </Button>
-        </label>
-        </Grid>
-        {/* Display uploaded pictures here */}
-        <Grid container spacing={2} paddingTop={'10px'}>
-          {values.images.map((image, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index} >
-              <img src={URL.createObjectURL(image)} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
-              <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(index)}>
-                Delete
-              </Button>
+        </Box>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        style={{
+          marginLeft: "auto",
+          justifyContent: "flex-end",
+        }}
+      >
+        {values.images.length > 0 ? (
+          <Grid container spacing={2} padding={"1rem"}>
+            <Grid item xs={12} sm={6} md={4}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "3rem",
+                }}
+              >
+                <input
+                  accept="image/*"
+                  id="contained-button-file"
+                  multiple
+                  type="file"
+                  disabled={values.images.length > 9 ? true : false} // 10 pics max
+                  onChange={handleFileChange}
+                  style={{ display: "none", alignItems: "center" }}
+                />
+                <label htmlFor="contained-button-file">
+                  <IconButton
+                    variant="contained"
+                    component="span"
+                    disabled={values.images.length > 9 ? true : false} // 10 pics max
+                    sx={{
+                      height: "5rem",
+                      width: "5rem",
+                      color: theme.palette.background.default,
+                      bgcolor: theme.palette.primary.main,
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.light,
+                      },
+                    }}
+                  >
+                    <AddIcon fontSize="large" />
+                  </IconButton>
+                </label>
+              </Box>
             </Grid>
-          ))}
-        </Grid>
+            {values.images.map((image, index) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={index}
+                sx={{ position: "relative" }}
+              >
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded ${index}`}
+                  style={{
+                    width: "100%",
+                    height: "12rem",
+                    objectFit: "cover",
+                    borderRadius: "1rem",
+                    border: "2px solid black",
+                  }}
+                />
+                <IconButton
+                  variant="contained"
+                  onClick={() => handleDelete(index)}
+                  sx={{
+                    position: "absolute",
+                    top: "1.3rem",
+                    right: "0.3rem",
+                    height: "2rem",
+                    width: "2rem",
+                    color: theme.palette.background.default,
+                    bgcolor: theme.palette.error.main,
+                    "&:hover": {
+                      bgcolor: theme.palette.error.light,
+                    },
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Grid container spacing={2} sx={{ height: "90vh" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "3rem",
+                width: "100vh",
+                borderRadius: "1rem",
+                border: "2px solid black",
+                backgroundColor: theme.palette.secondary.light,
+              }}
+            >
+              <input
+                accept="image/*"
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: "none", alignItems: "center" }}
+              />
+              <label htmlFor="contained-button-file">
+                <IconButton variant="contained" component="span">
+                  <UploadIcon
+                    sx={{
+                      fontSize: "10rem",
+                      color: theme.palette.secondary.main,
+                    }}
+                  />
+                </IconButton>
+              </label>
+              <Typography variant="h6">
+                Upload up to 10 pictures of your place
+              </Typography>
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Grid>
-           
-    </ThemeProvider>
   );
 }
 
