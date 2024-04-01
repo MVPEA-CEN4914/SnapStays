@@ -148,9 +148,10 @@ const currentFavorites = favorites.slice(indexOfFirstFavorite, indexOfLastFavori
             
             justifyContent="center"
           >
-            <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">My Listing(s)  </Typography>
-            <Button variant="contained" color="primary" href="/list-stay" startIcon={<AddIcon />} > 
-            </Button>
+            <div style={{ display: 'flex', justifyContent: 'space-between' , width: '45%' }}>
+              <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">My Listing(s)</Typography>
+              <Button variant="contained" color="primary" href="/list-stay"> <AddIcon /></Button>
+            </div>
             {currentUserListings.map((listing) => (
           <MyListCard key={listing.id} listing={listing} />
         ))}
@@ -199,7 +200,11 @@ const currentFavorites = favorites.slice(indexOfFirstFavorite, indexOfLastFavori
             style={{ border: "1px solid orange" , marginTop: "50px"}}
             justifyContent={"center"}
           >
-            <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">My Favorites</Typography>
+            <div style={{ display: 'flex', justifyContent: 'space-between' , width: '45%' }}>
+              <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">My Favorites</Typography>
+              <Button variant="contained" color="primary" href="/find-stay"> <AddIcon /></Button>
+            </div>
+
             {currentFavorites.map((favorite) => (
                    <MyCard listing={favorite} />   
             ))}
