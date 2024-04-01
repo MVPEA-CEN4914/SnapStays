@@ -63,29 +63,47 @@ function ListStay() {
     }));
   };
 
-  const [listStay, { loading }] = useMutation(LIST_STAY, {
-    update(_, result) {
-      navigate("/");
-    },
-    onError(err) {
-      if (err.graphQLErrors && err.graphQLErrors.length > 0) {
-        const extensionErrors = err.graphQLErrors[0]?.extensions?.errors;
-        if (extensionErrors) {
-          setErrors(extensionErrors);
-        } else {
-          setErrors({ general: "An error occurred" });
-        }
-      } else {
-        setErrors({ general: "An error occurred" });
-      }
-    },
-    variables: values,
-  });
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    listStay();
+
+    console.log(values);
+
+    const listingInput = {
+      title: values.title,
+      price: parseFloat(values.monthlyRent),
+      numberOfRoommates: parseInt(values.roommates, 10),
+      bathroomType: values.bathroom === "10" ? "shared" : "personal",
+      location: values.address,
+      leaseStartDate: values.leaseStartDate,
+      leaseEndDate: values.leaseEndDate,
+      isFurnished: values.furnished === "10",
+      utilitiesIncluded: values.utilitiesIncluded === "10",
+      petsAllowed: values.pets === "10",
+      description: values.description, // Make sure to collect this from the form
+      images: values.images.map((image) => image.url), // Assuming you have image URLs
+    };
+
+    console.log(listingInput);
+
+    createListing({ variables: { listingInput } });
   };
+
+  const [createListing, { loading, error }] = useMutation(CREATE_LISTING, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`, // Ensure you have the JWT stored in localStorage
+      },
+    },
+    onCompleted: () => {
+      // Handle successful listing creation
+      console.log("Listing created: ", values);
+      navigate("/find-stay");
+    },
+    onError: (apiError) => {
+      // Handle API call errors
+      console.error("Error listing the apartment:", apiError);
+    },
+  });
 
   const handleFileChange = (event) => {
     let newFile = Array.from(event.target.files);
@@ -455,51 +473,20 @@ function ListStay() {
     </Grid>
   );
 }
-
-const LIST_STAY = gql`
-  mutation listStay(
-    $title: String!
-    $description: String!
-    $address: String!
-    $monthlyRent: String!
-    $leaseStartDate: String!
-    $leaseEndDate: String!
-    $roommates: String!
-    $furnished: String!
-    $utilitiesIncluded: String!
-    $bathroom: String!
-    $pets: String!
-    $images: [Upload!]!
-  ) {
-    listStay(
-      listStayInput: {
-        title: $title
-        description: $description
-        address: $address
-        monthlyRent: $monthlyRent
-        leaseStartDate: $leaseStartDate
-        leaseEndDate: $leaseEndDate
-        roommates: $roommates
-        furnished: $furnished
-        utilitiesIncluded: $utilitiesIncluded
-        bathroom: $bathroom
-        pets: $pets
-        images: $images
-      }
-    ) {
+const CREATE_LISTING = gql`
+  mutation CreateListing($listingInput: ListingInput!) {
+    createListing(listingInput: $listingInput) {
       id
       title
-      description
-      address
-      monthlyRent
+      price
+      location
+      numberOfRoommates
+      bathroomType
       leaseStartDate
       leaseEndDate
-      roommates
-      furnished
+      isFurnished
       utilitiesIncluded
-      bathroom
-      pets
-      images
+      petsAllowed
     }
   }
 `;
