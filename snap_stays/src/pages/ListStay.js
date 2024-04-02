@@ -36,16 +36,16 @@ function ListStay() {
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     title: "",
-    description: "",
-    address: "",
-    monthlyRent: "",
+    location: "",
+    price: "",
     leaseStartDate: "",
     leaseEndDate: "",
     numberOfRoommates: "1",
-    bathroomType: "",
+    bathroomType: "personal",
     isFurnished: false,
     utilitiesIncluded: false,
     petsAllowed: false,
+    description: "",
     images: [],
   });
 
@@ -65,27 +65,10 @@ function ListStay() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    values.leaseStartDate = dateStart;
+    values.leaseEndDate = dateEnd;
     console.log(values);
-
-    const listingInput = {
-      title: values.title,
-      price: parseFloat(values.monthlyRent),
-      numberOfRoommates: parseInt(values.roommates, 10),
-      bathroomType: values.bathroom === "10" ? "shared" : "personal",
-      location: values.address,
-      leaseStartDate: values.leaseStartDate,
-      leaseEndDate: values.leaseEndDate,
-      isFurnished: values.furnished === "10",
-      utilitiesIncluded: values.utilitiesIncluded === "10",
-      petsAllowed: values.pets === "10",
-      description: values.description, // Make sure to collect this from the form
-      images: values.images.map((image) => image.url), // Assuming you have image URLs
-    };
-
-    console.log(listingInput);
-
-    createListing({ variables: { listingInput } });
+    createListing();
   };
 
   const [createListing, { loading, error }] = useMutation(CREATE_LISTING, {
@@ -103,6 +86,7 @@ function ListStay() {
       // Handle API call errors
       console.error("Error listing the apartment:", apiError);
     },
+    variables: values
   });
 
   const handleFileChange = (event) => {
@@ -157,9 +141,9 @@ function ListStay() {
             onChange={onChange}
           />
           <TextField
-            id="address"
+            id="location"
             label="Address"
-            name="address"
+            name="location"
             autoComplete="address"
             fullWidth
             required
@@ -169,13 +153,13 @@ function ListStay() {
           />
           <Grid display="flex">
             <TextField
-              id="monthlyRent"
+              id="price"
               label="Montly Rent"
-              name="monthlyRent"
+              name="price"
               autoComplete="monthlyRent"
               required
-              value={values.monthlyRent}
-              error={errors.monthlyRent ? true : false}
+              value={values.price}
+              error={errors.price ? true : false}
               onChange={onChange}
               InputProps={{
                 startAdornment: (
@@ -473,22 +457,54 @@ function ListStay() {
     </Grid>
   );
 }
+
 const CREATE_LISTING = gql`
-  mutation CreateListing($listingInput: ListingInput!) {
+  mutation CreateListing($listingInput: ListingInput) {
     createListing(listingInput: $listingInput) {
       id
       title
-      price
       location
-      numberOfRoommates
-      bathroomType
-      leaseStartDate
-      leaseEndDate
-      isFurnished
-      utilitiesIncluded
-      petsAllowed
     }
   }
 `;
+
+// const CREATE_LISTING = gql`
+//   mutation CreateListing(
+//     $title: String!
+//     $location: String!
+//     $price: Float!
+//     $leaseStartDate: String!
+//     $leaseEndDate: String!
+//     $numberOfRoommates: String!
+//     $bathroomType: String!
+//     $isFurnished: Boolean!
+//     $utilitiesIncluded: Boolean!
+//     $petsAllowed: Boolean!
+//     $description: String
+//     $images: [String]
+//   ) {
+//     createListing(
+//       listingInput: {
+//         title: $title
+//         location: $location
+//         price: $price
+//         leaseStartDate: $leaseStartDate
+//         leaseEndDate: $leaseEndDate
+//         numberOfRoommates: $numberOfRoommates
+//         bathroomType: $bathroomType
+//         isFurnished: $isFurnished
+//         utilitiesIncluded: $utilitiesIncluded
+//         petsAllowed: $petsAllowed
+//         description: $description
+//         images: $images
+//       }
+//     ) {
+//       id
+//       title
+//       price
+//       location
+//     }
+//   }
+// `;
 
 export default ListStay;

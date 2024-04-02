@@ -46,12 +46,12 @@ module.exports = gql`
 
   input ListingInput {
     title: String!
-    price: Float!
-    numberOfRoommates: Int!
-    bathroomType: String!
     location: String!
+    price: Float!
     leaseStartDate: String!
     leaseEndDate: String!
+    numberOfRoommates: String!
+    bathroomType: String!
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
