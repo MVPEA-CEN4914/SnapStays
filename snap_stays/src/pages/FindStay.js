@@ -157,7 +157,15 @@ function FindStay() {
                 center={{ lat: 29.652, lng: -82.325 }}
                 zoom={10}
               >
-                {/* You can add markers here using the Marker component */}
+                {/* {data.getFilteredListings.map((listing, index) => (
+                    <Marker
+                      key={index}
+                      position={{
+                        lat: listing.location.latitude, // replace with actual latitude property
+                        lng: listing.location.longitude, // replace with actual longitude property
+                      }}
+                    />
+                  ))}*/}
               </GoogleMap>
             </LoadScript>
           </div>
