@@ -21,12 +21,11 @@ import DialogActions from '@mui/material/DialogActions';
 function UserProfile() {
   const { user } = useContext(AuthContext);
   const [isEditingAbout, setIsEditingAbout] = useState(false);
-  const [aboutContent, setAboutContent] = useState("");
+  //const [aboutContent, setAboutContent] = useState("");
   const [currentFavoritesPage, setCurrentFavoritesPage] = useState(1);
   const [currentUserListingsPage, setCurrentUserListingsPage] = useState(1);
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [about, setAbout] = useState("");
 
 
@@ -57,8 +56,12 @@ const indexOfFirstFavorite = indexOfLastFavorite - favoritesPerPage;
 const currentFavorites = favorites.slice(indexOfFirstFavorite, indexOfLastFavorite);
 
 const handleEditAbout = () => {
+  //setIsEditingAbout(true);
+  //setAboutContent(userDetail.about || ""); // Set the initial value of about content
   setIsEditingAbout(true);
-  setAboutContent(userDetail.about || ""); // Set the initial value of about content
+  setFullName(userDetail.fullName || "");
+  setUsername(userDetail.username || "");
+  setAbout(userDetail.about || "");
   
 };
 
@@ -119,7 +122,7 @@ const handleClose = () => {
             </Grid>
             <Grid item paddingBottom={"15px"}>
               <Button variant="contained" color="primary" onClick={handleEditAbout}>
-              {isEditingAbout ? "Cancel" : "Edit"}
+               Edit
               </Button>
               <Dialog open={isEditingAbout} onClose={handleClose}>
                 <DialogTitle>Edit Profile</DialogTitle>
@@ -135,13 +138,6 @@ const handleClose = () => {
                       label="Username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      variant="outlined"
-                      fullWidth
-                    />
-                    <TextField
-                      label="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       variant="outlined"
                       fullWidth
                     />
@@ -162,8 +158,6 @@ const handleClose = () => {
                   </Button>
                 </DialogActions>
               </Dialog>
-
-
             </Grid>
 
             <Typography variant="h5" fontFamily="Josefin Sans">
@@ -175,23 +169,10 @@ const handleClose = () => {
             <Typography variant="h5" fontFamily="Josefin Sans">
               <b>Email:</b> {userDetail.email}
             </Typography>
-            {isEditingAbout ? (
-            <TextField
-              value={aboutContent}
-              onChange={(e) => setAboutContent(e.target.value)}
-              variant="outlined"
-              fullWidth
-            />
-          ) : (
             <Typography variant="body1" align="center" fontFamily="Josefin Sans">
               <b>About:</b> {userDetail.about || "No information available because we need to add about to user DB model"}
             </Typography>
-          )}
-          {isEditingAbout && (
-            <Button variant="contained" color="primary" onClick={handleSaveAbout}>
-              Save
-            </Button>
-          )}
+          
           </Grid>
 
           {/*My Listings grid*/}
@@ -298,6 +279,7 @@ const GET_USER_QUERY = gql`
       email
       fullName
       username
+      about
       favorites{
         id
         title

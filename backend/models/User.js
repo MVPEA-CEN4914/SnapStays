@@ -17,6 +17,10 @@ const userSchema = new Schema({
     lowercase: true,
     unique: true,
   },
+  about: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
@@ -34,6 +38,7 @@ const userSchema = new Schema({
     type: [{ type: Schema.Types.ObjectId, ref: 'Listing' }],
     default: []
   },
+  
 });
 
 module.exports = model("User", userSchema);

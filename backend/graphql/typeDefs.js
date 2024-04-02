@@ -11,6 +11,7 @@ module.exports = gql`
     createdAt: String!
     verified: Boolean!
     favorites: [Listing]
+    about: String
   }
 
   type Listing {
