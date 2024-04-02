@@ -10,6 +10,7 @@ module.exports = gql`
     password: String!
     createdAt: String!
     verified: Boolean!
+    favorites: [Listing]
   }
 
   type Listing {
@@ -75,6 +76,7 @@ module.exports = gql`
     getListings: [Listing]
     getListing(listingId: ID!): Listing
     getFilteredListings(filteredInput: FilteredInput): [Listing]
+    getFavorites(id: ID!): [Listing]
   }
 
   type Mutation {
@@ -85,5 +87,6 @@ module.exports = gql`
     verifyUser(id: ID!): User!
     forgotPassword(email: String!): User!
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
+    addListingToFavorites(listingId: ID!): User!
   }
 `;
