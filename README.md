@@ -16,6 +16,7 @@ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 npm install @apollo/react-hooks apollo-cache-inmemory apollo-link-http apollo-client
 npm install jwt-decode
 npm install @mui/system
+npm install cloudinary
 ```
 finally to get it running on your local host  
 ```bash
@@ -28,7 +29,8 @@ cd backend
 ```
 then download the react dependencies by running 
 ```bash
-npm install 
+npm install
+npm install cloudinary
 ```
 finally to get it running on your local host  
 ```bash
