@@ -1,5 +1,5 @@
 import { useQuery, gql } from "@apollo/client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/auth";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Grid";
@@ -16,6 +16,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import { useMutation } from "@apollo/client";
+
 
 
 function UserProfile() {
@@ -27,27 +29,38 @@ function UserProfile() {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [about, setAbout] = useState("");
+  const [updateUser, { data: updateData }] = useMutation(UPDATE_USER_MUTATION);
+
 
 
   const {
     loading: userLoading,
     error: userError,
     data: userData,
+    refetch: refetchUser,
   } = useQuery(GET_USER_QUERY, {
     variables: { userId: user.id },
   });
+  
   const {
     loading: listingsLoading,
     error: listingsError,
     data: listingsData,
   } = useQuery(GET_LISTINGS_QUERY);
 
+  const userDetail = userData ? userData.getUser : null;
+  useEffect(() => {
+    if (updateData) {
+      setFullName(updateData.updateUser.fullName);
+      setUsername(updateData.updateUser.username);
+      setAbout(updateData.updateUser.about);
+    }
+  }, [updateData]);
+
   if (userLoading || listingsLoading) return <p>Loading...</p>;
   if (userError) return <p>Error: {userError.message} user </p>;
   if (listingsError) return <p>Error: {listingsError.message} listing </p>;
 
-
-  const userDetail = userData.getUser;
 
 const favorites = userDetail.favorites || [];
 const favoritesPerPage = 2;
@@ -65,9 +78,28 @@ const handleEditAbout = () => {
   
 };
 
-const handleSaveAbout = () => {
-  // You would typically perform an API call here to update the user's about content in the backend
+const handleSaveAbout = (e) => {
+  e.preventDefault();
+  updateUser({
+    variables: {
+      userId: user.id,
+      fullName: fullName,
+      username: username,
+      about: about,
+    },
+    refetchQueries: [{ query: GET_USER_QUERY, variables: { userId: user.id } }],
+  })
+  .then(response => {
+    // The response object contains the result of the mutation.
+    // You can access the updated user with response.data.updateUser
+    console.log('User updated:', response.data.updateUser);
+  })
+  .catch(error => {
+    console.error('Error updating user:', error);
+  });
   setIsEditingAbout(false);
+  // You would typically perform an API call here to update the user's about content in the backend
+  //setIsEditingAbout(false);
   // Update the user's about content in the backend with the value of aboutContent
 };
 
@@ -129,24 +161,30 @@ const handleClose = () => {
                 <DialogContent>
                    <TextField
                       label="Full Name"
+                      input type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       variant="outlined"
                       fullWidth
+                      
                     />
                     <TextField
                       label="Username"
+                      input type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       variant="outlined"
                       fullWidth
+                      
                     />
                     <TextField
                       label="About"
+                      input type="text"
                       value={about}
                       onChange={(e) => setAbout(e.target.value)}
                       variant="outlined"
                       fullWidth
+                      
                     />
                 </DialogContent>
                 <DialogActions>
@@ -170,7 +208,7 @@ const handleClose = () => {
               <b>Email:</b> {userDetail.email}
             </Typography>
             <Typography variant="body1" align="center" fontFamily="Josefin Sans">
-              <b>About:</b> {userDetail.about || "No information available because we need to add about to user DB model"}
+              <b>About:</b> {userDetail.about || "*Input about information here*"}
             </Typography>
           
           </Grid>
@@ -306,6 +344,18 @@ const GET_LISTINGS_QUERY = gql`
         id
         fullName
       }
+    }
+  }
+`;
+
+
+const UPDATE_USER_MUTATION = gql`
+  mutation UpdateUser($userId: ID!, $fullName: String!, $username: String!, $about: String!) {
+    updateUser(userId: $userId,fullName: $fullName, username: $username, about: $about) {
+      userId
+      fullName
+      username
+      about
     }
   }
 `;
