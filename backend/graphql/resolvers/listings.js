@@ -1,8 +1,28 @@
 const Listing = require("../../models/Listing");
 const { findByIdAndDelete } = require("../../models/User");
 const checkAuth = require("../../util/check-auth");
+require('dotenv').config();
+const cloudinary = require('cloudinary').v2;
 
 const { GraphQLError } = require("graphql");
+
+// Configure Cloudinary with your credentials
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET
+});
+
+async function deleteImage(publicId) {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error('Error deleting image from Cloudinary:', error);
+    throw error;
+  }
+}
 
 module.exports = {
   Query: {
@@ -123,6 +143,13 @@ module.exports = {
         const listing = await Listing.findById(listingId);
         //user should only be able to delete their own posts
         if (user.id == listing.user) {
+           // Delete images from Cloudinary before deleting the listing
+           for (const imageUrl of listing.images) {
+            // Extract the public ID from the image URL
+            const publicId = parsePublicIdFromUrl(imageUrl);
+            // Delete the image from Cloudinary
+            await deleteImage(publicId);
+          }
           await Listing.findByIdAndDelete(listingId);
           return "Listing deleted successfully";
         } else {
@@ -134,3 +161,12 @@ module.exports = {
     },
   },
 };
+
+// Function to parse the public ID from a Cloudinary image URL
+function parsePublicIdFromUrl(imageUrl) {
+  // Example URL: https://res.cloudinary.com/demo/image/upload/v1576259685/sample.jpg
+  // Extract the public ID between 'upload/' and the file extension
+  const startIndex = imageUrl.indexOf('upload/') + 'upload/'.length;
+  const endIndex = imageUrl.lastIndexOf('.');
+  return imageUrl.substring(startIndex, endIndex);
+}

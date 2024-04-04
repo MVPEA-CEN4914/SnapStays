@@ -227,26 +227,35 @@ const handleClose = () => {
             {currentUserListings.map((listing) => (
           <MyListCard key={listing.id} listing={listing} />
         ))}
-                {/* Pagination */}
-                <Pagination
-          count={Math.ceil(userOwnedListings.length / listingsPerPage)}
-          page={currentUserListingsPage}
-          onChange={(event, value) => setCurrentUserListingsPage(value)}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              borderRadius: 0,
-            },
-            "& .MuiPaginationItem-page": {
-              "&.Mui-selected": {
-                backgroundColor: "#AF8C53",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#CDB285",
-                },
-              },
-            },
-          }}
-        />
+{/* Pagination for My Listings */}
+<Grid
+  container
+  spacing={1}
+  xs={12}
+  md={6}
+  style={{ border: "1px solid black", marginTop: "10px" }} // Adjust marginTop as needed
+  justifyContent="center"
+>
+  <Pagination
+    count={Math.ceil(userOwnedListings.length / listingsPerPage)}
+    page={currentUserListingsPage}
+    onChange={(event, value) => setCurrentUserListingsPage(value)}
+    sx={{
+      "& .MuiPaginationItem-root": {
+        borderRadius: 1,
+      },
+      "& .MuiPaginationItem-page": {
+        "&.Mui-selected": {
+          backgroundColor: "#AF8C53",
+          color: "#fff",
+          "&:hover": {
+            backgroundColor: "#CDB285",
+          },
+        },
+      },
+    }}
+  />
+</Grid>
 
           </Grid>
 
@@ -256,7 +265,7 @@ const handleClose = () => {
             spacing={1}
             xs={12}
             md={6}
-            style={{ border: "1px solid black" , marginTop: "50px"}}
+            style={{ border: "1px solid black" , marginTop: "10px"}}
             justifyContent={"center"}
           >
             <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">Messages</Typography>
@@ -268,7 +277,7 @@ const handleClose = () => {
             spacing={1}
             xs={12}
             md={6}
-            style={{ border: "1px solid orange" , marginTop: "50px"}}
+            style={{ border: "1px solid orange" , marginTop: "10px"}}
             justifyContent={"center"}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between' , width: '45%' }}>
@@ -279,26 +288,36 @@ const handleClose = () => {
             {currentFavorites.map((favorite) => (
                    <MyCard listing={favorite} />   
             ))}
-            {/* Pagination */}
-          <Pagination
-               count={Math.ceil(favorites.length / favoritesPerPage)}
-               page={currentFavoritesPage}
-               onChange={(event, value) => setCurrentFavoritesPage(value)}
-               sx={{ 
-                '& .MuiPaginationItem-root': { 
-                  borderRadius: 0,
-                },
-                '& .MuiPaginationItem-page': {
-                  '&.Mui-selected': {
-                    backgroundColor: '#AF8C53',
-                    color: '#fff',
-                    '&:hover': {
-                      backgroundColor: '#CDB285',
-                    },
-                  },
-                },
-              }}
-          />
+            {/* Pagination for Favorites */}
+<Grid
+  container
+  spacing={1}
+  xs={12}
+  md={6}
+  style={{ border: "1px solid orange", marginTop: "10px" }} // Adjust marginTop as needed
+  justifyContent={"center"}
+>
+  <Pagination
+    count={Math.ceil(favorites.length / favoritesPerPage)}
+    page={currentFavoritesPage}
+    onChange={(event, value) => setCurrentFavoritesPage(value)}
+    sx={{
+      '& .MuiPaginationItem-root': {
+        borderRadius: 1,
+      },
+      '& .MuiPaginationItem-page': {
+        '&.Mui-selected': {
+          backgroundColor: '#AF8C53',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#CDB285',
+          },
+        },
+      },
+    }}
+  />
+</Grid>
+          
           </Grid>
         </Grid>
     </div>
@@ -319,6 +338,7 @@ const GET_USER_QUERY = gql`
         location
         leaseStartDate
         leaseEndDate
+        images
       }
     }
   }
@@ -334,6 +354,7 @@ const GET_LISTINGS_QUERY = gql`
       leaseStartDate
       leaseEndDate
       location
+      images
       user{
         id
         fullName
