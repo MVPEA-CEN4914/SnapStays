@@ -164,9 +164,11 @@ module.exports = {
 
 // Function to parse the public ID from a Cloudinary image URL
 function parsePublicIdFromUrl(imageUrl) {
-  // Example URL: https://res.cloudinary.com/demo/image/upload/v1576259685/sample.jpg
-  // Extract the public ID between 'upload/' and the file extension
+  // Example URL: https://res.cloudinary.com/dyv2ynif2/image/upload/v1712198299/zzawepfsfllevhgd9og2.jpg
+  // Extract the public ID between 'upload/' and the '.jpg'
   const startIndex = imageUrl.indexOf('upload/') + 'upload/'.length;
   const endIndex = imageUrl.lastIndexOf('.');
-  return imageUrl.substring(startIndex, endIndex);
+  const publicId = imageUrl.substring(startIndex, endIndex);
+  // Remove the version number at the beginning of the public ID
+  return publicId.split('/')[1]; // Extracting the part after the version number
 }
