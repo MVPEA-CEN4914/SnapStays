@@ -195,6 +195,7 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
       leaseStartDate
       leaseEndDate
       location
+      images
     }
   }
 `;

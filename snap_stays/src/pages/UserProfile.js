@@ -16,6 +16,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Upload from "../component/Upload";
+import { Cloudinary } from "@cloudinary/url-gen";
 
 
 function UserProfile() {
@@ -29,6 +31,19 @@ function UserProfile() {
   const [email, setEmail] = useState("");
   const [about, setAbout] = useState("");
 
+  //const [publicId, setPublicId] = useState("");
+  const [cloudName] = useState("dyv2ynif2");
+  const [uploadPreset] = useState("snapstayup");
+
+  const [uwConfig] = useState({
+    cloudName,
+    uploadPreset
+  });
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName
+    }
+  });
 
   const {
     loading: userLoading,
@@ -245,7 +260,6 @@ const handleClose = () => {
             justifyContent={"center"}
           >
             <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">Messages</Typography>
-            
           </Grid>
           
           {/*Favorites grid*/}

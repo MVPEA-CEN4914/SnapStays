@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Upload from "../component/Upload";
+import { Cloudinary } from "@cloudinary/url-gen";
 //import IconButton from '@material-ui/core/IconButton';
 //import CloseIcon from '@material-ui/icons/Close';
 
@@ -74,7 +76,7 @@ function ListStay() {
       utilitiesIncluded: values.utilitiesIncluded === '10',
       petsAllowed: values.pets === '10',
       description: values.description, // Make sure to collect this from the form
-      images: values.images.map(image => image.url), // Assuming you have image URLs
+      images: values.images
     };
 
     console.log(listingInput);
@@ -100,15 +102,6 @@ function ListStay() {
   });
 
 
-  const handleFileChange = (event) => {
-    //const files = event.target.files;
-    // Handle the files...
-    const files = Array.from(event.target.files);
-    setValues((prevValues) => ({
-    ...prevValues,
-    images: files,
-  }));
-  };
 
   const handleDelete = (index) => {
     setValues((prevValues) => {
@@ -116,6 +109,26 @@ function ListStay() {
       newImages.splice(index, 1);
       return { ...prevValues, images: newImages };
     });
+  };
+
+  const [cloudName] = useState("dyv2ynif2");
+  const [uploadPreset] = useState("snapstayup");
+
+  const [uwConfig] = useState({
+    cloudName,
+    uploadPreset
+  });
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName
+    }
+  });
+  const setImageUrl = (imageUrl) => {
+  console.log("Image URL:", imageUrl); // Log the image URL
+  setValues((prevValues) => ({
+    ...prevValues,
+    images: [...prevValues.images, imageUrl], // Append the new image URL to the existing list
+  }));
   };
 
   return (
@@ -598,29 +611,19 @@ function ListStay() {
 
        <Grid item xs={12} sm={6} style={{ marginLeft: 'auto', marginTop: '-600px' ,  justifyContent: 'flex-end' }}>
        <Grid container direction="column" alignItems="center" >
-        <input
-          accept="image/*"
-          id="contained-button-file"
-          multiple
-          type="file"
-          onChange={handleFileChange}
-          style={{ display: 'none' , alignItems: 'center'}}
-        />
-        <label htmlFor="contained-button-file">
-          <Button variant="contained" component="span">
-            Upload Images
-          </Button>
-        </label>
+          <Upload uwConfig={uwConfig} setImageUrl={setImageUrl}/>
         </Grid>
         {/* Display uploaded pictures here */}
-        <Grid container spacing={2} paddingTop={'10px'}>
-          {values.images.map((image, index) => (
+        <Grid container spacing={2} paddingTop={'10px'}>   
+        {values.images.map((image, index) => (
             <Grid item xs={12} sm={6} md={4} key={index} >
-              <img src={URL.createObjectURL(image)} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
-              <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(index)}>
+             <img src={image} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
+             <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(index)}>
                 Delete
               </Button>
-            </Grid>
+             
+             
+               </Grid>
           ))}
         </Grid>
       </Grid>
@@ -643,6 +646,7 @@ mutation CreateListing($listingInput: ListingInput!) {
     isFurnished
     utilitiesIncluded
     petsAllowed
+    images
   }
 }
 `;
