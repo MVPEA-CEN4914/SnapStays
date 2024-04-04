@@ -11,7 +11,7 @@ module.exports = gql`
     createdAt: String!
     verified: Boolean!
     favorites: [Listing]
-    about: String
+    about: String!
   }
 
   type Listing {
@@ -89,5 +89,7 @@ module.exports = gql`
     forgotPassword(email: String!): User!
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
     addListingToFavorites(listingId: ID!): User!
+    updateAbout(userId: ID!, about: String!): User!
+    updateUser(userId:ID!, fullName: String!, username: String!, about: String!): User!
   }
 `;

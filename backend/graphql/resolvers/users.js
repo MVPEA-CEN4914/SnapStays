@@ -4,9 +4,9 @@ const nodemailer = require("nodemailer");
 const { GraphQLError } = require("graphql");
 const checkAuth = require("../../util/check-auth");
 const Listing = require("../../models/Listing");
-
 const User = require("../../models/User");
 const { findById } = require("../../models/User");
+
 
 const {
   validateRegisterInput,
@@ -22,6 +22,7 @@ function generateToken(user) {
       fullName: user.fullName,
       email: user.email,
       username: user.username,
+      
     },
     process.env.SECRET_KEY,
     {
@@ -301,6 +302,34 @@ module.exports = {
       await user.save();
     
       return User.findById(authUser.id).populate('favorites');
-    }    
+    },
+    async updateAbout(_, { userId, about }, context) {
+      const user = checkAuth(context);
+      if (user.id !== userId) throw new Error('Unauthorized');
+  
+      const updatedUser = await User.findByIdAndUpdate(userId, { about }, { new: true });
+      console.log(updatedUser); 
+      return updatedUser;
+    },
+    updateUser: async (_, {userId, fullName, username, about }, { models }) => {
+      // Fetch the user from the database
+    const user = await models.User.findById(userId);
+
+    // If the user doesn't exist, throw an error
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Update the user's information
+    user.fullName = fullName;
+    user.username = username;
+    user.about = about;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return the updated user
+    return user;
+    },
   },
 };

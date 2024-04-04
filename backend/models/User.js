@@ -19,7 +19,7 @@ const userSchema = new Schema({
   },
   about: {
     type: String,
-    required: true,
+    default: "",
   },
   password: {
     type: String,
