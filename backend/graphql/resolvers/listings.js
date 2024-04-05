@@ -1,8 +1,8 @@
 const Listing = require("../../models/Listing");
 const { findByIdAndDelete } = require("../../models/User");
 const checkAuth = require("../../util/check-auth");
-
 const { GraphQLError } = require("graphql");
+
 
 module.exports = {
   Query: {
@@ -69,6 +69,22 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getCoordinates(location) {
+      const response = await client.geocode({
+        params: {
+          address: location,
+          key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        },
+      });
+    
+      if (response.status === 200) {
+        const lat = response.data.results[0].geometry.location.lat;
+        const lng = response.data.results[0].geometry.location.lng;
+        return { lat, lng };
+      } else {
+        throw new Error("Failed to get coordinates");
+      }
+    },
   },
   Mutation: {
     async createListing(
@@ -132,5 +148,6 @@ module.exports = {
         throw new Error(err);
       }
     },
+    
   },
 };

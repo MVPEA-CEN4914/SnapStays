@@ -78,6 +78,7 @@ module.exports = gql`
     getListing(listingId: ID!): Listing
     getFilteredListings(filteredInput: FilteredInput): [Listing]
     getFavorites(id: ID!): [Listing]
+    getCoordinates(location: String!): Listing
   }
 
   type Mutation {
@@ -91,5 +92,6 @@ module.exports = gql`
     addListingToFavorites(listingId: ID!): User!
     updateAbout(userId: ID!, about: String!): User!
     updateUser(userId:ID!, fullName: String!, username: String!, about: String!): User!
+    
   }
 `;

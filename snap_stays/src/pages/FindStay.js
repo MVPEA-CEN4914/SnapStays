@@ -8,13 +8,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useQuery, gql } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 function FindStay() {
+  
+  const [coordinates, setCoordinates] = useState([]);
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -27,7 +28,10 @@ function FindStay() {
     utilitiesIncluded: false,
     petsAllowed: false,
   });
-
+  let { loading, error, data } = useQuery(GET_FILTERED_LISTINGS_QUERY, {
+    variables: selectedFilters,
+  });
+  
   const handleSearch = (event, value) => {
     setSelectedFilters((prevFilters) => ({
       ...prevFilters,
@@ -43,14 +47,38 @@ function FindStay() {
     setOpen(false);
     setSelectedFilters(filters);
   };
-
-  let { loading, error, data } = useQuery(GET_FILTERED_LISTINGS_QUERY, {
-    variables: selectedFilters,
-  });
-
+  
+  const getCoordinates = async (location) => {
+    const response = await fetch(
+      `http://localhost:3000/geocode?address=${location}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  };
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      try {
+        const coords = await Promise.all(
+          data.getFilteredListings.map((listing) =>
+            getCoordinates(listing.location)
+          )
+        );
+        console.log(coords); 
+        setCoordinates(coords);
+      } catch (error) {
+        console.error("Failed to fetch all coordinates:", error);
+      }
+    };
+    fetchCoordinates();
+  }, [data]);
+ 
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
   const filteredData = data.getFilteredListings;
+
   return (
     <Box
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}
@@ -155,17 +183,11 @@ function FindStay() {
               <GoogleMap
                 mapContainerStyle={{ width: "100%", height: "900px" }}
                 center={{ lat: 29.652, lng: -82.325 }}
-                zoom={10}
+                zoom={11}
               >
-                {/* {data.getFilteredListings.map((listing, index) => (
-                    <Marker
-                      key={index}
-                      position={{
-                        lat: listing.location.latitude, // replace with actual latitude property
-                        lng: listing.location.longitude, // replace with actual longitude property
-                      }}
-                    />
-                  ))}*/}
+                {coordinates.map((coord, index) => (
+                  <Marker key={index} position={{ lat: coord.lat, lng: coord.lng }} />
+                ))}
               </GoogleMap>
             </LoadScript>
           </div>
@@ -206,5 +228,6 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
     }
   }
 `;
+
 
 export default FindStay;
