@@ -36,6 +36,7 @@ module.exports = {
         isFurnished,
         utilitiesIncluded,
         petsAllowed,
+        location,
       } = args.filteredInput;
 
       const filter = {};
@@ -60,6 +61,10 @@ module.exports = {
       }
       if (petsAllowed) {
         filter.petsAllowed = petsAllowed;
+      }
+      if(location) {
+        const regexPattern = new RegExp(location, "i");
+        filter.location = { $regex: regexPattern };
       }
 
       try {

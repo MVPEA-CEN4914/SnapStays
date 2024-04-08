@@ -49,7 +49,15 @@ function FindStay() {
   };
   
   const getCoordinates = async (location) => {
-    const response = await fetch(
+    try {
+      const response = await fetch(`http://localhost:3000/geocode?address=${location}`);
+      const data = await response.json();
+      console.log('data from getCoordinate:' ,data);
+      return data;
+    } catch (error) {
+      console.error(`Failed to fetch coordinates for location ${location}:`, error);
+    }
+    /*const response = await fetch(
       `http://localhost:3000/geocode?address=${location}`
     );
     if (!response.ok) {
@@ -57,8 +65,10 @@ function FindStay() {
     }
     const data = await response.json();
     return data;
+    */
   };
   useEffect(() => {
+    if (data && data.getFilteredListings) {
     const fetchCoordinates = async () => {
       try {
         const coords = await Promise.all(
@@ -73,6 +83,7 @@ function FindStay() {
       }
     };
     fetchCoordinates();
+  }
   }, [data]);
  
   if (loading) return "Loading...";
@@ -182,7 +193,7 @@ function FindStay() {
             >
               <GoogleMap
                 mapContainerStyle={{ width: "100%", height: "900px" }}
-                center={{ lat: 29.652, lng: -82.325 }}
+                //center={{ lat: 29.652, lng: -82.325 }}
                 zoom={11}
               >
                 {coordinates.map((coord, index) => (
