@@ -30,7 +30,6 @@ function FindStay() {
 
   const { user } = useContext(AuthContext);
   const currentUserId = user.id;
-  console.log("current user id: ", currentUserId);
   const [userFavorites, setUserFavorites] = useState([]);
 
   const { data: userData } = useQuery(GET_USER_QUERY, {
@@ -39,9 +38,8 @@ function FindStay() {
 
   useEffect(() => {
     if (userData && userData.getUser && userData.getUser.favorites) {
-      const favoriteIds = userData.getUser.favorites.map(fav => fav.id);
+      const favoriteIds = userData.getUser.favorites.map((fav) => fav.id);
       setUserFavorites(favoriteIds);
-      console.log("User Favorites:", favoriteIds);
     }
   }, [userData]);
 
@@ -72,7 +70,7 @@ function FindStay() {
     <Box
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}
     >
-      <Grid container alignItems={"center"}>
+      <Grid container>
         <Grid item xs={12} md={7}>
           <Grid
             container
@@ -153,18 +151,19 @@ function FindStay() {
             className="search-list"
             sx={{
               paddingTop: "1rem",
-              justifyContent: "space-evenly",
-              justifyItems: "center",
-              alignContent: "space-evenly",
-              alignItems: "center",
+              paddingLeft: "1rem",
+              //justifyContent: "space-evenly",
+              //justifyItems: "center",
+              //alignContent: "space-evenly",
+              //alignItems: "center",
             }}
           >
             {data.getFilteredListings.map((listing) => (
               <StayCard
-              key={listing.id}
-              listing={listing}
-              isFavorited={userFavorites.includes(listing.id)}
-            />
+                key={listing.id}
+                listing={listing}
+                isFavorited={userFavorites.includes(listing.id)}
+              />
             ))}
           </Grid>
         </Grid>
@@ -228,7 +227,7 @@ const GET_USER_QUERY = gql`
       email
       fullName
       username
-      favorites{
+      favorites {
         id
         title
         price

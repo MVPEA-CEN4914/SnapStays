@@ -58,7 +58,6 @@ function ListStay() {
   };
 
   const handleChangeCheck = (event) => {
-    console.log(dateStart);
     setValues((prevFilters) => ({
       ...prevFilters,
       [event.target.name]: event.target.checked,
@@ -67,8 +66,6 @@ function ListStay() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    console.log(values);
 
     const listingInput = {
       title: values.title,
@@ -84,8 +81,6 @@ function ListStay() {
       description: values.description,
       images: values.images.map(image => image.url), // Assuming you have image URLs
     };
-
-    console.log(listingInput);
 
     createListing({ variables: { listingInput } });
   };
@@ -157,6 +152,7 @@ function ListStay() {
             value={values.title}
             error={errors.title ? true : false}
             onChange={onChange}
+            inputProps={{ maxLength: 40 }}
           />
           <TextField
             id="location"

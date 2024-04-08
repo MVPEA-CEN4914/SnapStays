@@ -46,7 +46,7 @@ function Landing() {
               alignItems: "left",
             }}
           >
-            <Typography variant="h1" sx={{ lineHeight: "100%" }}>
+            <Typography variant="h1" sx={{ lineHeight: "100%", fontWeight: 500 }}>
               Subleases and short- term housing
             </Typography>
             <Typography

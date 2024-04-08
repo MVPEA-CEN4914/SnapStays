@@ -29,10 +29,6 @@ function StayCard({ listing, isFavorited }) {
   const theme = useTheme();
   const [isFavorite, setIsFavorite] = useState(isFavorited);
 
-  console.log("listing name and id: ", listing.title, listing.id, {
-    isFavorited,
-    isFavorite,
-  });
   const [addToFavorites] = useMutation(FAVORITE, {
     variables: { listingId: listing.id },
     context: {
@@ -69,7 +65,7 @@ function StayCard({ listing, isFavorited }) {
       <CardMedia component="div" sx={{ position: "relative" }}>
         <IconButton
           aria-label="add to favorites"
-          sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
+          sx={{ position: "absolute", right: "0.5rem" }}
           onClick={handleFavorite}
         >
           {isFavorited ? (
@@ -95,6 +91,7 @@ function StayCard({ listing, isFavorited }) {
         avatar={<Avatar sx={{ bgcolor: "red" }}>R</Avatar>}
         title={listing.title}
         subheader={listing.location}
+        sx={{paddingY: 0}}
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">{`${formatDate(
