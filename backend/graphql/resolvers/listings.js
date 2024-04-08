@@ -91,18 +91,17 @@ module.exports = {
       },
       context
     ) {
-      console.log("hello!");
       const user = checkAuth(context);
 
       const newListing = new Listing({
         user: user.id,
         title,
-        price,
-        numberOfRoommates: parseInt(numberOfRoommates),
-        bathroomType,
         location,
+        price,
         leaseStartDate,
         leaseEndDate,
+        numberOfRoommates,
+        bathroomType,
         isFurnished,
         utilitiesIncluded,
         petsAllowed,

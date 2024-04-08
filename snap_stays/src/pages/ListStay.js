@@ -50,9 +50,10 @@ function ListStay() {
   });
 
   const onChange = (event) => {
+    const { name, value } = event.target;
     setValues((prevValues) => ({
       ...prevValues,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
   };
 
@@ -65,10 +66,27 @@ function ListStay() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    values.leaseStartDate = dateStart;
-    values.leaseEndDate = dateEnd;
+    
     console.log(values);
-    createListing();
+
+    const listingInput = {
+      title: values.title,
+      location: values.location,
+      price: parseFloat(values.price),
+      leaseStartDate: dateStart.$d.toString().substring(4, 10),
+      leaseEndDate: dateEnd.$d.toString().substring(4, 10),
+      numberOfRoommates: parseInt(values.numberOfRoommates),
+      bathroomType: values.bathroomType,
+      isFurnished: values.isFurnished,
+      utilitiesIncluded: values.utilitiesIncluded,
+      petsAllowed: values.petsAllowed,
+      description: values.description,
+      images: values.images.map(image => image.url), // Assuming you have image URLs
+    };
+
+    console.log(listingInput);
+
+    createListing({ variables: { listingInput } });
   };
 
   const [createListing, { loading, error }] = useMutation(CREATE_LISTING, {
@@ -80,13 +98,12 @@ function ListStay() {
     onCompleted: () => {
       // Handle successful listing creation
       console.log("Listing created: ", values);
-      navigate("/find-stay");
+      navigate('/find-stay');
     },
     onError: (apiError) => {
       // Handle API call errors
-      console.error("Error listing the apartment:", apiError);
-    },
-    variables: values
+      console.error('Error listing the apartment:', apiError);
+    }
   });
 
   const handleFileChange = (event) => {
@@ -99,7 +116,7 @@ function ListStay() {
       images: newFile.length > 10 ? newFile.slice(0, 10) : newFile, // to avoid glitch of adding more at once
     }));
   };
-
+  
   const handleDelete = (index) => {
     setValues((prevValues) => {
       const newImages = [...prevValues.images];
@@ -459,52 +476,21 @@ function ListStay() {
 }
 
 const CREATE_LISTING = gql`
-  mutation CreateListing($listingInput: ListingInput) {
-    createListing(listingInput: $listingInput) {
-      id
-      title
-      location
-    }
+mutation CreateListing($listingInput: ListingInput!) {
+  createListing(listingInput: $listingInput) {
+    id
+    title
+    price
+    location
+    numberOfRoommates
+    bathroomType
+    leaseStartDate
+    leaseEndDate
+    isFurnished
+    utilitiesIncluded
+    petsAllowed
   }
+}
 `;
-
-// const CREATE_LISTING = gql`
-//   mutation CreateListing(
-//     $title: String!
-//     $location: String!
-//     $price: Float!
-//     $leaseStartDate: String!
-//     $leaseEndDate: String!
-//     $numberOfRoommates: String!
-//     $bathroomType: String!
-//     $isFurnished: Boolean!
-//     $utilitiesIncluded: Boolean!
-//     $petsAllowed: Boolean!
-//     $description: String
-//     $images: [String]
-//   ) {
-//     createListing(
-//       listingInput: {
-//         title: $title
-//         location: $location
-//         price: $price
-//         leaseStartDate: $leaseStartDate
-//         leaseEndDate: $leaseEndDate
-//         numberOfRoommates: $numberOfRoommates
-//         bathroomType: $bathroomType
-//         isFurnished: $isFurnished
-//         utilitiesIncluded: $utilitiesIncluded
-//         petsAllowed: $petsAllowed
-//         description: $description
-//         images: $images
-//       }
-//     ) {
-//       id
-//       title
-//       price
-//       location
-//     }
-//   }
-// `;
 
 export default ListStay;

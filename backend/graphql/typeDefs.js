@@ -51,7 +51,7 @@ module.exports = gql`
     price: Float!
     leaseStartDate: String!
     leaseEndDate: String!
-    numberOfRoommates: String!
+    numberOfRoommates: Int!
     bathroomType: String!
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
