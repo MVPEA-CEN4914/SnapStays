@@ -38,8 +38,8 @@ function ListStay() {
     title: "",
     location: "",
     price: "",
-    leaseStartDate: "",
-    leaseEndDate: "",
+    leaseStartDate: new Date(),
+    leaseEndDate: new Date(),
     numberOfRoommates: "1",
     bathroomType: "personal",
     isFurnished: false,
@@ -58,6 +58,7 @@ function ListStay() {
   };
 
   const handleChangeCheck = (event) => {
+    console.log(dateStart);
     setValues((prevFilters) => ({
       ...prevFilters,
       [event.target.name]: event.target.checked,
@@ -73,8 +74,8 @@ function ListStay() {
       title: values.title,
       location: values.location,
       price: parseFloat(values.price),
-      leaseStartDate: dateStart.$d.toString().substring(4, 10),
-      leaseEndDate: dateEnd.$d.toString().substring(4, 10),
+      leaseStartDate: dateStart,
+      leaseEndDate: dateEnd,
       numberOfRoommates: parseInt(values.numberOfRoommates),
       bathroomType: values.bathroomType,
       isFurnished: values.isFurnished,
