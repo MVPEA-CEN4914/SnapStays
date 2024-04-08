@@ -8,8 +8,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useQuery, gql } from "@apollo/client";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
-
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/auth";
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
@@ -27,6 +27,23 @@ function FindStay() {
     utilitiesIncluded: false,
     petsAllowed: false,
   });
+
+  const { user } = useContext(AuthContext);
+  const currentUserId = user.id;
+  console.log("current user id: ", currentUserId);
+  const [userFavorites, setUserFavorites] = useState([]);
+
+  const { data: userData } = useQuery(GET_USER_QUERY, {
+    variables: { userId: currentUserId },
+  });
+
+  useEffect(() => {
+    if (userData && userData.getUser && userData.getUser.favorites) {
+      const favoriteIds = userData.getUser.favorites.map(fav => fav.id);
+      setUserFavorites(favoriteIds);
+      console.log("User Favorites:", favoriteIds);
+    }
+  }, [userData]);
 
   const handleSearch = (event, value) => {
     setSelectedFilters((prevFilters) => ({
@@ -143,7 +160,11 @@ function FindStay() {
             }}
           >
             {data.getFilteredListings.map((listing) => (
-              <StayCard listing={listing} />
+              <StayCard
+              key={listing.id}
+              listing={listing}
+              isFavorited={userFavorites.includes(listing.id)}
+            />
             ))}
           </Grid>
         </Grid>
@@ -195,6 +216,25 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
       leaseStartDate
       leaseEndDate
       location
+    }
+  }
+`;
+
+const GET_USER_QUERY = gql`
+  query GetUser($userId: ID!) {
+    getUser(userId: $userId) {
+      id
+      email
+      fullName
+      username
+      favorites{
+        id
+        title
+        price
+        location
+        leaseStartDate
+        leaseEndDate
+      }
     }
   }
 `;

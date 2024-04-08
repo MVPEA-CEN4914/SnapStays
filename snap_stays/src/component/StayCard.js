@@ -17,16 +17,20 @@ mutation AddListingToFavorites($listingId: ID!) {
 }
 `;
 
-function StayCard({ listing }) {
-  const [isFavorite, setIsFavorite] = useState(false); // Initialize as not favorite
-  const [addToFavorites, { loading, error }] = useMutation(FAVORITE, {
+function StayCard({ listing, isFavorited}) {
+const theme = useTheme();
+
+  const [isFavorite, setIsFavorite] = useState(isFavorited);
+
+  console.log("listing name and id: ", listing.title, listing.id, { isFavorited, isFavorite });
+  const [addToFavorites] = useMutation(FAVORITE, {
     variables: { listingId: listing.id },
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
       }
     },
-    onCompleted: () => setIsFavorite(!isFavorite) // Toggle favorite status on completion
+    onCompleted: () => setIsFavorite(!isFavorite)
   });
 
   const handleFavorite = () => {
@@ -45,7 +49,7 @@ function StayCard({ listing }) {
           sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
           onClick={handleFavorite}
         >
-          {isFavorite ? <StarIcon style={{ color: "yellow" }} /> : <StarBorderIcon />}
+          {isFavorited ? <StarIcon style={{ color: theme.palette.primary.main }} /> : <StarBorderIcon />}
         </IconButton>
         <img
           src={TempListing}
