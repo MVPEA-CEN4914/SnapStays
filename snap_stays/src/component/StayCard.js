@@ -25,17 +25,22 @@ const FAVORITE = gql`
   }
 `;
 
-function StayCard({ listing }) {
-  console.log(listing);
-  const [isFavorite, setIsFavorite] = useState(false); // Initialize as not favorite
-  const [addToFavorites, { loading, error }] = useMutation(FAVORITE, {
+function StayCard({ listing, isFavorited }) {
+  const theme = useTheme();
+  const [isFavorite, setIsFavorite] = useState(isFavorited);
+
+  console.log("listing name and id: ", listing.title, listing.id, {
+    isFavorited,
+    isFavorite,
+  });
+  const [addToFavorites] = useMutation(FAVORITE, {
     variables: { listingId: listing.id },
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
       },
     },
-    onCompleted: () => setIsFavorite(!isFavorite), // Toggle favorite status on completion
+    onCompleted: () => setIsFavorite(!isFavorite),
   });
 
   const handleFavorite = () => {
@@ -48,10 +53,9 @@ function StayCard({ listing }) {
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
-    const options = { month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    const options = { month: "long", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
   };
-  
 
   return (
     <Card
@@ -68,14 +72,14 @@ function StayCard({ listing }) {
           sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
           onClick={handleFavorite}
         >
-          {isFavorite ? (
-            <StarIcon style={{ color: "yellow" }} />
+          {isFavorited ? (
+            <StarIcon style={{ color: theme.palette.primary.main }} />
           ) : (
             <StarBorderIcon />
           )}
         </IconButton>
         <img
-          src={(listing.images.length > 0) ? listing.images[0] : TempListing}
+          src={listing.images.length > 0 ? listing.images[0] : TempListing}
           alt="Listing"
           style={{
             height: "15rem",
@@ -93,10 +97,9 @@ function StayCard({ listing }) {
         subheader={listing.location}
       />
       <CardContent>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-        >{`${formatDate(listing.leaseStartDate)} - ${formatDate(listing.leaseEndDate)}`}</Typography>
+        <Typography variant="body2" color="text.secondary">{`${formatDate(
+          listing.leaseStartDate
+        )} - ${formatDate(listing.leaseEndDate)}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>
       </CardContent>
     </Card>
