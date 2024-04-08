@@ -1,4 +1,4 @@
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql,useMutation } from "@apollo/client";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/auth";
 import Avatar from "@mui/material/Avatar";
@@ -16,21 +16,43 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Box from '@mui/material/Box'
 import Upload from "../component/Upload";
 import { Cloudinary } from "@cloudinary/url-gen";
 
 
-function UserProfile() {
-  const { user } = useContext(AuthContext);
-  const [isEditingAbout, setIsEditingAbout] = useState(false);
-  const [aboutContent, setAboutContent] = useState("");
-  const [currentFavoritesPage, setCurrentFavoritesPage] = useState(1);
-  const [currentUserListingsPage, setCurrentUserListingsPage] = useState(1);
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [about, setAbout] = useState("");
+const EDIT_PROFILE = gql `
+  mutation EditUserProfile($id: ID!, $fullName: String, $username: String, $about: String, $image: String) {
+    editUserProfile(id: $id, fullName: $fullName, username: $username, about: $about, image: $image) {
+      id
+      fullName
+      username
+      about
+      image
+    }
+  }
+`;
 
+function UserProfile() {
+const { user } = useContext(AuthContext);
+const [editUserProfile] = useMutation(EDIT_PROFILE);
+const [isEditingAbout, setIsEditingAbout] = useState(false);
+const [aboutContent, setAboutContent] = useState("");
+const [currentFavoritesPage, setCurrentFavoritesPage] = useState(1);
+const [currentUserListingsPage, setCurrentUserListingsPage] = useState(1);
+const [fullName, setFullName] = useState(user.fullName || "");
+const [username, setUsername] = useState(user.username||"");
+const [email, setEmail] = useState("");
+const [about, setAbout] = useState("");
+const [newImageUrl, setNewImageUrl] = useState(null);
+
+const setImageUrl = (imageUrl) => {
+  setNewImageUrl(imageUrl);
+}
+
+const handleDeleteImage = () => {
+  setImageUrl(null);
+};
   //const [publicId, setPublicId] = useState("");
   const [cloudName] = useState("dyv2ynif2");
   const [uploadPreset] = useState("snapstayup");
@@ -62,7 +84,6 @@ function UserProfile() {
   if (userError) return <p>Error: {userError.message} user </p>;
   if (listingsError) return <p>Error: {listingsError.message} listing </p>;
 
-
   const userDetail = userData.getUser;
 
 const favorites = userDetail.favorites || [];
@@ -77,10 +98,30 @@ const handleEditAbout = () => {
   
 };
 
-const handleSaveAbout = () => {
-  // You would typically perform an API call here to update the user's about content in the backend
-  setIsEditingAbout(false);
-  // Update the user's about content in the backend with the value of aboutContent
+
+
+const handleSaveAbout = async () => {
+  try {
+    const result = await editUserProfile({
+      variables: {
+        id: user.id,
+        fullName: fullName || userDetail.fullName,
+        username: username || userDetail.username,
+        about: about || userDetail.about,
+        image: newImageUrl || userDetail.image, 
+      },
+    });
+    const updatedUserProfile = result.data.editUserProfile;
+    // Update the local state with the updated user profile data
+    setFullName(updatedUserProfile.fullName);
+    setUsername(updatedUserProfile.username);
+    setAbout(updatedUserProfile.about);
+    setNewImageUrl(updatedUserProfile.image);
+    setIsEditingAbout(false);
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    // Handle error, show a message to the user, etc.
+  }
 };
 
 const handleClose = () => {
@@ -130,7 +171,7 @@ const handleClose = () => {
             style={{ border: "2px solid purple" }}
           >
             <Grid item paddingTop={"15px"}>
-              <Avatar style={{ width: "100px", height: "100px" }} />
+              <Avatar  src={userDetail.image} style={{ width: "100px", height: "100px" }} />
             </Grid>
             <Grid item paddingBottom={"15px"}>
               <Button variant="contained" color="primary" onClick={handleEditAbout}>
@@ -139,6 +180,15 @@ const handleClose = () => {
               <Dialog open={isEditingAbout} onClose={handleClose}>
                 <DialogTitle>Edit Profile</DialogTitle>
                 <DialogContent>
+                <Box display="flex" justifyContent="center" alignItems="center">
+            <Avatar
+              alt={userDetail.name}
+              src={newImageUrl || userDetail.image}
+              sx={{ width: 100, height: 100 }}
+              style={{ marginRight: '20px' }}
+            />
+            <Upload uwConfig={uwConfig} setImageUrl={setImageUrl} />
+          </Box>
                    <TextField
                       label="Full Name"
                       value={fullName}
@@ -154,19 +204,13 @@ const handleClose = () => {
                       fullWidth
                     />
                     <TextField
-                      label="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      variant="outlined"
-                      fullWidth
-                    />
-                    <TextField
                       label="About"
                       value={about}
                       onChange={(e) => setAbout(e.target.value)}
                       variant="outlined"
                       fullWidth
                     />
+
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose} color="primary">
@@ -190,23 +234,11 @@ const handleClose = () => {
             <Typography variant="h5" fontFamily="Josefin Sans">
               <b>Email:</b> {userDetail.email}
             </Typography>
-            {isEditingAbout ? (
-            <TextField
-              value={aboutContent}
-              onChange={(e) => setAboutContent(e.target.value)}
-              variant="outlined"
-              fullWidth
-            />
-          ) : (
+
             <Typography variant="body1" align="center" fontFamily="Josefin Sans">
               <b>About:</b> {userDetail.about || "No information available because we need to add about to user DB model"}
             </Typography>
-          )}
-          {isEditingAbout && (
-            <Button variant="contained" color="primary" onClick={handleSaveAbout}>
-              Save
-            </Button>
-          )}
+
           </Grid>
 
           {/*My Listings grid*/}
@@ -331,6 +363,8 @@ const GET_USER_QUERY = gql`
       email
       fullName
       username
+      about 
+      image
       favorites{
         id
         title
@@ -362,5 +396,7 @@ const GET_LISTINGS_QUERY = gql`
     }
   }
 `;
+
+
 
 export default UserProfile;
