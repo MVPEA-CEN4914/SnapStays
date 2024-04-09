@@ -42,8 +42,12 @@ const theme = useTheme();
   };
 
   return (
-    <Card sx={{ maxWidth: "16rem", border: "3px solid black", borderRadius: "1rem", margin: "0.5rem" }}>
-      <CardMedia component="div" sx={{ position: "relative" }}>
+    <Card sx={{ maxWidth: "16rem", height:"26rem", border: "3px solid black", borderRadius: "1rem", margin: "0.5rem" }}>
+      <CardMedia component="div"  sx={{
+    position: "relative",
+    height: "15rem",
+    width: "15rem", // Set both height and width to desired dimensions
+  }}>
         <IconButton
           aria-label="add to favorites"
           sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
@@ -51,20 +55,39 @@ const theme = useTheme();
         >
           {isFavorited ? <StarIcon style={{ color: theme.palette.primary.main }} /> : <StarBorderIcon />}
         </IconButton>
-        <img
-          src={TempListing}
-          alt="Listing"
-          style={{
-            height: "15rem",
-            width: "100%",
-            objectFit: "cover",
-            borderRadius: "1rem",
-            position: "center",
-            padding: "0.5rem",
-          }}
-        />
+        {listing.images && listing.images.length > 0 ? (
+    <img
+      src={listing.images[0]} // Display the first image URL
+      alt="Listing"
+      style={{
+        height: "100%",
+        width: "100%",
+        objectFit: "cover",
+        borderRadius: "1rem",
+        position: "center",
+        padding: "0.5rem",
+      }}
+    />
+  ) : (
+    <img
+      src={TempListing} // Fallback to TempListing image if no images are present
+      alt="Listing"
+      style={{
+        height: "100%",
+        width: "100%",
+        objectFit: "cover",
+        borderRadius: "1rem",
+        position: "center",
+        padding: "0.5rem",
+      }}
+    />
+  )}
       </CardMedia>
-      <CardHeader avatar={<Avatar sx={{ bgcolor: "red" }}>R</Avatar>} title={listing.title} subheader={listing.location} />
+      <CardHeader avatar={
+        listing.user.image ? (
+          <Avatar src={listing.user.image} />
+        ) : ( <Avatar sx={{ bgcolor: "#AF8C53" }}>{listing.user.fullName[0]}</Avatar>)
+      } title={listing.title} subheader={listing.location} />
       <CardContent>
         <Typography variant="body2" color="text.secondary">{`${listing.leaseStartDate} - ${listing.leaseEndDate}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>
