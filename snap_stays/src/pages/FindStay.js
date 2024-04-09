@@ -50,8 +50,8 @@ function FindStay() {
   
   const getCoordinates = async (location) => {
     try {
-      const response = await fetch(`http://localhost:3000/geocode?address=${location}`);
-      const data = await response.json();
+      const response = await fetch(`http://localhost:3000/geocode?address=${location}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+      const data = await response.text();
       console.log('data from getCoordinate:' ,data);
       return data;
     } catch (error) {
@@ -76,7 +76,7 @@ function FindStay() {
             getCoordinates(listing.location)
           )
         );
-        console.log(coords); 
+        console.log('coordinates:' ,coords); 
         setCoordinates(coords);
       } catch (error) {
         console.error("Failed to fetch all coordinates:", error);
@@ -193,7 +193,7 @@ function FindStay() {
             >
               <GoogleMap
                 mapContainerStyle={{ width: "100%", height: "900px" }}
-                //center={{ lat: 29.652, lng: -82.325 }}
+                center={{ lat: 29.652, lng: -82.325 }}
                 zoom={11}
               >
                 {coordinates.map((coord, index) => (
