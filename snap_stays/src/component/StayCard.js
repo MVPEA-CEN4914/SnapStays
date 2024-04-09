@@ -83,7 +83,11 @@ const theme = useTheme();
     />
   )}
       </CardMedia>
-      <CardHeader avatar={<Avatar sx={{ bgcolor: "red" }}>R</Avatar>} title={listing.title} subheader={listing.location} />
+      <CardHeader avatar={
+        listing.user.image ? (
+          <Avatar src={listing.user.image} />
+        ) : ( <Avatar sx={{ bgcolor: "#AF8C53" }}>{listing.user.fullName[0]}</Avatar>)
+      } title={listing.title} subheader={listing.location} />
       <CardContent>
         <Typography variant="body2" color="text.secondary">{`${listing.leaseStartDate} - ${listing.leaseEndDate}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>

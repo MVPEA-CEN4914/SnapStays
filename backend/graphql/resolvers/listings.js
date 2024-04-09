@@ -83,7 +83,7 @@ module.exports = {
       }
 
       try {
-        const listings = await Listing.find(filter);
+        const listings = await Listing.find(filter).populate('user');
         return listings;
       } catch (err) {
         throw new Error(err);
