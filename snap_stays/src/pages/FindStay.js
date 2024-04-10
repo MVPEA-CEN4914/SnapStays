@@ -48,19 +48,23 @@ function FindStay() {
     setSelectedFilters(filters);
   };
   
+
   const getCoordinates = async (location) => {
     try {
       const response = await fetch(`http://localhost:3000/geocode/json?address=${location}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
       if (response.headers.get('Content-Type') !== 'application/json') {
         console.log('Received non-JSON response');
       }
-      const data = await response.text();
+      const data = await response.json();
       console.log('data from getCoordinate:' ,data);
       //return data;
-      return {
-        lat: parseFloat(data.lat),
-        lng: parseFloat(data.lng),
-      };
+      if (!data || !data.lat || !data.lng) {
+        throw new Error('Invalid data received from server');
+      }
+      return [
+        parseFloat(data.lat),
+        parseFloat(data.lng),
+      ];
     } catch (error) {
       console.error(`Failed to fetch coordinates for location ${location}:`, error);
     }
