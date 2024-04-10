@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import {
@@ -13,6 +13,7 @@ import {
 import StarIcon from "@mui/icons-material/Star"; // Import for filled star
 import { gql, useMutation } from "@apollo/client";
 import TempListing from "../images/TempListing.jpg";
+import {Link} from "react-router-dom";
 
 const FAVORITE = gql`
   mutation AddListingToFavorites($listingId: ID!) {
@@ -39,13 +40,20 @@ function StayCard({ listing, isFavorited }) {
     onCompleted: () => setIsFavorite(!isFavorite),
   });
 
-  const handleFavorite = () => {
+  const handleFavorite = (e) => {
+    e.preventDefault(); // prevent link behavior 
+    e.stopPropagation(); // prevent event propogation 
     if (!localStorage.getItem("jwtToken")) {
       console.log("No JWT found. User might not be logged in.");
       return;
     }
-    addToFavorites();
+    addToFavorites({variables: {listingId: listing.id}});
   };
+
+  useEffect(() => {
+    setIsFavorite(isFavorited);
+  }, [isFavorited]);
+
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -54,12 +62,18 @@ function StayCard({ listing, isFavorited }) {
   };
 
   return (
+    <Link to ={`/listing/${listing.id}`} style={{textDecoration: 'none'}}>
+      
     <Card
       sx={{
         maxWidth: "16rem", height:"26rem",
         border: "3px solid black",
         borderRadius: "1rem",
         margin: "0.5rem",
+        transition: "box-shadow 0.3s",
+          "&:hover": {
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.4)",
+          },
       }}
     >
       <CardMedia component="div"  sx={{
@@ -117,7 +131,9 @@ function StayCard({ listing, isFavorited }) {
         )} - ${formatDate(listing.leaseEndDate)}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>
       </CardContent>
+      
     </Card>
+    </Link>
   );
 }
 

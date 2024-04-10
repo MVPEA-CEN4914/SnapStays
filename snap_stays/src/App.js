@@ -7,6 +7,7 @@ import Layout from "./pages/Layout";
 import FindStay from "./pages/FindStay";
 import ListStay from "./pages/ListStay";
 import Verify from "./pages/Verify";
+import IndividualStay from "./pages/IndividualStay.js";
 import UserProfile from "./pages/UserProfile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword.js";
@@ -89,6 +90,7 @@ function App() {
                   <Route path="list-stay" element={<ListStay />} />
                   <Route path="userprofile" element={<UserProfile />} />
                   <Route exact path="/verify/:id" element={<Verify />} />
+                  <Route exact path = "listing/:listingid" element={<IndividualStay/>}/> 
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route
                     exact
