@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import {
@@ -40,13 +40,20 @@ function StayCard({ listing, isFavorited }) {
     onCompleted: () => setIsFavorite(!isFavorite),
   });
 
-  const handleFavorite = () => {
+  const handleFavorite = (e) => {
+    e.preventDefault(); // prevent link behavior 
+    e.stopPropagation(); // prevent event propogation 
     if (!localStorage.getItem("jwtToken")) {
       console.log("No JWT found. User might not be logged in.");
       return;
     }
-    addToFavorites();
+    addToFavorites({variables: {listingId: listing.id}});
   };
+
+  useEffect(() => {
+    setIsFavorite(isFavorited);
+  }, [isFavorited]);
+
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -56,6 +63,7 @@ function StayCard({ listing, isFavorited }) {
 
   return (
     <Link to ={`/listing/${listing.id}`} style={{textDecoration: 'none'}}>
+      
     <Card
       sx={{
         maxWidth: "16rem", height:"26rem",
@@ -123,6 +131,7 @@ function StayCard({ listing, isFavorited }) {
         )} - ${formatDate(listing.leaseEndDate)}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>
       </CardContent>
+      
     </Card>
     </Link>
   );
