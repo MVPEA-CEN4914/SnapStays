@@ -1,32 +1,36 @@
-import * as React from "react";
-import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { gql } from "graphql-tag";
-import { useNavigate } from "react-router-dom";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import InputAdornment from "@mui/material/InputAdornment";
-import Divider from "@mui/material/Divider";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import IconButton from "@mui/material/IconButton";
-import ClearIcon from "@mui/icons-material/Clear";
-import AddIcon from "@mui/icons-material/Add";
-import UploadIcon from "@mui/icons-material/Upload";
+import * as React from 'react';
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { gql } from 'graphql-tag';
+import { useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Upload from "../component/Upload";
+import { Cloudinary } from "@cloudinary/url-gen";
 
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+//import IconButton from '@material-ui/core/IconButton';
+//import CloseIcon from '@material-ui/icons/Close';
 
-const nums = ["1", "2", "3", "4"];
+
+const defaultTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#AF8C53', // Mustard
+    },
+    secondary: {
+      main: '#2B2B2B', // Black
+    },
+  },
+});
 
 function ListStay() {
   const theme = useTheme();
@@ -79,7 +83,7 @@ function ListStay() {
       utilitiesIncluded: values.utilitiesIncluded,
       petsAllowed: values.petsAllowed,
       description: values.description,
-      images: values.images.map(image => image.url), // Assuming you have image URLs
+      images: values.images
     };
 
     createListing({ variables: { listingInput } });
@@ -102,23 +106,33 @@ function ListStay() {
     }
   });
 
-  const handleFileChange = (event) => {
-    let newFile = Array.from(event.target.files);
-    if (values.images.length > 0) {
-      newFile = values.images.concat(newFile);
-    }
-    setValues((prevValues) => ({
-      ...prevValues,
-      images: newFile.length > 10 ? newFile.slice(0, 10) : newFile, // to avoid glitch of adding more at once
-    }));
-  };
-  
+
   const handleDelete = (index) => {
     setValues((prevValues) => {
       const newImages = [...prevValues.images];
       newImages.splice(index, 1);
       return { ...prevValues, images: newImages };
     });
+  };
+
+  const [cloudName] = useState("dyv2ynif2");
+  const [uploadPreset] = useState("snapstayup");
+
+  const [uwConfig] = useState({
+    cloudName,
+    uploadPreset
+  });
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName
+    }
+  });
+  const setImageUrl = (imageUrl) => {
+  console.log("Image URL:", imageUrl); // Log the image URL
+  setValues((prevValues) => ({
+    ...prevValues,
+    images: [...prevValues.images, imageUrl], // Append the new image URL to the existing list
+  }));
   };
 
   return (
@@ -295,178 +309,76 @@ function ListStay() {
                 />
               </Grid>
             </Grid>
-            <Grid item xs={1} />
-          </Grid>
-          <Divider
-            variant="middle"
-            sx={{ width: "100%", paddingBottom: "1rem" }}
-          />
-          <TextField
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: "15px",
+            <TextField
+              sx={{ '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderRadius: '15px', // Adjust this value to your liking
+                },
+                '&:hover fieldset': {
+                  borderColor: 'black', // Change this to your desired hover color
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black', // Change this to your desired focus color
                 },
               },
-            }}
-            required
-            id="description"
-            label="Description"
-            name="description"
-            autoComplete="description"
-            value={values.description}
-            error={errors.description ? true : false}
-            onChange={onChange}
-            multiline
-            rows={4}
-          />
-          {/* TODO: Add file input for images */}
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              mt: 2,
-              mb: 1,
-              bgcolor: theme.palette.primary.main,
-              "&:hover": {
-                bgcolor: theme.palette.primary.light,
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
               },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'grey',
+              }
             }}
-          >
-            List Apartment
-          </Button>
-        </Box>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        sm={5}
-        style={{
-          marginLeft: "auto",
-          justifyContent: "flex-end",
-        }}
-      >
-        {values.images.length > 0 ? (
-          <Grid container spacing={2} padding={"1rem"}>
-            <Grid item xs={12} sm={6} md={4}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "3rem",
-                }}
-              >
-                <input
-                  accept="image/*"
-                  id="contained-button-file"
-                  multiple
-                  type="file"
-                  disabled={values.images.length > 9 ? true : false} // 10 pics max
-                  onChange={handleFileChange}
-                  style={{ display: "none", alignItems: "center" }}
-                />
-                <label htmlFor="contained-button-file">
-                  <IconButton
-                    variant="contained"
-                    component="span"
-                    disabled={values.images.length > 9 ? true : false} // 10 pics max
-                    sx={{
-                      height: "5rem",
-                      width: "5rem",
-                      color: theme.palette.background.default,
-                      bgcolor: theme.palette.primary.main,
-                      "&:hover": {
-                        bgcolor: theme.palette.primary.light,
-                      },
-                    }}
-                  >
-                    <AddIcon fontSize="large" />
-                  </IconButton>
-                </label>
-              </Box>
-            </Grid>
-            {values.images.map((image, index) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                key={index}
-                sx={{ position: "relative" }}
-              >
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded ${index}`}
-                  style={{
-                    width: "100%",
-                    height: "12rem",
-                    objectFit: "cover",
-                    borderRadius: "1rem",
-                    border: "2px solid black",
-                  }}
-                />
-                <IconButton
-                  variant="contained"
-                  onClick={() => handleDelete(index)}
-                  sx={{
-                    position: "absolute",
-                    top: "1.3rem",
-                    right: "0.3rem",
-                    height: "2rem",
-                    width: "2rem",
-                    color: theme.palette.background.default,
-                    bgcolor: theme.palette.error.main,
-                    "&:hover": {
-                      bgcolor: theme.palette.error.light,
-                    },
-                  }}
-                >
-                  <ClearIcon />
-                </IconButton>
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <Grid container spacing={2} sx={{ height: "90vh" }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "3rem",
-                width: "100vh",
-                borderRadius: "1rem",
-                border: "2px solid black",
-                backgroundColor: theme.palette.secondary.light,
-              }}
+              margin="normal"
+              required
+              fullWidth
+              id="description"
+              label="Description"
+              name="description"
+              autoComplete="description"
+              value={values.description}
+              error={errors.description ? true : false}
+              onChange={onChange}
+              multiline // Add this
+              rows={4}
+            />
+            {/* TODO: Add file input for images */}
+            
+
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
             >
-              <input
-                accept="image/*"
-                id="contained-button-file"
-                multiple
-                type="file"
-                onChange={handleFileChange}
-                style={{ display: "none", alignItems: "center" }}
-              />
-              <label htmlFor="contained-button-file">
-                <IconButton variant="contained" component="span">
-                  <UploadIcon
-                    sx={{
-                      fontSize: "10rem",
-                      color: theme.palette.secondary.main,
-                    }}
-                  />
-                </IconButton>
-              </label>
-              <Typography variant="h6">
-                Upload up to 10 pictures of your place
-              </Typography>
-            </Box>
-          </Grid>
-        )}
+              List Apartment
+            </Button>
+          </Box>
+        </Grid>
+      <Grid item xs={12} sm={6}>
+        {/*leave empty space for upload images*/}
+       </Grid>
+
+       <Grid item xs={12} sm={6} style={{ marginLeft: 'auto', marginTop: '-600px' ,  justifyContent: 'flex-end' }}>
+       <Grid container direction="column" alignItems="center" >
+          <Upload uwConfig={uwConfig} setImageUrl={setImageUrl}/>
+        </Grid>
+        {/* Display uploaded pictures here */}
+        <Grid container spacing={2} paddingTop={'10px'}>   
+        {values.images.map((image, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index} >
+             <img src={image} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
+             <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(index)}>
+                Delete
+              </Button>
+             
+             
+               </Grid>
+          ))}
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -486,6 +398,7 @@ mutation CreateListing($listingInput: ListingInput!) {
     isFurnished
     utilitiesIncluded
     petsAllowed
+    images
   }
 }
 `;

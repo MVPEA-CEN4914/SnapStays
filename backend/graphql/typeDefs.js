@@ -12,6 +12,8 @@ module.exports = gql`
     password: String!
     createdAt: String!
     verified: Boolean!
+    image: String 
+    about: String
     favorites: [Listing]
   }
 
@@ -90,5 +92,6 @@ module.exports = gql`
     forgotPassword(email: String!): User!
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
     addListingToFavorites(listingId: ID!): User!
+    editUserProfile(id:ID!,fullName: String, username: String, about: String, image: String): User!
   }
 `;

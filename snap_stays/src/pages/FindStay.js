@@ -29,11 +29,12 @@ function FindStay() {
   });
 
   const { user } = useContext(AuthContext);
-  const currentUserId = user.id;
+  const currentUserId = user ? user.id : null; // handle case where user is null 
   const [userFavorites, setUserFavorites] = useState([]);
 
   const { data: userData } = useQuery(GET_USER_QUERY, {
     variables: { userId: currentUserId },
+    skip: !currentUserId, //skip query if user is not logged in 
   });
 
   useEffect(() => {
@@ -215,6 +216,10 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
       leaseStartDate
       leaseEndDate
       location
+      user{
+        fullName
+        image
+      }
       images
     }
   }

@@ -301,6 +301,37 @@ module.exports = {
       await user.save();
     
       return User.findById(authUser.id).populate('favorites');
-    }    
+    },
+    async editUserProfile(_,{id, fullName,username, about, image}) {
+      //check if user exists 
+      const user = await User.findById(id);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      // Update user data only if user wants to 
+    if (fullName) {
+      user.fullName = fullName;
+    }
+    if (about) {
+      user.about = about;
+    }
+    // Check if username needs to be updated and validate uniqueness
+    if (username && username !== user.username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        throw new Error('Username already taken');
+      }
+      user.username = username;
+    }
+    // Update user's image URL if provided
+    if (image) {
+      user.image = image;
+    }
+
+    // Save changes to the database
+    await user.save();
+
+    return user;
+    }   
   },
 };
