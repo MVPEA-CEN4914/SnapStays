@@ -1,36 +1,42 @@
 import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { Card, CardHeader, CardMedia, CardContent, IconButton, Typography, Avatar } from "@mui/material";
-import StarIcon from '@mui/icons-material/Star'; // Import for filled star
+import {
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  IconButton,
+  Typography,
+  Avatar,
+} from "@mui/material";
+import StarIcon from "@mui/icons-material/Star"; // Import for filled star
 import { gql, useMutation } from "@apollo/client";
 import TempListing from "../images/TempListing.jpg";
 
 const FAVORITE = gql`
-mutation AddListingToFavorites($listingId: ID!) {
-  addListingToFavorites(listingId: $listingId) {
-    favorites {
-      id
-      title
+  mutation AddListingToFavorites($listingId: ID!) {
+    addListingToFavorites(listingId: $listingId) {
+      favorites {
+        id
+        title
+      }
     }
   }
-}
 `;
 
-function StayCard({ listing, isFavorited}) {
-const theme = useTheme();
-
+function StayCard({ listing, isFavorited }) {
+  const theme = useTheme();
   const [isFavorite, setIsFavorite] = useState(isFavorited);
 
-  console.log("listing name and id: ", listing.title, listing.id, { isFavorited, isFavorite });
   const [addToFavorites] = useMutation(FAVORITE, {
     variables: { listingId: listing.id },
     context: {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+      },
     },
-    onCompleted: () => setIsFavorite(!isFavorite)
+    onCompleted: () => setIsFavorite(!isFavorite),
   });
 
   const handleFavorite = () => {
@@ -41,8 +47,21 @@ const theme = useTheme();
     addToFavorites();
   };
 
+  const formatDate = (isoDateString) => {
+    const date = new Date(isoDateString);
+    const options = { month: "long", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return (
-    <Card sx={{ maxWidth: "16rem", height:"26rem", border: "3px solid black", borderRadius: "1rem", margin: "0.5rem" }}>
+    <Card
+      sx={{
+        maxWidth: "16rem", height:"26rem",
+        border: "3px solid black",
+        borderRadius: "1rem",
+        margin: "0.5rem",
+      }}
+    >
       <CardMedia component="div"  sx={{
     position: "relative",
     height: "15rem",
@@ -50,10 +69,14 @@ const theme = useTheme();
   }}>
         <IconButton
           aria-label="add to favorites"
-          sx={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
+          sx={{ position: "absolute", right: "0.5rem" }}
           onClick={handleFavorite}
         >
-          {isFavorited ? <StarIcon style={{ color: theme.palette.primary.main }} /> : <StarBorderIcon />}
+          {isFavorited ? (
+            <StarIcon style={{ color: theme.palette.primary.main }} />
+          ) : (
+            <StarBorderIcon />
+          )}
         </IconButton>
         {listing.images && listing.images.length > 0 ? (
     <img
@@ -89,7 +112,9 @@ const theme = useTheme();
         ) : ( <Avatar sx={{ bgcolor: "#AF8C53" }}>{listing.user.fullName[0]}</Avatar>)
       } title={listing.title} subheader={listing.location} />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">{`${listing.leaseStartDate} - ${listing.leaseEndDate}`}</Typography>
+        <Typography variant="body2" color="text.secondary">{`${formatDate(
+          listing.leaseStartDate
+        )} - ${formatDate(listing.leaseEndDate)}`}</Typography>
         <Typography variant="h5">${listing.price}/month</Typography>
       </CardContent>
     </Card>

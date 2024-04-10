@@ -96,12 +96,12 @@ module.exports = {
       {
         listingInput: {
           title,
-          price,
-          numberOfRoommates,
-          bathroomType,
           location,
+          price,
           leaseStartDate,
           leaseEndDate,
+          numberOfRoommates,
+          bathroomType,
           isFurnished,
           utilitiesIncluded,
           petsAllowed,
@@ -116,12 +116,12 @@ module.exports = {
       const newListing = new Listing({
         user: user.id,
         title,
-        price,
-        numberOfRoommates,
-        bathroomType,
         location,
+        price,
         leaseStartDate,
         leaseEndDate,
+        numberOfRoommates,
+        bathroomType,
         isFurnished,
         utilitiesIncluded,
         petsAllowed,
@@ -130,8 +130,6 @@ module.exports = {
         createdAt: new Date().toISOString(),
       });
       await newListing.save();
-
-      //const listings = await Listing.find();
 
       return newListing;
     },

@@ -23,11 +23,11 @@ const listingSchema = new Schema({
     required: true,
   },
   leaseStartDate: {
-    type: String,
+    type: Date,
     required: true,
   },
   leaseEndDate: {
-    type: String,
+    type: Date,
     required: true,
   },
   isFurnished: {
