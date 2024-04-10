@@ -1,36 +1,41 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { gql } from 'graphql-tag';
-import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import * as React from "react";
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { gql } from "graphql-tag";
+import { useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import InputAdornment from "@mui/material/InputAdornment";
+import Divider from "@mui/material/Divider";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "@mui/icons-material/Clear";
+import AddIcon from "@mui/icons-material/Add";
+import UploadIcon from "@mui/icons-material/Upload";
+
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+
 import Upload from "../component/Upload";
 import { Cloudinary } from "@cloudinary/url-gen";
+
+const nums = ["1", "2", "3", "4"];
 
 //import IconButton from '@material-ui/core/IconButton';
 //import CloseIcon from '@material-ui/icons/Close';
 
 
-const defaultTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#AF8C53', // Mustard
-    },
-    secondary: {
-      main: '#2B2B2B', // Black
-    },
-  },
-});
 
 function ListStay() {
   const theme = useTheme();
@@ -224,7 +229,7 @@ function ListStay() {
               Details
             </Typography>
           </Divider>
-          <Grid container>
+
             <Grid item xs={2} />
             <Grid item xs={5}>
               <Grid item>
@@ -356,9 +361,10 @@ function ListStay() {
             >
               List Apartment
             </Button>
-          </Box>
-        </Grid>
-      <Grid item xs={12} sm={6}>
+             </Box>
+          </Grid>
+          
+       <Grid item xs={12} sm={6}>
         {/*leave empty space for upload images*/}
        </Grid>
 
