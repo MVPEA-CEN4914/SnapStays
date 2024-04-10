@@ -1,6 +1,8 @@
 const { gql } = require("graphql-tag");
 
 module.exports = gql`
+  scalar Date
+
   type User {
     id: ID!
     token: String!
@@ -22,8 +24,8 @@ module.exports = gql`
     numberOfRoommates: Int!
     bathroomType: String!
     location: String!
-    leaseStartDate: String!
-    leaseEndDate: String!
+    leaseStartDate: Date!
+    leaseEndDate: Date!
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
@@ -49,12 +51,12 @@ module.exports = gql`
 
   input ListingInput {
     title: String!
+    location: String!
     price: Float!
+    leaseStartDate: Date!
+    leaseEndDate: Date!
     numberOfRoommates: Int!
     bathroomType: String!
-    location: String!
-    leaseStartDate: String!
-    leaseEndDate: String!
     isFurnished: Boolean!
     utilitiesIncluded: Boolean!
     petsAllowed: Boolean!
@@ -74,7 +76,7 @@ module.exports = gql`
 
   type Query {
     getUsers: [User]
-    getUser(userId: ID!): User 
+    getUser(userId: ID!): User
     getListings: [Listing]
     getListing(listingId: ID!): Listing
     getFilteredListings(filteredInput: FilteredInput): [Listing]

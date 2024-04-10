@@ -7,13 +7,13 @@ import Layout from "./pages/Layout";
 import FindStay from "./pages/FindStay";
 import ListStay from "./pages/ListStay";
 import Verify from "./pages/Verify";
-import UserProfile from './pages/UserProfile';
+import UserProfile from "./pages/UserProfile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword.js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
-import { AuthProvider } from './context/auth';
+import { AuthProvider } from "./context/auth";
 
 const theme = createTheme({
   typography: {
@@ -64,39 +64,44 @@ const theme = createTheme({
       light: "#D9D9D9", // Gray
       main: "#2B2B2B", // Black
     },
+    error: {
+      light: "#ff7961", // Light red
+      main: "#f44336", // Red
+      dark: "#ba000d", // Dark red
+    },
   },
 });
 
 function App() {
   return (
-  <AuthProvider>
-    <ApolloProvider>
-      <div className="App">
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Landing />} />
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
-                <Route path="find-stay" element={<FindStay />} />
-                <Route path="list-stay" element={<ListStay />} />
-        <Route path="userprofile" element = {<UserProfile/>} />
-                <Route exact path="/verify/:id" element={<Verify />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route
-                  exact
-                  path="/reset-password/:id"
-                  element={<ResetPassword />}
-                />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </ThemeProvider>
-      </div>
-    </ApolloProvider>
-   </AuthProvider>
+    <AuthProvider>
+      <ApolloProvider>
+        <div className="App">
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Landing />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                  <Route path="find-stay" element={<FindStay />} />
+                  <Route path="list-stay" element={<ListStay />} />
+                  <Route path="userprofile" element={<UserProfile />} />
+                  <Route exact path="/verify/:id" element={<Verify />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route
+                    exact
+                    path="/reset-password/:id"
+                    element={<ResetPassword />}
+                  />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </ThemeProvider>
+        </div>
+      </ApolloProvider>
+    </AuthProvider>
   );
 }
 
