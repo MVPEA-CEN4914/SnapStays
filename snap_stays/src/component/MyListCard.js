@@ -81,7 +81,9 @@ function MyListCard({ listing }) {
       {listing.title} 
     </Typography>
     <Typography variant="body2" color="text.secondary">
-     <b>Lease Dates: </b>{`${listing.leaseStartDate} - ${listing.leaseEndDate}`}
+     <b>Lease Dates: </b>{`${formatDate(
+          listing.leaseStartDate
+        )} - ${formatDate(listing.leaseEndDate)}`}
      <br></br>
      <b>Price: </b>${listing.price}
     </Typography>

@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
+import { useQuery, gql } from "@apollo/client";
 
 import { AuthContext } from "../context/auth";
 
@@ -28,9 +29,17 @@ function HomeNavbar() {
   };
 
   const { user, logout } = useContext(AuthContext);
+  const currentUserId = user ? user.id : null; // handle case where user is null 
+  const { data: userData } = useQuery(GET_USER_QUERY, {
+    variables: { userId: currentUserId },
+    skip: !currentUserId, //skip query if user is not logged in 
+  });
+
+ 
 
   let navBar;
-  if (user) {
+  if (user && userData && userData.getUser) {
+    const userDetail = userData.getUser;
     navBar = (
       <AppBar position="static" sx={{ bgcolor: "#E6E6DD" }}>
         <Toolbar>
@@ -87,6 +96,7 @@ function HomeNavbar() {
                     width: "32px",
                     height: "32px",
                   }}
+                  src={userDetail.image}
                 />
               </IconButton>
             </Tooltip>
@@ -127,7 +137,7 @@ function HomeNavbar() {
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <MenuItem component={RouterLink} to="userprofile">
-                <Avatar /> {user.fullName}
+                <Avatar src={userDetail.image} /> {user.fullName}
               </MenuItem>
               <Divider />
               <MenuItem onClick={logout} component={RouterLink} to="/">
@@ -204,5 +214,16 @@ function HomeNavbar() {
   }
   return navBar;
 }
+const GET_USER_QUERY = gql`
+  query GetUser($userId: ID!) {
+    getUser(userId: $userId) {
+      id
+      email
+      fullName
+      username
+      image
+    }
+  }
+`;
 
 export default HomeNavbar;
