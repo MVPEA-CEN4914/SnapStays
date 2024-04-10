@@ -10,6 +10,7 @@ import Verify from "./pages/Verify";
 import UserProfile from './pages/UserProfile';
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword.js";
+import IndividualStay from "./pages/IndividualStay.js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
@@ -77,6 +78,7 @@ function App() {
                 <Route path="register" element={<Register />} />
                 <Route path="find-stay" element={<FindStay />} />
                 <Route path="list-stay" element={<ListStay />} />
+                <Route exact path="/individual-stay/:listingId" element={<IndividualStay />} />          
         <Route path="userprofile" element = {<UserProfile/>} />
                 <Route exact path="/verify/:id" element={<Verify />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />

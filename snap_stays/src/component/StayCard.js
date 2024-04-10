@@ -10,12 +10,13 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-
+import { Link } from 'react-router-dom';
 import TempListing from "../images/TempListing.jpg";
 
 function StayCard({ listing }) {
   const theme = useTheme();
   return (
+    <Link to={`/individual-stay/${listing.id}`} style={{ textDecoration: 'none' }}>
     <Card
       sx={{
         maxWidth: "16rem",
@@ -63,6 +64,7 @@ function StayCard({ listing }) {
         <Typography variant="h5">${listing.price}/month</Typography>
       </CardContent>
     </Card>
+    </Link>
   );
 }
 
