@@ -11,7 +11,32 @@ import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+
+
+function ListingMarker({ listing }) {
+  const { loading, error, data } = useQuery(GET_GEOCODE, {
+    variables: { address: listing.location },
+  });
+  const [isOpen, setIsOpen] = useState(false);
+  if (loading) return null;
+  if (error) return `Error! ${error.message}`;
+
+  const { latitude, longitude } = data.getGeocode;
+
+  return (
+    <Marker 
+      position={{ lat: latitude, lng: longitude }} 
+      onClick={() => setIsOpen(true)}
+    >
+      {isOpen && (
+        <InfoWindow onCloseClick={() => setIsOpen(false)}>
+          <StayCard listing={listing} />
+        </InfoWindow>
+      )}
+    </Marker>
+  );
+}
 
 function FindStay() {
   
@@ -47,19 +72,21 @@ function FindStay() {
     setOpen(false);
     setSelectedFilters(filters);
   };
+  /*
   function ListingMarker({ location }) {
     const { loading, error, data } = useQuery(GET_GEOCODE, {
       variables: { address: location },
     });
-  
+    
     if (loading) return null;
     if (error) return `Error! ${error.message}`;
   
     const { latitude, longitude } = data.getGeocode;
   
     return <Marker position={{ lat: latitude, lng: longitude }} />;
+    
   }
-
+*/
   /*const getCoordinates = async (location) => {
     try {
       const response = await fetch(`http://localhost:3000/geocode/json?address=${location}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
@@ -223,7 +250,8 @@ function FindStay() {
                 ))}
                 */}
                 {data.getFilteredListings.map((listing, index) => (
-                  <ListingMarker key={index} location={listing.location} />
+                  //<ListingMarker key={index} location={listing.location} />
+                  <ListingMarker key={index} listing={listing} />
                 ))}
               </GoogleMap>
             </LoadScript>
