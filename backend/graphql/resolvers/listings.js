@@ -1,8 +1,8 @@
 const Listing = require("../../models/Listing");
 const { findByIdAndDelete } = require("../../models/User");
 const checkAuth = require("../../util/check-auth");
-require('dotenv').config();
-const cloudinary = require('cloudinary').v2;
+require("dotenv").config();
+const cloudinary = require("cloudinary").v2;
 
 const { GraphQLError } = require("graphql");
 
@@ -10,7 +10,7 @@ const { GraphQLError } = require("graphql");
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET
+  api_secret: process.env.CLOUD_API_SECRET,
 });
 
 async function deleteImage(publicId) {
@@ -19,7 +19,7 @@ async function deleteImage(publicId) {
     console.log(result);
     return result;
   } catch (error) {
-    console.error('Error deleting image from Cloudinary:', error);
+    console.error("Error deleting image from Cloudinary:", error);
     throw error;
   }
 }
@@ -28,15 +28,15 @@ module.exports = {
   Query: {
     async getListings() {
       try {
-        const listings = await Listing.find().populate('user');
+        const listings = await Listing.find().populate("user");
         return listings;
       } catch (err) {
         throw new Error(err);
       }
     },
-    async getListing(_, {listingId}) {
+    async getListing(_, { listingId }) {
       try {
-        const foundListing = await Listing.findById(listingId).populate('user');
+        const foundListing = await Listing.findById(listingId).populate("user");
         if (foundListing) {
           return foundListing;
         } else {
@@ -61,7 +61,7 @@ module.exports = {
       const filter = {};
       if (title != null) {
         const regexPattern = new RegExp(title, "i");
-        filter.title = { $regex: regexPattern};
+        filter.title = { $regex: regexPattern };
       }
       if (price && price.length > 0) {
         filter.price = { $gt: price[0], $lt: price[1] };
@@ -83,7 +83,7 @@ module.exports = {
       }
 
       try {
-        const listings = await Listing.find(filter).populate('user');
+        const listings = await Listing.find(filter).populate("user");
         return listings;
       } catch (err) {
         throw new Error(err);
@@ -141,12 +141,15 @@ module.exports = {
         const listing = await Listing.findById(listingId);
         //user should only be able to delete their own posts
         if (user.id == listing.user) {
-           // Delete images from Cloudinary before deleting the listing
-           for (const imageUrl of listing.images) {
-            // Extract the public ID from the image URL
-            const publicId = parsePublicIdFromUrl(imageUrl);
-            // Delete the image from Cloudinary
-            await deleteImage(publicId);
+          // Delete images from Cloudinary before deleting the listing
+          console.log(listing.images.length);
+          if (listing.images.length > 0) {
+            for (const imageUrl of listing.images) {
+              // Extract the public ID from the image URL
+              const publicId = parsePublicIdFromUrl(imageUrl);
+              // Delete the image from Cloudinary
+              await deleteImage(publicId);
+            }
           }
           await Listing.findByIdAndDelete(listingId);
           return "Listing deleted successfully";
@@ -164,9 +167,9 @@ module.exports = {
 function parsePublicIdFromUrl(imageUrl) {
   // Example URL: https://res.cloudinary.com/dyv2ynif2/image/upload/v1712198299/zzawepfsfllevhgd9og2.jpg
   // Extract the public ID between 'upload/' and the '.jpg'
-  const startIndex = imageUrl.indexOf('upload/') + 'upload/'.length;
-  const endIndex = imageUrl.lastIndexOf('.');
+  const startIndex = imageUrl.indexOf("upload/") + "upload/".length;
+  const endIndex = imageUrl.lastIndexOf(".");
   const publicId = imageUrl.substring(startIndex, endIndex);
   // Remove the version number at the beginning of the public ID
-  return publicId.split('/')[1]; // Extracting the part after the version number
+  return publicId.split("/")[1]; // Extracting the part after the version number
 }

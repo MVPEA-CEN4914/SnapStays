@@ -1,14 +1,14 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import TempListing from "../images/TempListing.jpg";
 import { gql, useMutation } from "@apollo/client";
-import { purple } from '@mui/material/colors';
 
 const DELETE = gql`
   mutation DeleteListing($listingId: ID!) {
@@ -27,8 +27,8 @@ function MyListCard({ listing }) {
     onCompleted: () => {
       console.log("delete successful");
     },
-    onError: () => {
-      console.log("not successful");
+    onError: (err) => {
+      console.log("not successful: ", err);
     },
   });
 
@@ -48,52 +48,58 @@ function MyListCard({ listing }) {
   };
 
   return (
-    <Card sx={{ display:"flex", maxHeight: "120px", width:"76%", borderRadius:"20px", margin:"8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",}}>
-    <CardMedia>
-    {listing.images && listing.images.length > 0 ? (
-  <img
-    src={listing.images[0]} // Display the first image URL
-    alt="Listing"
-    style={{
-      borderRadius: '1rem',
-      height: '100px',
-      width: '100px',
-      objectFit: 'cover',
-      padding: '0.5rem',
-    }}
-  />
-) : (
-  <img
-    src={TempListing} // Fallback to TempListing image if no images are present
-    alt="Listing"
-    style={{
-      borderRadius: '1rem',
-      height: '100px',
-      width: '100px',
-      objectFit: 'cover',
-      padding: '0.5rem',
-    }}
-  />
-)}
-    </CardMedia>
-  <CardContent>
-    <Typography gutterBottom variant="h6">
-      {listing.title} 
-    </Typography>
-    <Typography variant="body2" color="text.secondary">
-     <b>Lease Dates: </b>{`${formatDate(
-          listing.leaseStartDate
-        )} - ${formatDate(listing.leaseEndDate)}`}
-     <br></br>
-     <b>Price: </b>${listing.price}
-    </Typography>
-  </CardContent>
-  <CardActions sx={{justifyContent:'flex-end'}}>
-    <Button size="small">Edit</Button>
-    <Button size="small" onClick={handleDelete}>Delete</Button>
-  </CardActions>
-</Card>
-  )
+    <Card
+      sx={{
+        display: "flex",
+        maxHeight: "8.5rem",
+        margin: "8px",
+        borderRadius: "1rem",
+        border: "2px solid black",
+      }}
+    >
+      <CardMedia>
+        <img
+          src={
+            listing.images && listing.images.length > 0
+              ? listing.images[0]
+              : TempListing
+          }
+          alt="Listing"
+          style={{
+            borderRadius: "1rem",
+            height: "8rem",
+            width: "8rem",
+            objectFit: "cover",
+            padding: "0.5rem",
+          }}
+        />
+      </CardMedia>
+      <CardContent>
+        <Typography gutterBottom variant="h6">
+          {listing.title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          <b>Location: </b>
+          {listing.location}
+          <br></br>
+          <b>Lease Dates: </b>
+          {`${formatDate(listing.leaseStartDate)} - ${formatDate(
+            listing.leaseEndDate
+          )}`}
+          <br></br>
+          <b>Price: </b>${listing.price}
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ alignSelf: "stretch" }}>
+        <IconButton variant="contained" color="primary">
+          <EditIcon fontSize="large"/>
+        </IconButton>
+        <IconButton variant="contained" color="error" onClick={handleDelete}>
+          <DeleteIcon fontSize="large"/>
+        </IconButton>
+      </CardActions>
+    </Card>
+  );
 }
 
 export default MyListCard;
