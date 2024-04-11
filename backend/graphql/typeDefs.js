@@ -35,6 +35,11 @@ module.exports = gql`
     user: User!
   }
 
+  type GeocodeResult {
+    latitude: Float
+    longitude: Float
+  }
+
   input RegisterInput {
     fullName: String!
     email: String!
@@ -81,6 +86,7 @@ module.exports = gql`
     getListing(listingId: ID!): Listing
     getFilteredListings(filteredInput: FilteredInput): [Listing]
     getFavorites(id: ID!): [Listing]
+    getGeocode(address: String!): GeocodeResult
   }
 
   type Mutation {
