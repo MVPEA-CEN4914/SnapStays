@@ -18,12 +18,9 @@ function ListingMarker({ listing , isOpen, setIsOpen}) {
   const { loading, error, data } = useQuery(GET_GEOCODE, {
     variables: { address: listing.location },
   });
-  
   if (loading) return null;
   if (error) return `Error! ${error.message}`;
-
   const { latitude, longitude } = data.getGeocode;
-
   return (
     <Marker 
       position={{ lat: latitude, lng: longitude }} 
