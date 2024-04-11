@@ -12,11 +12,36 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/auth";
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+
+function ListingMarker({ listing }) {
+  const { loading, error, data } = useQuery(GET_GEOCODE, {
+    variables: { address: listing.location },
+  });
+  const [isOpen, setIsOpen] = useState(false);
+  if (loading) return null;
+  if (error) return `Error! ${error.message}`;
+
+  const { latitude, longitude } = data.getGeocode;
+
+  return (
+    <Marker 
+      position={{ lat: latitude, lng: longitude }} 
+      onClick={() => setIsOpen(true)}
+    >
+      {isOpen && (
+        <InfoWindow onCloseClick={() => setIsOpen(false)}>
+          <StayCard listing={listing} />
+        </InfoWindow>
+      )}
+    </Marker>
+  );
+}
 
 function FindStay() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [coordinates, setCoordinates] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [selectedFilters, setSelectedFilters] = useState({
     title: null,
@@ -176,9 +201,16 @@ function FindStay() {
               <GoogleMap
                 mapContainerStyle={{ width: "100%", height: "900px" }}
                 center={{ lat: 29.652, lng: -82.325 }}
-                zoom={10}
+                zoom={11}
               >
-                {/* You can add markers here using the Marker component */}
+                {/*{coordinates.map((coord, index) => (
+                  <Marker key={index} position={{ lat: coord.lat, lng: coord.lng }} />
+                ))}
+                */}
+                {data.getFilteredListings.map((listing, index) => (
+                  //<ListingMarker key={index} location={listing.location} />
+                  <ListingMarker key={index} listing={listing} />
+                ))}
               </GoogleMap>
             </LoadScript>
           </div>
@@ -240,6 +272,15 @@ const GET_USER_QUERY = gql`
         leaseStartDate
         leaseEndDate
       }
+    }
+  }
+`;
+
+const GET_GEOCODE = gql`
+  query GetGeocode($address: String!) {
+    getGeocode(address: $address) {
+      latitude
+      longitude
     }
   }
 `;
