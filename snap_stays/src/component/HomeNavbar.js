@@ -29,16 +29,14 @@ function HomeNavbar() {
   };
 
   const { user, logout } = useContext(AuthContext);
-  const currentUserId = user ? user.id : null; // handle case where user is null 
+  const currentUserId = user ? user.id : null; // handle case where user is null
   const { data: userData } = useQuery(GET_USER_QUERY, {
     variables: { userId: currentUserId },
-    skip: !currentUserId, //skip query if user is not logged in 
+    skip: !currentUserId, //skip query if user is not logged in
   });
 
- 
-
   let navBar;
-  if (user && userData && userData.getUser) {
+  if (user && userData && userData.getUser && userData.getUser.verified) {
     const userDetail = userData.getUser;
     navBar = (
       <AppBar position="static" sx={{ bgcolor: "#E6E6DD" }}>
@@ -46,7 +44,7 @@ function HomeNavbar() {
           <IconButton edge="start" component={RouterLink} to="/">
             <img
               src={BlackLogo}
-              alt="BlackLogo"
+              alt="House Logo"
               style={{ width: "50px", height: "auto" }}
             />
           </IconButton>
@@ -214,6 +212,7 @@ function HomeNavbar() {
   }
   return navBar;
 }
+
 const GET_USER_QUERY = gql`
   query GetUser($userId: ID!) {
     getUser(userId: $userId) {
@@ -222,6 +221,7 @@ const GET_USER_QUERY = gql`
       fullName
       username
       image
+      verified
     }
   }
 `;

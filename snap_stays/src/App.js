@@ -14,13 +14,13 @@ import ResetPassword from "./pages/ResetPassword.js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
+
+import PrivateRoute from "./component/PrivateRoute";
 import { AuthProvider } from "./context/auth";
 
 const theme = createTheme({
   typography: {
-    fontFamily: [
-      '"Josefin Sans"',
-    ].join(','),
+    fontFamily: ['"Josefin Sans"'].join(","),
   },
   components: {
     MuiButton: {
@@ -87,10 +87,28 @@ function App() {
                   <Route path="login" element={<Login />} />
                   <Route path="register" element={<Register />} />
                   <Route path="find-stay" element={<FindStay />} />
-                  <Route path="list-stay" element={<ListStay />} />
-                  <Route path="userprofile" element={<UserProfile />} />
+                  <Route
+                    path="list-stay"
+                    element={
+                      <PrivateRoute>
+                        <ListStay />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="userprofile"
+                    element={
+                      <PrivateRoute>
+                        <UserProfile />
+                      </PrivateRoute>
+                    }
+                  />
                   <Route exact path="/verify/:id" element={<Verify />} />
-                  <Route exact path = "listing/:listingid" element={<IndividualStay/>}/> 
+                  <Route
+                    exact
+                    path="listing/:listingid"
+                    element={<IndividualStay />}
+                  />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route
                     exact
