@@ -14,23 +14,20 @@ import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
 import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 
-function ListingMarker({ listing }) {
+function ListingMarker({ listing , isOpen, setIsOpen}) {
   const { loading, error, data } = useQuery(GET_GEOCODE, {
     variables: { address: listing.location },
   });
-  const [isOpen, setIsOpen] = useState(false);
   if (loading) return null;
   if (error) return `Error! ${error.message}`;
-
   const { latitude, longitude } = data.getGeocode;
-
   return (
     <Marker 
       position={{ lat: latitude, lng: longitude }} 
-      onClick={() => setIsOpen(true)}
+      onClick={() => setIsOpen(listing.id)}
     >
-      {isOpen && (
-        <InfoWindow onCloseClick={() => setIsOpen(false)}>
+      {isOpen == listing.id && (
+        <InfoWindow onCloseClick={() => setIsOpen(null)}>
           <StayCard listing={listing} />
         </InfoWindow>
       )}
@@ -39,6 +36,7 @@ function ListingMarker({ listing }) {
 }
 
 function FindStay() {
+  const [isOpen, setIsOpen] = useState(null);
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
@@ -209,7 +207,7 @@ function FindStay() {
                 */}
                 {data.getFilteredListings.map((listing, index) => (
                   //<ListingMarker key={index} location={listing.location} />
-                  <ListingMarker key={index} listing={listing} />
+                  <ListingMarker key={index} listing={listing} isOpen={isOpen} setIsOpen={setIsOpen}/>
                 ))}
               </GoogleMap>
             </LoadScript>
