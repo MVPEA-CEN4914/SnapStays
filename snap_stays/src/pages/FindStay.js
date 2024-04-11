@@ -47,7 +47,18 @@ function FindStay() {
     setOpen(false);
     setSelectedFilters(filters);
   };
+  function ListingMarker({ location }) {
+    const { loading, error, data } = useQuery(GET_GEOCODE, {
+      variables: { address: location },
+    });
   
+    if (loading) return null;
+    if (error) return `Error! ${error.message}`;
+  
+    const { latitude, longitude } = data.getGeocode;
+  
+    return <Marker position={{ lat: latitude, lng: longitude }} />;
+  }
 
   /*const getCoordinates = async (location) => {
     try {
@@ -207,8 +218,12 @@ function FindStay() {
                 center={{ lat: 29.652, lng: -82.325 }}
                 zoom={11}
               >
-                {coordinates.map((coord, index) => (
+                {/*{coordinates.map((coord, index) => (
                   <Marker key={index} position={{ lat: coord.lat, lng: coord.lng }} />
+                ))}
+                */}
+                {data.getFilteredListings.map((listing, index) => (
+                  <ListingMarker key={index} location={listing.location} />
                 ))}
               </GoogleMap>
             </LoadScript>
@@ -250,6 +265,13 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
     }
   }
 `;
-
+const GET_GEOCODE = gql`
+  query GetGeocode($address: String!) {
+    getGeocode(address: $address) {
+      latitude
+      longitude
+    }
+  }
+`;
 
 export default FindStay;
