@@ -15,6 +15,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
 import { AuthProvider } from "./context/auth";
+import Messages from "./pages/Messages";
 
 const theme = createTheme({
   typography: {
@@ -92,6 +93,7 @@ function App() {
                   <Route exact path="/verify/:id" element={<Verify />} />
                   <Route exact path = "listing/:listingid" element={<IndividualStay/>}/> 
                   <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/messages" element={<Messages />} />
                   <Route
                     exact
                     path="/reset-password/:id"
