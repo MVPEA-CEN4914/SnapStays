@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Houses from "../images/Houses.png";
 import dogImage from "../images/DogImage.png";
 import { Button } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { Router, Link as RouterLink } from "react-router-dom";
 
@@ -13,6 +14,7 @@ import { AuthContext } from "../context/auth";
 
 function Landing() {
   const theme = useTheme();
+  const mobileSize = useMediaQuery("(max-width:500px)");
   const { user } = useContext(AuthContext);
   return (
     <>
@@ -20,8 +22,8 @@ function Landing() {
         container
         component="main"
         sx={{
-          height: "90vh",
-          paddingX: "5rem",
+          height: mobileSize ? "55vh" : "90vh",
+          paddingX: mobileSize ? "0rem" : "5rem",
           backgroundColor: theme.palette.background.default,
         }}
       >
@@ -46,11 +48,14 @@ function Landing() {
               alignItems: "left",
             }}
           >
-            <Typography variant="h1" sx={{ lineHeight: "100%", fontWeight: 500 }}>
-              Subleases and short- term housing
+            <Typography
+              variant={mobileSize ? "h2" : "h1"}
+              sx={{ lineHeight: "100%", fontWeight: 500 }}
+            >
+              Subleases and short-term housing
             </Typography>
             <Typography
-              variant="h1"
+              variant={mobileSize ? "h2" : "h1"}
               sx={{
                 fontStyle: "italic",
                 lineHeight: "100%",
@@ -60,16 +65,16 @@ function Landing() {
             >
               in a snap
             </Typography>
-            <Grid container sx={{ mt: 5 }}>
-              <Grid item xs={6} sx={{ paddingX: 3 }}>
+            <Grid container sx={{ mt: mobileSize ? 3 : 5 }}>
+              <Grid item xs={6} sm={6} sx={{ paddingX: mobileSize ? 0 : 3 }}>
                 <Button
                   type="submit"
                   variant="outlined"
-                  fullWidth
+                  fullWidth={mobileSize ? false : true}
                   href="/find-stay"
                   sx={{
-                    padding: 1,
-                    fontSize: "1.5rem",
+                    padding: mobileSize ? 1.5 : 1,
+                    fontSize: mobileSize ? "1rem" : "1.5rem",
                     color: theme.palette.secondary.main,
                     borderWidth: 3,
                     borderColor: theme.palette.secondary.main,
@@ -83,15 +88,15 @@ function Landing() {
                   Find a Stay
                 </Button>
               </Grid>
-              <Grid item xs={6} sx={{ paddingX: 3 }}>
+              <Grid item xs={6} sm={6} sx={{ paddingX: mobileSize ? 0 : 3 }}>
                 <Button
                   type="submit"
                   variant="outlined"
-                  fullWidth
+                  fullWidth={mobileSize ? false : true}
                   href={user ? "/list-stay" : "/login"}
                   sx={{
-                    padding: 1,
-                    fontSize: "1.5rem",
+                    padding: mobileSize ? 1.5 : 1,
+                    fontSize: mobileSize ? "1rem" : "1.5rem",
                     color: theme.palette.secondary.main,
                     borderWidth: 3,
                     borderColor: theme.palette.secondary.main,
@@ -128,34 +133,38 @@ function Landing() {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <div //left dark brown bar
-          style={{
-            width: "12vw",
-            height: "5vh",
-            left: "0vw",
-            top: "110vh",
-            position: "absolute",
-            transform: "rotate(-65deg)",
-            transformOrigin: "center",
-            background: "#2B2B2B",
-            borderRadius: "10px",
-            border: "3px #2B2B2B solid",
-          }}
-        ></div>
-        <div //right dark brown bar
-          style={{
-            width: "12vw",
-            height: "5vh",
-            left: "87vw",
-            top: "50vw",
-            position: "absolute",
-            transform: "rotate(65deg)",
-            transformOrigin: "center",
-            background: "#2B2B2B",
-            borderRadius: "10px",
-            border: "3px #2B2B2B solid",
-          }}
-        ></div>
+        {!mobileSize && (
+          <>
+            <div //left dark brown bar
+              style={{
+                width: "12vw",
+                height: "5vh",
+                left: "0vw",
+                top: "110vh",
+                position: "absolute",
+                transform: "rotate(-65deg)",
+                transformOrigin: "center",
+                background: "#2B2B2B",
+                borderRadius: "10px",
+                border: "3px #2B2B2B solid",
+              }}
+            ></div>
+            <div //right dark brown bar
+              style={{
+                width: "12vw",
+                height: "5vh",
+                left: "87vw",
+                top: "50vw",
+                position: "absolute",
+                transform: "rotate(65deg)",
+                transformOrigin: "center",
+                background: "#2B2B2B",
+                borderRadius: "10px",
+                border: "3px #2B2B2B solid",
+              }}
+            ></div>
+          </>
+        )}
         <Grid //a bit of white space for stair transition
           item
           xs={12}
@@ -204,23 +213,23 @@ function Landing() {
           item
           xs={12}
           style={{
-            height: "80vh",
+            height: mobileSize ? "80vh" : "80vh",
             background: theme.palette.primary.main,
           }}
         >
           <Box
             sx={{
-              marginX: "15rem",
-              marginY: "5rem",
-              padding: "2rem",
-              boxShadow: "10px 10px",
+              marginX: mobileSize ? "1rem" : "15rem",
+              marginY: mobileSize ? "2rem" : "5rem",
+              padding: mobileSize ? "1rem" : "2rem",
+              boxShadow: mobileSize ? "5px 5px" : "10px 10px",
               borderRadius: "30px",
               border: "5px black solid",
               background: theme.palette.secondary.main,
             }}
           >
             <Typography
-              variant="h3"
+              variant={mobileSize ? "h4" : "h3"}
               align="center"
               sx={{
                 fontWeight: "bold",
@@ -235,7 +244,7 @@ function Landing() {
                 paddingTop: "1rem",
                 color: theme.palette.background.default,
               }}
-              variant="h4"
+              variant={mobileSize ? "h5" : "h4"}
             >
               We aim to streamline and simplify the process of renting and
               subletting for college students by providing a platform tailored
@@ -251,9 +260,9 @@ function Landing() {
         container
         component="main"
         sx={{
-          width: "100%",
-          height: "110vh",
-          paddingX: "5rem",
+          width: mobileSize ? "auto" : "100%",
+          height: mobileSize ? "80vh" : "110vh",
+          paddingX: mobileSize ? "0rem" : "5rem",
           backgroundColor: theme.palette.secondary.main,
         }}
       >
@@ -287,14 +296,15 @@ function Landing() {
               mx: 4,
               display: "flex",
               flexDirection: "column",
-              textAlign: "right",
+              textAlign: mobileSize ? "center" : "right",
             }}
           >
             <Typography
-              variant="h1"
+              gutterBottom
+              variant={mobileSize ? "h2" : "h1"}
               sx={{
                 paddingY: "1rem",
-                fontSize: "9rem",
+                fontSize: mobileSize ? "4rem" : "9rem",
                 fontWeight: "bold",
                 fontStyle: "italic",
                 whiteSpace: "pre-line",
@@ -303,6 +313,7 @@ function Landing() {
             >
               Connect. Unlock. Live.
             </Typography>
+            {mobileSize && <img src={dogImage} width={"300px"} />}
           </Box>
         </Grid>
       </Grid>
