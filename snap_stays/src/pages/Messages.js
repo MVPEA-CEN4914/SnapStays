@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Grid, TextField, Button, Typography, Paper, Box , Avatar} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-function Messages() {
+function Messages({userID}) {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [message, setMessage] = useState("");
+  const [conversations, setConversations] = useState([]);
   const theme = useTheme();
 
-  const conversations = [
+  /*const conversations = [
     // This is where you would fetch your list of conversations or users
 
     {
@@ -28,6 +29,41 @@ function Messages() {
       ],
     },
   ];
+*/
+
+useEffect(() => {
+    // This is where you would fetch your list of conversations for the user
+    // For now, I'll use a mock fetch function
+    const fetchConversations = async (userID) => {
+      // Replace this with actual fetch logic
+      const fetchedConversations = [
+        {
+          name: "Conversation 1",
+          photo: "url-to-photo-1",
+          messages: [
+            { sender: "you", text: "Hello!" },
+            { sender: "them", text: "Hi, how are you?" },
+            { sender: "you", text: "I'm good, thanks!" },
+          ],
+        },
+        {
+          name: "Conversation 2",
+          photo: "url-to-photo-2",
+          messages: [
+            { sender: "them", text: "Hey!" },
+            { sender: "you", text: "Hey, what's up?" },
+          ],
+        },
+      ];
+      return fetchedConversations;
+    };
+
+    fetchConversations(userID).then(fetchedConversations => {
+      setConversations(fetchedConversations);
+    });
+  }, [userID]);
+
+  // rest of your code...
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
