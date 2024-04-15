@@ -7,7 +7,6 @@ const { expressMiddleware } = require("@apollo/server/express4");
 const mongoose = require("mongoose");
 const typeDefs = require("./graphql/typeDefs.js");
 const resolvers = require("./graphql/resolvers");
-const { Server } = require("socket.io");
 require("dotenv").config();
 
 const port = process.env.PORT || 5050;
@@ -26,27 +25,6 @@ startApolloServer = async () => {
   app.use(expressMiddleware(server, {
     context: ({ req }) => ({ req })
   }));
-
-     // Connect Socket.IO
-  const io = new Server(httpServer, {
-    cors: {
-      origin: "*",
-    },
-  });
-
-  // Handle socket connections
-  io.on("connection", (socket) => {
-    console.log("New client connected: ", socket.id);
-
-
-    // Disconnect event
-    socket.on("disconnect", () => {
-      console.log("Client disconnected: ", socket.id);
-    });
-  });
-
-
- 
   await new Promise((resolve) => httpServer.listen({ port }, resolve));
   const addr = httpServer.address();
   const host = addr.address === "::" ? "localhost" : addr.address;

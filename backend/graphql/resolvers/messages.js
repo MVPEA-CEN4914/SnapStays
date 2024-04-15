@@ -115,13 +115,7 @@ module.exports = {
 
         //TODO SOCKET LOGIC HERE
        // Connect to the Socket.IO server
-       const io = context.io;
-
-       // Emit the new message event to the recipient
-       io.emit("newMessage", {
-         receiverId,
-         message: newMessage,
-       });
+      
 
 
         return newMessage;
