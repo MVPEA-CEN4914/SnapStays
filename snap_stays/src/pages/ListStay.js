@@ -18,7 +18,6 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
-import AddIcon from "@mui/icons-material/Add";
 import UploadIcon from "@mui/icons-material/Upload";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -26,16 +25,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-
 import Upload from "../component/Upload";
 import { Cloudinary } from "@cloudinary/url-gen";
 
 const nums = ["1", "2", "3", "4"];
-
-//import IconButton from '@material-ui/core/IconButton';
-//import CloseIcon from '@material-ui/icons/Close';
-
-
 
 function ListStay() {
   const theme = useTheme();
@@ -88,7 +81,7 @@ function ListStay() {
       utilitiesIncluded: values.utilitiesIncluded,
       petsAllowed: values.petsAllowed,
       description: values.description,
-      images: values.images
+      images: values.images,
     };
 
     createListing({ variables: { listingInput } });
@@ -103,14 +96,13 @@ function ListStay() {
     onCompleted: () => {
       // Handle successful listing creation
       console.log("Listing created: ", values);
-      navigate('/find-stay');
+      navigate("/find-stay");
     },
     onError: (apiError) => {
       // Handle API call errors
-      console.error('Error listing the apartment:', apiError);
-    }
+      console.error("Error listing the apartment:", apiError);
+    },
   });
-
 
   const handleDelete = (index) => {
     setValues((prevValues) => {
@@ -125,23 +117,24 @@ function ListStay() {
 
   const [uwConfig] = useState({
     cloudName,
-    uploadPreset
+    uploadPreset,
   });
   const cld = new Cloudinary({
     cloud: {
-      cloudName
-    }
+      cloudName,
+    },
   });
   const setImageUrl = (imageUrl) => {
-  console.log("Image URL:", imageUrl); // Log the image URL
-  setValues((prevValues) => ({
-    ...prevValues,
-    images: [...prevValues.images, imageUrl], // Append the new image URL to the existing list
-  }));
+    console.log("Image URL:", imageUrl); // Log the image URL
+    setValues((prevValues) => ({
+      ...prevValues,
+      images: [...prevValues.images, imageUrl], // Append the new image URL to the existing list
+    }));
   };
 
   return (
     <Grid container sx={{ backgroundColor: theme.palette.background.default }}>
+      {/*Form Section*/}
       <Grid item xs={12} sm={7}>
         <Box
           component="form"
@@ -229,7 +222,7 @@ function ListStay() {
               Details
             </Typography>
           </Divider>
-
+          <Grid container>
             <Grid item xs={2} />
             <Grid item xs={5}>
               <Grid item>
@@ -314,99 +307,158 @@ function ListStay() {
                 />
               </Grid>
             </Grid>
-            <TextField
-              sx={{ '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderRadius: '15px', // Adjust this value to your liking
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black', // Change this to your desired hover color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black', // Change this to your desired focus color
-                },
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'grey',
-              }
-            }}
-              margin="normal"
-              required
-              fullWidth
-              id="description"
-              label="Description"
-              name="description"
-              autoComplete="description"
-              value={values.description}
-              error={errors.description ? true : false}
-              onChange={onChange}
-              multiline // Add this
-              rows={4}
-            />
-            {/* TODO: Add file input for images */}
-            
-
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              List Apartment
-            </Button>
-             </Box>
           </Grid>
-          
-       <Grid item xs={12} sm={6}>
-        {/*leave empty space for upload images*/}
-       </Grid>
-
-       <Grid item xs={12} sm={6} style={{ marginLeft: 'auto', marginTop: '-600px' ,  justifyContent: 'flex-end' }}>
-       <Grid container direction="column" alignItems="center" >
-          <Upload uwConfig={uwConfig} setImageUrl={setImageUrl}/>
-        </Grid>
-        {/* Display uploaded pictures here */}
-        <Grid container spacing={2} paddingTop={'10px'}>   
-        {values.images.map((image, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index} >
-             <img src={image} alt={`Uploaded ${index}`} style={{ width: '100%', height: 'auto' }} />
-             <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete(index)}>
-                Delete
-              </Button>
-             
-             
-               </Grid>
-          ))}
-        </Grid>
+          <Divider
+            variant="middle"
+            sx={{ width: "100%", paddingBottom: "1rem" }}
+          />
+          <TextField
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderRadius: "15px",
+                },
+              },
+            }}
+            required
+            id="description"
+            label="Description"
+            name="description"
+            autoComplete="description"
+            value={values.description}
+            error={errors.description ? true : false}
+            onChange={onChange}
+            multiline
+            rows={4}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            List Apartment
+          </Button>
+        </Box>
+      </Grid>
+      {/*Images Section*/}
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        style={{
+          marginLeft: "auto",
+          justifyContent: "flex-end",
+        }}
+      >
+        {values.images.length > 0 ? (
+          <Grid container spacing={2} padding={"1rem"}>
+            <Grid item xs={12} sm={6} md={12}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "1rem",
+                }}
+              >
+                {values.images.length < 12 && (
+                  <Upload uwConfig={uwConfig} setImageUrl={setImageUrl} />
+                )}
+              </Box>
+            </Grid>
+            {values.images.map((image, index) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={index}
+                sx={{ position: "relative" }}
+              >
+                <img
+                  src={image}
+                  alt={`Uploaded ${index}`}
+                  style={{
+                    width: "100%",
+                    height: "12rem",
+                    objectFit: "cover",
+                    borderRadius: "1rem",
+                    border: "2px solid black",
+                  }}
+                />
+                <IconButton
+                  variant="contained"
+                  onClick={() => handleDelete(index)}
+                  sx={{
+                    position: "absolute",
+                    top: "1.3rem",
+                    right: "0.3rem",
+                    height: "2rem",
+                    width: "2rem",
+                    color: theme.palette.background.default,
+                    bgcolor: theme.palette.error.main,
+                    "&:hover": {
+                      bgcolor: theme.palette.error.light,
+                    },
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Grid container spacing={2} sx={{ height: "90vh" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "3rem",
+                width: "100vh",
+                borderRadius: "1rem",
+                border: "2px solid black",
+                backgroundColor: theme.palette.secondary.light,
+              }}
+            >
+              <UploadIcon
+                sx={{
+                  fontSize: "10rem",
+                  color: theme.palette.secondary.main,
+                }}
+              />
+              <Typography gutterBottom variant="h6">
+                Upload up to 12 pictures of your place
+              </Typography>
+              <Upload uwConfig={uwConfig} setImageUrl={setImageUrl} />
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );
 }
 
 const CREATE_LISTING = gql`
-mutation CreateListing($listingInput: ListingInput!) {
-  createListing(listingInput: $listingInput) {
-    id
-    title
-    price
-    location
-    numberOfRoommates
-    bathroomType
-    leaseStartDate
-    leaseEndDate
-    isFurnished
-    utilitiesIncluded
-    petsAllowed
-    images
+  mutation CreateListing($listingInput: ListingInput!) {
+    createListing(listingInput: $listingInput) {
+      id
+      title
+      price
+      location
+      numberOfRoommates
+      bathroomType
+      leaseStartDate
+      leaseEndDate
+      isFurnished
+      utilitiesIncluded
+      petsAllowed
+      images
+    }
   }
-}
 `;
 
 export default ListStay;

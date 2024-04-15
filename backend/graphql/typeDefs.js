@@ -34,6 +34,15 @@ module.exports = gql`
     createdAt: String!
     user: User!
   }
+  type Message {
+    senderId: User!
+    receiverId: User!
+    message: String!
+  }
+  type Conversation {
+    participants: [User]
+    messages: [Message]
+  }
 
   type GeocodeResult {
     latitude: Float
@@ -87,6 +96,7 @@ module.exports = gql`
     getFilteredListings(filteredInput: FilteredInput): [Listing]
     getFavorites(id: ID!): [Listing]
     getGeocode(address: String!): GeocodeResult
+    getMessages(userToChatId: ID!): Conversation!
   }
 
   type Mutation {
@@ -99,5 +109,6 @@ module.exports = gql`
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
     addListingToFavorites(listingId: ID!): User!
     editUserProfile(id:ID!,fullName: String, username: String, about: String, image: String): User!
+    sendMessage(message: String!, receiverId: ID!): Message!
   }
 `;
