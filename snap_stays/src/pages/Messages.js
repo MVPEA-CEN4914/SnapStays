@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import { AuthContext } from "../context/auth";
 import { Grid, TextField, Button, Typography, Paper, Box, Avatar } from "@mui/material";
@@ -24,6 +24,7 @@ function Messages() {
   const [conversations, setConversations] = useState([]);
   const theme = useTheme();
   const { user } = useContext(AuthContext);
+  const messagesEndRef = useRef(null);
 
   const authToken = localStorage.getItem('jwtToken');
 
@@ -50,6 +51,10 @@ function Messages() {
     }
   }, [conversationData]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [selectedConversation]);
+
   const [sendMessage] = useMutation(SEND_MESSAGE, {
     context: {
       headers: {
@@ -71,12 +76,16 @@ function Messages() {
       const receiverId = selectedConversation ? 
       (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
       null;
-    await sendMessage({ variables: { message, receiverId } });
+      await sendMessage({ variables: { message, receiverId } });
       setMessage("");
-      // Optionally, you can update the conversation data after sending the message
+      scrollToBottom(); // Scroll to bottom after sending message
     } catch (error) {
       console.error('Error sending message:', error);
     }
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -93,23 +102,33 @@ function Messages() {
         {conversations.map((conversation, index) => (
           <Paper
             key={index}
-            elevation={3}
+            elevation={selectedConversation === conversation ? 6 : 3}
             onClick={() => handleSelectConversation(conversation)}
-            style={{ display: 'flex', alignItems: 'center', padding: '10px' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '10px',
+              backgroundColor: selectedConversation === conversation ? theme.palette.primary.main : 'white',
+              color: selectedConversation === conversation ? 'white' : 'inherit',
+              cursor: 'pointer',
+            }}
           >
-            <Avatar src={conversation ? 
-    (conversation.participants[1].id === user.id ? conversation.participants[0].image : conversation.participants[1].image) : 
-    ''}  style={{ marginRight: '10px' }} />
-            <Typography variant="h6">{conversation ? 
-    (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : 
-    ''}</Typography>
+            <Avatar
+              src={conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].image : conversation.participants[1].image) : ''}
+              style={{ marginRight: '10px' }}
+            />
+            <Typography variant="h6">
+              {conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : ''}
+            </Typography>
           </Paper>
         ))}
       </Grid>
-      <Grid item xs={7} style={{ border: "2px solid grey" }}>
+      <Grid item xs={7} style={{ border: "2px solid grey", height: "500px", overflowY: "auto" }}>
         {selectedConversation ? (
           <>
+          
             <div style={{ display: "flex", flexDirection: "column" }}>
+              
               {selectedConversation.messages.map((message, index) => (
                 <Paper
                   key={index}
@@ -126,6 +145,7 @@ function Messages() {
                   <Typography variant="body1">{message.message}</Typography>
                 </Paper>
               ))}
+              <div ref={messagesEndRef} />
             </div>
             <Box
               display="flex"
