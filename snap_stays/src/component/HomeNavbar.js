@@ -4,7 +4,7 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import { Link as RouterLink } from "react-router-dom";
+import { Form, Link as RouterLink } from "react-router-dom";
 import BlackLogo from "../images/BlackLogo.png";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,6 +13,7 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import { useQuery, gql } from "@apollo/client";
+import ForumIcon from '@mui/icons-material/Forum';
 
 import { AuthContext } from "../context/auth";
 
@@ -140,6 +141,10 @@ function HomeNavbar() {
                 <Avatar src={userDetail.image} /> {user.fullName}
               </MenuItem>
               <Divider />
+              <MenuItem component={RouterLink} to = "messages">
+                <ForumIcon style={{ marginRight: '8px' }} />
+                  Messages</MenuItem>
+              <Divider/>
               <MenuItem onClick={logout} component={RouterLink} to="/">
                 {" "}
                 Logout
