@@ -68,7 +68,10 @@ function Messages() {
 
   const handleSendMessage = async () => {
     try {
-      await sendMessage({ variables: { message, receiverId: selectedConversation.participants[1].id } });
+      const receiverId = selectedConversation ? 
+      (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
+      null;
+    await sendMessage({ variables: { message, receiverId } });
       setMessage("");
       // Optionally, you can update the conversation data after sending the message
     } catch (error) {
@@ -94,8 +97,12 @@ function Messages() {
             onClick={() => handleSelectConversation(conversation)}
             style={{ display: 'flex', alignItems: 'center', padding: '10px' }}
           >
-            <Avatar src={conversation.participants[1].image} style={{ marginRight: '10px' }} />
-            <Typography variant="h6">{conversation.participants[1].fullName}</Typography>
+            <Avatar src={conversation ? 
+    (conversation.participants[1].id === user.id ? conversation.participants[0].image : conversation.participants[1].image) : 
+    ''}  style={{ marginRight: '10px' }} />
+            <Typography variant="h6">{conversation ? 
+    (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : 
+    ''}</Typography>
           </Paper>
         ))}
       </Grid>
