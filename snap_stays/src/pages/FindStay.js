@@ -6,13 +6,15 @@ import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
-import { useQuery, gql } from "@apollo/client";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { useQuery, gql } from "@apollo/client";
 import { useState, useEffect, useContext } from "react";
+import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+
 import { AuthContext } from "../context/auth";
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
-import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 
 function ListingMarker({ listing , isOpen, setIsOpen}) {
   const { loading, error, data } = useQuery(GET_GEOCODE, {
@@ -36,8 +38,10 @@ function ListingMarker({ listing , isOpen, setIsOpen}) {
 }
 
 function FindStay() {
-  const [isOpen, setIsOpen] = useState(null);
   const theme = useTheme();
+  const mobileSize = useMediaQuery("(max-width:500px)");
+  const [showMap, setShowMap] = useState(false);
+  const [isOpen, setIsOpen] = useState(null);
   const [open, setOpen] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -95,7 +99,7 @@ function FindStay() {
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}
     >
       <Grid container>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={mobileSize && showMap ? false : 12} md={7}>
           <Grid
             container
             alignItems={"center"}
@@ -191,7 +195,7 @@ function FindStay() {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={mobileSize ? false : 12} md={5}>
           <div className="map">
             <LoadScript
               googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
