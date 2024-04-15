@@ -41,6 +41,38 @@ module.exports = {
         throw new Error("Internal server error");
       }
     },
+    async getConversations(_, __,context){
+      try {
+        // Check if the user is authenticated
+        const authUser = checkAuth(context);
+        const userId = authUser.id;
+
+        // Fetch conversations where the authenticated user is a participant
+        const conversations = await Conversation.find({
+          participants: userId,
+        }).populate({
+          path: 'participants',
+          model: 'User', // Assuming your User model is named 'User'
+        }).populate({
+          path: 'messages',
+          populate: [
+            {
+              path: 'senderId',
+              model: 'User',
+            },
+            {
+              path: 'receiverId',
+              model: 'User',
+            },
+          ],
+        });
+
+        return conversations;
+      } catch (error) {
+        console.log("Error in getConversations resolver: ", error.message);
+        throw new Error("Internal server error");
+      }
+    },
   },
 
   Mutation: {

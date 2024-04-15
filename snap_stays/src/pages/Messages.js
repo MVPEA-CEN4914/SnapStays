@@ -1,69 +1,62 @@
-import React, { useState , useEffect } from "react";
-import { Grid, TextField, Button, Typography, Paper, Box , Avatar} from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { useQuery, useMutation, gql } from "@apollo/client";
+import { AuthContext } from "../context/auth";
+import { Grid, TextField, Button, Typography, Paper, Box, Avatar } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-function Messages({userID}) {
+const SEND_MESSAGE = gql`
+  mutation sendMessage(
+    $message: String!,
+    $receiverId: ID!
+  ) {
+    sendMessage(
+      message: $message
+      receiverId: $receiverId
+    ){
+      message
+    }
+  }
+`;
+
+function Messages() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
   const theme = useTheme();
+  const { user } = useContext(AuthContext);
 
-  /*const conversations = [
-    // This is where you would fetch your list of conversations or users
+  const authToken = localStorage.getItem('jwtToken');
 
-    {
-      name: "Conversation 1",
-      photo: "url-to-photo-1",
-      messages: [
-        { sender: "you", text: "Hello!" },
-        { sender: "them", text: "Hi, how are you?" },
-        { sender: "you", text: "I'm good, thanks!" },
-      ],
+  const { loading: messageLoading, error: messageError, data: messageData } = useQuery(GET_MESSAGES_QUERY, {
+    context: {
+      headers: {
+        Authorization: authToken ? `Bearer ${authToken}` : '',
+      },
     },
-    {
-      name: "Conversation 2",
-      photo: "url-to-photo-2",
-      messages: [
-        { sender: "them", text: "Hey!" },
-        { sender: "you", text: "Hey, what's up?" },
-      ],
+  });
+
+  const { loading: conversationLoading, error: conversationError, data: conversationData } = useQuery(GET_CONVERSATIONS_QUERY, {
+    context: {
+      headers: {
+        Authorization: authToken ? `Bearer ${authToken}` : '',
+      },
     },
-  ];
-*/
+  });
 
-useEffect(() => {
-    // This is where you would fetch your list of conversations for the user
-    // For now, I'll use a mock fetch function
-    const fetchConversations = async (userID) => {
-      // Replace this with actual fetch logic
-      const fetchedConversations = [
-        {
-          name: "Conversation 1",
-          photo: "url-to-photo-1",
-          messages: [
-            { sender: "you", text: "Hello!" },
-            { sender: "them", text: "Hi, how are you?" },
-            { sender: "you", text: "I'm good, thanks!" },
-          ],
-        },
-        {
-          name: "Conversation 2",
-          photo: "url-to-photo-2",
-          messages: [
-            { sender: "them", text: "Hey!" },
-            { sender: "you", text: "Hey, what's up?" },
-          ],
-        },
-      ];
-      return fetchedConversations;
-    };
-
-    fetchConversations(userID).then(fetchedConversations => {
+  useEffect(() => {
+    if (conversationData) {
+      const fetchedConversations = conversationData.getConversations;
       setConversations(fetchedConversations);
-    });
-  }, [userID]);
+    }
+  }, [conversationData]);
 
-  // rest of your code...
+  const [sendMessage] = useMutation(SEND_MESSAGE, {
+    context: {
+      headers: {
+        Authorization: authToken ? `Bearer ${authToken}` : '',
+      },
+    },
+  });
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
@@ -73,9 +66,14 @@ useEffect(() => {
     setMessage(event.target.value);
   };
 
-  const handleSendMessage = () => {
-    // Here you would send the message to your backend
-    setMessage("");
+  const handleSendMessage = async () => {
+    try {
+      await sendMessage({ variables: { message, receiverId: selectedConversation.participants[1].id } });
+      setMessage("");
+      // Optionally, you can update the conversation data after sending the message
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   };
 
   return (
@@ -85,19 +83,19 @@ useEffect(() => {
           variant="h3"
           style={{ paddingLeft: "100px", paddingTop: "20px" }}
         >
-          {" "}
           Your Messages:
         </Typography>
       </Grid>
       <Grid item xs={5} style={{ border: "2px solid grey" }}>
-        {conversations.map((conversation) => (
+        {conversations.map((conversation, index) => (
           <Paper
+            key={index}
             elevation={3}
             onClick={() => handleSelectConversation(conversation)}
             style={{ display: 'flex', alignItems: 'center', padding: '10px' }}
           >
-            <Avatar src={conversation.photo} style={{ marginRight: '10px' }} />
-            <Typography variant="h6">{conversation.name}</Typography>
+            <Avatar src={conversation.participants[1].image} style={{ marginRight: '10px' }} />
+            <Typography variant="h6">{conversation.participants[1].fullName}</Typography>
           </Paper>
         ))}
       </Grid>
@@ -113,12 +111,12 @@ useEffect(() => {
                     padding: "10px",
                     margin: "10px",
                     backgroundColor:
-                      message.sender === "you" ? "#d3d3d3" : theme.palette.primary.light,
+                      message.senderId.id === user.id ? "#d3d3d3" : theme.palette.primary.light,
                     alignSelf:
-                      message.sender === "you" ? "flex-end" : "flex-start",
+                      message.senderId.id === user.id ? "flex-end" : "flex-start",
                   }}
                 >
-                  <Typography variant="body1">{message.text}</Typography>
+                  <Typography variant="body1">{message.message}</Typography>
                 </Paper>
               ))}
             </div>
@@ -149,7 +147,7 @@ useEffect(() => {
             </Box>
           </>
         ) : (
-            <Box
+          <Box
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -164,5 +162,56 @@ useEffect(() => {
     </Grid>
   );
 }
+
+const GET_CONVERSATIONS_QUERY = gql`
+  {
+    getConversations {
+      participants {
+        id
+        fullName
+        username
+        image
+      }
+      messages {
+        senderId {
+          id
+          fullName
+          username
+        }
+        receiverId {
+          id
+          fullName
+          username
+        }
+        message
+      }
+    }
+  }
+`;
+
+const GET_MESSAGES_QUERY = gql`
+  {
+    getMessages {
+      participants {
+        id
+        fullName
+        username
+      }
+      messages {
+        senderId {
+          id
+          fullName
+          image
+        }
+        receiverId {
+          id
+          fullName
+          image 
+        }
+        message
+      }
+    }
+  }
+`;
 
 export default Messages;

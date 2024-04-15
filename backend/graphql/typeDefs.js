@@ -97,6 +97,7 @@ module.exports = gql`
     getFavorites(id: ID!): [Listing]
     getGeocode(address: String!): GeocodeResult
     getMessages(userToChatId: ID!): Conversation!
+    getConversations: [Conversation!]!
   }
 
   type Mutation {
