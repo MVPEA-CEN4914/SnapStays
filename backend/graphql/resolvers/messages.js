@@ -1,7 +1,8 @@
 const checkAuth = require("../../util/check-auth");
 const Message = require("../../models/Message");
 const Conversation = require("../../models/Conversation");
-const User = require("../../models/User");
+
+
 
 module.exports = {
   Query: {
@@ -105,18 +106,23 @@ module.exports = {
           receiverId,
           message,
         });
-        console.log("New Message:", newMessage);
+        //console.log("New Message:", newMessage);
 
                 // Save message and update conversation
                 await newMessage.save();
                 conversation.messages.push(newMessage._id);
                 await conversation.save();
-   
-         // conversation.messages.push(newMessage);
-        
-        //await Promise.all([conversation.save(), newMessage.save()]);
 
         //TODO SOCKET LOGIC HERE
+       // Connect to the Socket.IO server
+       const io = context.io;
+
+       // Emit the new message event to the recipient
+       io.emit("newMessage", {
+         receiverId,
+         message: newMessage,
+       });
+
 
         return newMessage;
       } catch (error) {
