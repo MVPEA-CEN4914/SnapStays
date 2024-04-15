@@ -10,10 +10,12 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star"; // Import for filled star
+import StarIcon from "@mui/icons-material/Star";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { gql, useMutation } from "@apollo/client";
-import TempListing from "../images/TempListing.jpg";
 import { Link } from "react-router-dom";
+
+import TempListing from "../images/TempListing.jpg";
 
 const FAVORITE = gql`
   mutation AddListingToFavorites($listingId: ID!) {
@@ -28,6 +30,7 @@ const FAVORITE = gql`
 
 function StayCard({ listing, isFavorited }) {
   const theme = useTheme();
+  const mobileSize = useMediaQuery("(max-width:500px)");
   const [isFavorite, setIsFavorite] = useState(isFavorited);
 
   const [addToFavorites] = useMutation(FAVORITE, {
@@ -61,11 +64,11 @@ function StayCard({ listing, isFavorited }) {
   };
 
   let titleShort = listing.title;
-  if (titleShort.length > 18) {
+  if ((!mobileSize) && titleShort.length > 18) {
     titleShort = titleShort.substring(0, 18) + "...";
   }
   let locShort = listing.location;
-  if (locShort.length > 45) {
+  if ((!mobileSize) && locShort.length > 45) {
     locShort = locShort.substring(0, 45) + "...";
   }
 
@@ -73,8 +76,8 @@ function StayCard({ listing, isFavorited }) {
     <Link to={`/listing/${listing.id}`} style={{ textDecoration: "none" }}>
       <Card
         sx={{
-          maxWidth: "16rem",
-          height: "25rem",
+          maxWidth: mobileSize ? "22rem" : "16rem",
+          height: mobileSize ? "31rem" : "25rem",
           border: "3px solid black",
           borderRadius: "1rem",
           margin: "0.5rem",
@@ -88,8 +91,8 @@ function StayCard({ listing, isFavorited }) {
           component="div"
           sx={{
             position: "relative",
-            height: "15rem",
-            width: "15rem",
+            height: mobileSize ? "21rem" : "15rem",
+            width: mobileSize ? "21rem" : "15rem",
           }}
         >
           <IconButton
@@ -132,7 +135,7 @@ function StayCard({ listing, isFavorited }) {
           }
           title={titleShort}
           subheader={locShort}
-          sx={{ maxWidth: "15rem", paddingY: "0.5rem" }}
+          sx={{ maxWidth: mobileSize ? "20rem" : "15rem", paddingY: "0.5rem" }}
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">{`${formatDate(

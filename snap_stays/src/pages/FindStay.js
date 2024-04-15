@@ -5,18 +5,25 @@ import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
+import PlaceIcon from "@mui/icons-material/Place";
 import TuneIcon from "@mui/icons-material/Tune";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { useQuery, gql } from "@apollo/client";
 import { useState, useEffect, useContext } from "react";
-import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
 
 import { AuthContext } from "../context/auth";
 import Filter from "../component/Filter";
 import StayCard from "../component/StayCard";
 
-function ListingMarker({ listing , isOpen, setIsOpen}) {
+function ListingMarker({ listing, isOpen, setIsOpen }) {
   const { loading, error, data } = useQuery(GET_GEOCODE, {
     variables: { address: listing.location },
   });
@@ -24,8 +31,8 @@ function ListingMarker({ listing , isOpen, setIsOpen}) {
   if (error) return `Error! ${error.message}`;
   const { latitude, longitude } = data.getGeocode;
   return (
-    <Marker 
-      position={{ lat: latitude, lng: longitude }} 
+    <Marker
+      position={{ lat: latitude, lng: longitude }}
       onClick={() => setIsOpen(listing.id)}
     >
       {isOpen == listing.id && (
@@ -56,12 +63,12 @@ function FindStay() {
   });
 
   const { user } = useContext(AuthContext);
-  const currentUserId = user ? user.id : null; // handle case where user is null 
+  const currentUserId = user ? user.id : null; // handle case where user is null
   const [userFavorites, setUserFavorites] = useState([]);
 
   const { data: userData } = useQuery(GET_USER_QUERY, {
     variables: { userId: currentUserId },
-    skip: !currentUserId, //skip query if user is not logged in 
+    skip: !currentUserId, //skip query if user is not logged in
   });
 
   useEffect(() => {
@@ -99,18 +106,19 @@ function FindStay() {
       sx={{ boxShadow: 0, backgroundColor: theme.palette.background.default }}
     >
       <Grid container>
-        <Grid item xs={mobileSize && showMap ? false : 12} md={7}>
+        <Grid item xs={12} md={7}>
           <Grid
             container
             alignItems={"center"}
             style={{
+              marginTop: mobileSize ? "1rem" : "0rem",
               marginLeft: "0.5rem",
               marginRight: "0.5rem",
             }}
           >
             <Grid
               item
-              xs={4}
+              xs={6}
               md={2}
               sx={{
                 display: "flex",
@@ -132,7 +140,41 @@ function FindStay() {
                 onClose={handleClose}
               />
             </Grid>
-            <Grid item xs={4} md={7}>
+            {mobileSize && (
+              <Grid
+                item
+                xs={6}
+                md={false}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton
+                  aria-label="Open map"
+                  onClick={() => setShowMap(showMap ? false : true)}
+                >
+                  {showMap ? (
+                    <FormatListBulletedIcon
+                      sx={{ color: theme.palette.secondary.main }}
+                    />
+                  ) : (
+                    <PlaceIcon sx={{ color: theme.palette.secondary.main }} />
+                  )}
+                </IconButton>
+                <Typography variant="h6">
+                  {"Show " + (showMap ? "List" : "Map")}
+                </Typography>
+              </Grid>
+            )}
+            <Grid
+              item
+              xs={12}
+              md={7}
+              sx={{ padding: mobileSize ? "1rem" : "0rem" }}
+            >
               <Autocomplete
                 name="title"
                 freeSolo
@@ -161,7 +203,7 @@ function FindStay() {
                 )}
               />
             </Grid>
-            <Grid item xs={4} md={3}>
+            <Grid item xs={12} md={3}>
               <Typography
                 variant="h6"
                 sx={{
@@ -174,28 +216,31 @@ function FindStay() {
               </Typography>
             </Grid>
           </Grid>
-          <Grid
-            container
-            className="search-list"
-            sx={{
-              paddingTop: "1rem",
-              paddingLeft: "1rem",
-              //justifyContent: "space-evenly",
-              //justifyItems: "center",
-              //alignContent: "space-evenly",
-              //alignItems: "center",
-            }}
-          >
-            {data.getFilteredListings.map((listing) => (
-              <StayCard
-                key={listing.id}
-                listing={listing}
-                isFavorited={userFavorites.includes(listing.id)}
-              />
-            ))}
-          </Grid>
+          {(!mobileSize || (mobileSize && !showMap)) && (
+            <Grid
+              container
+              className="search-list"
+              sx={{
+                paddingTop: "1rem",
+                paddingLeft: "1rem",
+              }}
+            >
+              {data.getFilteredListings.map((listing) => (
+                <StayCard
+                  key={listing.id}
+                  listing={listing}
+                  isFavorited={userFavorites.includes(listing.id)}
+                />
+              ))}
+            </Grid>
+          )}
         </Grid>
-        <Grid item xs={mobileSize ? false : 12} md={5}>
+        <Grid
+          item
+          xs={mobileSize && !showMap ? false : 12}
+          md={5}
+          sx={{ marginTop: mobileSize ? "1rem" : "0rem" }}
+        >
           <div className="map">
             <LoadScript
               googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
@@ -211,7 +256,12 @@ function FindStay() {
                 */}
                 {data.getFilteredListings.map((listing, index) => (
                   //<ListingMarker key={index} location={listing.location} />
-                  <ListingMarker key={index} listing={listing} isOpen={isOpen} setIsOpen={setIsOpen}/>
+                  <ListingMarker
+                    key={index}
+                    listing={listing}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                  />
                 ))}
               </GoogleMap>
             </LoadScript>
@@ -250,7 +300,7 @@ const GET_FILTERED_LISTINGS_QUERY = gql`
       leaseStartDate
       leaseEndDate
       location
-      user{
+      user {
         fullName
         image
       }
