@@ -19,6 +19,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import UploadIcon from "@mui/icons-material/Upload";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -32,6 +33,7 @@ const nums = ["1", "2", "3", "4"];
 
 function ListStay() {
   const theme = useTheme();
+  const mobileSize = useMediaQuery("(max-width:500px)");
   const navigate = useNavigate();
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
@@ -177,45 +179,53 @@ function ListStay() {
             error={errors.address ? true : false}
             onChange={onChange}
           />
-          <Grid display="flex">
-            <TextField
-              id="price"
-              label="Montly Rent"
-              name="price"
-              autoComplete="monthlyRent"
-              required
-              value={values.price}
-              error={errors.price ? true : false}
-              onChange={onChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AttachMoneyIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: "10rem" }}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer
-                components={["DatePicker"]}
-                sx={{ paddingTop: "1rem", paddingLeft: "1rem" }}
-              >
-                <DatePicker
-                  label="Lease Start Date *"
-                  value={dateStart}
-                  onChange={(newDate) => setDateStart(newDate)}
-                />
-                <Typography variant="h3" sx={{ color: "grey" }}>
-                  -
-                </Typography>
-                <DatePicker
-                  label="Lease End Date *"
-                  value={dateEnd}
-                  onChange={(newDate) => setDateEnd(newDate)}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+          <Grid display={mobileSize ? "column" : "flex"}>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                id="price"
+                label="Montly Rent"
+                name="price"
+                autoComplete="monthlyRent"
+                required
+                fullWidth
+                value={values.price}
+                error={errors.price ? true : false}
+                onChange={onChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AttachMoneyIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={9}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer
+                  components={["DatePicker"]}
+                  sx={{ paddingTop: "1rem", paddingLeft: "1rem" }}
+                >
+                  <DatePicker
+                    label="Lease Start Date *"
+                    value={dateStart}
+                    onChange={(newDate) => setDateStart(newDate)}
+                    sx={{ width: mobileSize ? "3rem" : "auto" }}
+                  />
+                  {!mobileSize && (
+                    <Typography variant="h3" sx={{ color: "grey" }}>
+                      -
+                    </Typography>
+                  )}
+                  <DatePicker
+                    label="Lease End Date *"
+                    value={dateEnd}
+                    onChange={(newDate) => setDateEnd(newDate)}
+                    sx={{ width: mobileSize ? "3rem" : "auto" }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
           </Grid>
           <Divider variant="middle" sx={{ width: "100%", paddingY: "1rem" }}>
             <Typography component="h1" variant="h5">
@@ -223,8 +233,8 @@ function ListStay() {
             </Typography>
           </Divider>
           <Grid container>
-            <Grid item xs={2} />
-            <Grid item xs={5}>
+            <Grid item xs={false} sm={2} />
+            <Grid item xs={12} sm={5}>
               <Grid item>
                 <Typography variant="p" sx={{ paddingRight: "1rem" }}>
                   Roommates:{" "}
@@ -269,7 +279,7 @@ function ListStay() {
                 </ToggleButtonGroup>
               </Grid>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4}>
               <Grid item>
                 <FormControlLabel
                   control={
