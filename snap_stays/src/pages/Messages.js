@@ -28,13 +28,14 @@ function Messages() {
 
   const authToken = localStorage.getItem('jwtToken');
 
-  const { loading: messageLoading, error: messageError, data: messageData } = useQuery(GET_MESSAGES_QUERY, {
-    context: {
-      headers: {
-        Authorization: authToken ? `Bearer ${authToken}` : '',
-      },
-    },
-  });
+  useEffect(() => {
+    const storedConversationId = localStorage.getItem('selectedConversationId');
+    console.log("Stored Conversation ID: ", storedConversationId);
+    if (storedConversationId) {
+      const selected = conversations.find(conversation => conversation.id === storedConversationId);
+      setSelectedConversation(selected);
+    }
+  }, [conversations]);
 
   const { loading: conversationLoading, error: conversationError, data: conversationData } = useQuery(GET_CONVERSATIONS_QUERY, {
     context: {
@@ -47,6 +48,7 @@ function Messages() {
   useEffect(() => {
     if (conversationData) {
       const fetchedConversations = conversationData.getConversations;
+      console.log("Fetched Conversations", fetchedConversations);
       setConversations(fetchedConversations);
     }
   }, [conversationData]);
@@ -60,10 +62,15 @@ function Messages() {
       headers: {
         Authorization: authToken ? `Bearer ${authToken}` : '',
       },
+      onCompleted: async () => {
+        // Refetch conversations here if needed
+        scrollToBottom();
+      }
     },
   });
 
   const handleSelectConversation = (conversation) => {
+    localStorage.setItem('selectedConversationId', conversation.id);
     setSelectedConversation(conversation);
   };
 
@@ -76,7 +83,7 @@ function Messages() {
       const receiverId = selectedConversation ? 
       (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
       null;
-      await sendMessage({ variables: { message, receiverId } });
+       await sendMessage({ variables: { message, receiverId } });
       setMessage("");
       scrollToBottom(); // Scroll to bottom after sending message
     } catch (error) {
@@ -123,6 +130,8 @@ function Messages() {
           </Paper>
         ))}
       </Grid>
+
+      
       <Grid item xs={7} style={{ border: "2px solid grey", height: "500px", overflowY: "auto" }}>
         {selectedConversation ? (
           <>
@@ -193,6 +202,7 @@ function Messages() {
 const GET_CONVERSATIONS_QUERY = gql`
   {
     getConversations {
+      id
       participants {
         id
         fullName
@@ -209,31 +219,6 @@ const GET_CONVERSATIONS_QUERY = gql`
           id
           fullName
           username
-        }
-        message
-      }
-    }
-  }
-`;
-
-const GET_MESSAGES_QUERY = gql`
-  {
-    getMessages {
-      participants {
-        id
-        fullName
-        username
-      }
-      messages {
-        senderId {
-          id
-          fullName
-          image
-        }
-        receiverId {
-          id
-          fullName
-          image 
         }
         message
       }

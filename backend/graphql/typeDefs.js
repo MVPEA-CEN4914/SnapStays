@@ -35,11 +35,13 @@ module.exports = gql`
     user: User!
   }
   type Message {
+    id: ID!
     senderId: User!
     receiverId: User!
     message: String!
   }
   type Conversation {
+    id: ID!
     participants: [User]
     messages: [Message]
   }
