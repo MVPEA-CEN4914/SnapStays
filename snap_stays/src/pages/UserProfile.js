@@ -59,14 +59,14 @@ function UserProfile() {
   const [email, setEmail] = useState("");
   const [about, setAbout] = useState("");
   const [newImageUrl, setNewImageUrl] = useState(null);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
 
   const setImageUrl = (imageUrl) => {
+   // console.log("Setting image URL:", imageUrl); 
     setNewImageUrl(imageUrl);
   };
 
-  const handleDeleteImage = () => {
-    setImageUrl(null);
-  };
+
   //const [publicId, setPublicId] = useState("");
   const [cloudName] = useState("dyv2ynif2");
   const [uploadPreset] = useState("snapstayup");
@@ -113,6 +113,11 @@ function UserProfile() {
     setIsEditingAbout(true);
     setAboutContent(userDetail.about || ""); // Set the initial value of about content
   };
+  const handleDeleteImage = () => {
+    
+    setNewImageUrl(null); // Also set newImageUrl to null to ensure consistency
+    setIsImageRemoved(true);
+  };
 
   const handleSaveAbout = async () => {
     try {
@@ -122,7 +127,7 @@ function UserProfile() {
           fullName: fullName || userDetail.fullName,
           username: username || userDetail.username,
           about: about || userDetail.about,
-          image: newImageUrl || userDetail.image,
+          image: isImageRemoved ? null : newImageUrl || userDetail.image,
         },
       });
       const updatedUserProfile = result.data.editUserProfile;
@@ -140,6 +145,7 @@ function UserProfile() {
 
   const handleClose = () => {
     setIsEditingAbout(false);
+    setIsImageRemoved(false);
   };
   // Filter user's listings
   const userOwnedListings = listingsData.getListings.filter(
@@ -165,26 +171,38 @@ function UserProfile() {
         <b>My Profile Information</b>
       </Typography>
 
-      <Grid container xs={6} md={12}>
+      <Grid container item xs={6} md={12}>
         {/*Avatar and Edit Button*/}
         <Grid
-          container
+          container item 
           direction="row"
           xs={12}
           sm={12}
           spacing={1}
           style={{ paddingTop: "1rem" }}
         >
-          <Grid item sm direction="column" alignItems="center" display="flex">
+          <Grid item container sm direction="column" alignItems="center" display="flex">
             <Grid item>
-              <Avatar
-                src={userDetail.image}
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  border: "3px solid black",
-                }}
-              />
+            {userDetail.image ? ( // Check if userDetail.image is not null
+    <Avatar
+      src={userDetail.image}
+      style={{
+        width: "150px",
+        height: "150px",
+        border: "3px solid black",
+      }}
+    />
+  ) : (
+    <Avatar
+      style={{
+        width: "150px",
+        height: "150px",
+        border: "3px solid black",
+      }}
+    >
+      {/* You can add alternative content here, like initials or an icon */}
+    </Avatar>
+  )}
             </Grid>
             <Grid item>
               <Button
@@ -199,17 +217,20 @@ function UserProfile() {
                 <DialogTitle>Edit Profile</DialogTitle>
                 <DialogContent>
                   <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
+                    display="flex" justifyContent="center" alignItems="center"
                   >
                     <Avatar
                       alt={userDetail.name}
-                      src={newImageUrl || userDetail.image}
-                      sx={{ width: 100, height: 100 }}
-                      style={{ marginRight: "20px" }}
-                    />
-                    <Upload uwConfig={uwConfig} setImageUrl={setImageUrl} />
+                      src={isImageRemoved ? null : newImageUrl || userDetail.image}
+                      sx={{ width: 100, height: 100, borderRadius: '50%', marginBottom: '1rem' }}
+                      //style={{ marginRight: "20px" }}
+                    />       
+                  </Box>
+                  <Box display="flex" justifyContent="center" >
+                  <Upload uwConfig={uwConfig} setImageUrl={setImageUrl} />
+                  <Button onClick={handleDeleteImage}  sx={{ marginLeft: '8px' }}>
+      Remove 
+    </Button>
                   </Box>
                   <TextField
                     label="Full Name"
@@ -244,7 +265,7 @@ function UserProfile() {
               </Dialog>
             </Grid>
           </Grid>
-          <Grid sm={7} item direction="column">
+          <Grid sm={7} item container direction="column">
             <Typography variant="h5" fontFamily="Josefin Sans">
               <b>Name:</b> {userDetail.fullName}
             </Typography>
@@ -266,7 +287,7 @@ function UserProfile() {
           </Grid>
           <Grid
             sm={3}
-            item
+            item container 
             direction="column"
             sx={{
               marginLeft: "1rem",
@@ -295,7 +316,7 @@ function UserProfile() {
         </Grid>
 
         {/*My Listings grid*/}
-        <Grid container xs={12} md={6} style={{ padding: "1rem" }}>
+        <Grid container item xs={12} md={6} style={{ padding: "1rem" }}>
           <Grid item md={12} display="flex">
             <Grid item md={11}>
               <Typography
@@ -365,7 +386,7 @@ function UserProfile() {
         </Grid>
 
         {/*Favorites grid*/}
-        <Grid container xs={12} md={6} style={{ padding: "1rem" }}>
+        <Grid container item xs={12} md={6} style={{ padding: "1rem" }}>
           <Grid item md={12} display="flex">
             <Grid item md={11}>
               <Typography
