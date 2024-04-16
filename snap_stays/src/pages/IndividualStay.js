@@ -20,12 +20,13 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/auth";
+import { context } from "@opentelemetry/api";
 
 function IndividualStay() {
   const { user } = useContext(AuthContext);
   const [sendMessage] = useMutation(SEND_MESSAGE);
   const navigate = useNavigate();
-  
+
   const handleMessageClick = async () => {
    const receiverId = listing.user.id;
    const message = "hello there";

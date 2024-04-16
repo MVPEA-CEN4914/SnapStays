@@ -5,6 +5,7 @@ import { Grid, TextField, Button, Typography, Paper, Box, Avatar } from "@mui/ma
 import { useTheme } from "@mui/material/styles";
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { useNavigate } from 'react-router-dom';
 
 const SEND_MESSAGE = gql`
   mutation sendMessage(
@@ -26,6 +27,7 @@ function Messages() {
   const [conversations, setConversations] = useState([]);
   const theme = useTheme();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   const authToken = localStorage.getItem('jwtToken');
 
@@ -61,6 +63,7 @@ function Messages() {
     },
     onCompleted: () => {
         console.log('Message sent successfully');
+        navigate("/messages")
     },
     onError: (error) => {
       console.error('Error sending messages on mutation:', error);
