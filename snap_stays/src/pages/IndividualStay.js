@@ -137,7 +137,7 @@ function IndividualStay() {
       <Spacer height="20px" />
       <Container style={{ maxWidth: '100%', paddingLeft: 0 }}>
         <Typography variant="body1" align="left" gutterBottom>
-          Some description given by the user about this listing and extra details not covered above. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend donec. Dui vivamus arcu felis bibendum ut tristique et egestas. Condimentum vitae sapien pellentesque habitant morbi tristique senectus et netus. Facilisis volutpat est velit egestas. Nunc sed id semper risus in hendrerit gravida. Amet risus nullam eget felis eget nunc lobortis. Mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Convallis aenean et tortor at risus viverra adipiscing at.
+          {listing.description}
         </Typography>
         <Divider style={{ backgroundColor: 'black', height: '2px' }} />
       </Container>
@@ -168,10 +168,11 @@ function IndividualStay() {
                 Owner: {listing.user.fullName}
               </Typography>
               <Typography variant="body2">
-                Some description given by the user about themselves, it comes
+                {/* Some description given by the user about themselves, it comes
                 from their profile. Lorem ipsum dolor sit amet, consectetur
                 adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
+                dolore magna aliqua. */}
+                {listing.user.about}
               </Typography>
               <Box textAlign="center">
               <Link to={`/messages`}>
@@ -208,6 +209,7 @@ const GET_LISTING_QUERY = gql`
         id
         fullName
         image
+        about
       }
     }
   }
