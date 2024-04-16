@@ -23,8 +23,18 @@ import StayCard from "../component/StayCard";
 import TempListing from "../images/TempListing.jpg";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/auth";
+
+
 
 function IndividualStay() {
+
+    const { user } = useContext(AuthContext);
+    const [sendMessage] = useMutation(SEND_MESSAGE);
+    const navigate = useNavigate();
+ 
   const Spacer = ({ height }) => (
     <Box style={{ height }} />
   )
@@ -40,6 +50,24 @@ function IndividualStay() {
     return <Typography variant="body1">Error: {error.message}</Typography>;
 
   const listing = data.getListing;
+    
+   const handleMessageClick = async () => {
+    const receiverId = listing.user.id;
+    const message = `Hi, I'm interested in your listing "${listing.title}"`;
+    try {
+      await sendMessage({
+        variables: { message: message, receiverId: receiverId },
+        context: {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`, // Include the token in the headers
+          },
+        },
+      });
+      navigate("/messages");
+    } catch (error) {
+      console.log("Error sending message: ", error);
+    }
+  };
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -175,9 +203,7 @@ function IndividualStay() {
                 {listing.user.about}
               </Typography>
               <Box textAlign="center">
-              <Link to={`/messages`}>
-                <Button size="small" variant="contained" >Message</Button>
-              </Link>
+                <Button size="small" variant="contained"onClick={handleMessageClick}>Message: I am interested in your listing</Button>
               </Box>
             </CardContent>
           </Grid>
@@ -211,6 +237,19 @@ const GET_LISTING_QUERY = gql`
         image
         about
       }
+    }
+  }
+`;
+const SEND_MESSAGE = gql`
+  mutation sendMessage(
+    $message: String!,
+    $receiverId: ID!
+  ) {
+    sendMessage(
+      message: $message
+      receiverId: $receiverId
+    ){
+      message
     }
   }
 `;
