@@ -166,8 +166,7 @@ function Messages() {
                 {conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : ''}
               </Typography>
             </div>
-            {/* Conditionally render delete button */}
-            {selectedConversation === conversation && (
+            {/* Conditionally render delete button  {selectedConversation === conversation && (
               <DeleteOutlineTwoToneIcon
                 onMouseEnter={(e) => e.currentTarget.style.color = 'red'}
                 onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
@@ -178,6 +177,7 @@ function Messages() {
                 style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }} // Position the icon
               />
             )}
+            */}
           </Paper>
         ))}
       </Grid>
