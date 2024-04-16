@@ -125,4 +125,27 @@ module.exports = {
       }
     },
   },
+  async deleteConversation(_, { conversationId }, context) {
+    const user = checkAuth(context);
+    try {
+      // Find the conversation
+    const conversation = await Conversation.findById(conversationId);
+    console.log('Found conversation:', conversation);
+    // Check if the conversation exists
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
+
+       // Check if the user is authorized to delete the conversation
+    if (!conversation.participants.includes(user.id)) {
+      throw new Error('You are not authorized to delete this conversation');
+    }
+   // Delete the conversation
+   await Conversation.findByIdAndDelete(conversationId);
+      return 'Conversation deleted';
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      throw new Error('Internal server error');
+    }
+  },
 };

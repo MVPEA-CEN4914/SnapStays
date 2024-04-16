@@ -35,7 +35,6 @@ module.exports = gql`
     user: User!
   }
   type Message {
-    id: ID!
     senderId: User!
     receiverId: User!
     message: String!
@@ -113,5 +112,6 @@ module.exports = gql`
     addListingToFavorites(listingId: ID!): User!
     editUserProfile(id:ID!,fullName: String, username: String, about: String, image: String): User!
     sendMessage(message: String!, receiverId: ID!): Message!
+    deleteConversation(conversationId: ID!): String!
   }
 `;
