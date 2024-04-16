@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import { AuthContext } from "../context/auth";
-import { Grid, TextField, Button, Typography, Paper, Box, Avatar } from "@mui/material";
+import { Grid, TextField, Button, Typography, Paper, Box, Avatar, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { useNavigate } from 'react-router-dom';
+import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 
 const SEND_MESSAGE = gql`
   mutation sendMessage(
@@ -20,15 +21,25 @@ const SEND_MESSAGE = gql`
     }
   }
 `;
+const DELETE_CONVERSATION = gql`
+  mutation deleteConversation($conversationId: ID!) {
+    deleteConversation(conversationId: $conversationId) {
+      id
+      message
+    }
+  }
+`;
 
 function Messages() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const theme = useTheme();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
     const messagesEndRef = useRef(null);
+  const [deleteConversationMutation] = useMutation(DELETE_CONVERSATION);
 
   const authToken = localStorage.getItem('jwtToken');
 
@@ -108,6 +119,31 @@ function Messages() {
   };
   
 
+  const handleDeleteConversation = async (conversationId) => {
+    try {
+      // Call the deleteConversation mutation
+      const result = await deleteConversationMutation({
+        variables: { conversationId },
+      });
+
+      // If the mutation is successful, remove the conversation from the state
+      if (result.data.deleteConversation) {
+        const { id, message } = result.data.deleteConversation;
+        console.log(`Conversation with ID ${id} deleted: ${message}`);
+        
+        setConversations(prevConversations =>
+          prevConversations.filter(conversation => conversation.id !== selectedConversation.id)
+        );
+        setSelectedConversation(null);
+        localStorage.removeItem('selectedConversationId'); // Clear selected conversation from localStorage
+      }
+      // Close the modal after deletion
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    }
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -135,26 +171,38 @@ function Messages() {
               backgroundColor: selectedConversation === conversation ? theme.palette.primary.main : 'white',
               color: selectedConversation === conversation ? 'white' : 'inherit',
               cursor: 'pointer',
+              position: 'relative', // Add position relative
             }}
           >
-            <Avatar
-              src={conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].image : conversation.participants[1].image) : ''}
-              style={{ marginRight: '10px' }}
-            />
-            <Typography variant="h6">
-              {conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : ''}
-            </Typography>
+            <div style={{ flex: 1 }}> {/* Container for conversation content */}
+              <Avatar
+                src={conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].image : conversation.participants[1].image) : ''}
+                style={{ marginRight: '10px' }}
+              />
+              <Typography variant="h6">
+                {conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : ''}
+              </Typography>
+            </div>
+            {/* Conditionally render delete button */}
+            {selectedConversation === conversation && (
+              <DeleteOutlineTwoToneIcon
+                onMouseEnter={(e) => e.currentTarget.style.color = 'red'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent onClick on Paper from triggering
+                  setShowModal(true);
+                }}
+                style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }} // Position the icon
+              />
+            )}
           </Paper>
         ))}
       </Grid>
 
-      
       <Grid item xs={7} style={{ border: "2px solid grey", height: "500px", overflowY: "auto" }}>
         {selectedConversation ? (
           <>
-          
             <div style={{ display: "flex", flexDirection: "column" }}>
-              
               {selectedConversation.messages.map((message, index) => (
                 <Paper
                   key={index}
@@ -212,6 +260,41 @@ function Messages() {
           </Box>
         )}
       </Grid>
+
+      {/* Modal for confirmation */}
+      <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'white',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Deleting this will delete the chat permanently. Continue?
+          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            mt={2} // Add margin top for spacing
+          >
+            <Button variant="contained" color="primary"   onClick={() => {
+    handleDeleteConversation(selectedConversation.id);
+  }}
+ >
+              Confirm Delete
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Grid>
   );
 }
