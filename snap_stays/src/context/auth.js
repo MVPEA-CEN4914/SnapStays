@@ -51,6 +51,7 @@ function AuthProvider(props) {
 
   function logout() {
     localStorage.removeItem('jwtToken');
+    localStorage.removeItem('selectedConversationId');
     dispatch({ type: 'LOGOUT' });
   }
 

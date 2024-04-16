@@ -277,6 +277,19 @@ function UserProfile() {
           >
             <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">
               Messages
+              <IconButton
+                variant="contained"
+                href="/messages"
+                sx={{
+                  color: theme.palette.background.default,
+                  bgcolor: theme.palette.primary.main,
+                  "&:hover": {
+                    bgcolor: theme.palette.primary.light,
+                  },
+                }}
+              >
+                <AddIcon />
+              </IconButton>
             </Typography>
           </Grid>
         </Grid>
