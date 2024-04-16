@@ -17,8 +17,28 @@ import {
 import StayCard from "../component/StayCard";
 import TempListing from "../images/TempListing.jpg";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/auth";
 
 function IndividualStay() {
+  const { user } = useContext(AuthContext);
+  const [sendMessage] = useMutation(SEND_MESSAGE);
+  const navigate = useNavigate();
+  
+  const handleMessageClick = async () => {
+   const receiverId = listing.user.id;
+   const message = "hello there";
+    try {
+      await sendMessage({variables:{ message: message, receiverId: receiverId}});
+      navigate("/messages");
+    } catch (error) {
+      console.log("Error sending message: ", error);
+
+    }
+  };
+  
+
   const { listingid } = useParams();
   const listingId = listingid;
   console.log("listing id: ", listingId);
@@ -36,6 +56,7 @@ function IndividualStay() {
     const options = { month: "long", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
+
 
   return (
     <div>
@@ -113,9 +134,7 @@ function IndividualStay() {
                 adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </Typography>
-              <Link to={`/messages`}>
-                <Button size="small">Message</Button>
-              </Link>
+              <button onClick={handleMessageClick}>Message</button>
             </CardContent>
           </Grid>
         </Grid>
@@ -146,6 +165,19 @@ const GET_LISTING_QUERY = gql`
         fullName
         image
       }
+    }
+  }
+`;
+const SEND_MESSAGE = gql`
+  mutation sendMessage(
+    $message: String!,
+    $receiverId: ID!
+  ) {
+    sendMessage(
+      message: $message
+      receiverId: $receiverId
+    ){
+      message
     }
   }
 `;

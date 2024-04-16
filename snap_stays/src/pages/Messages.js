@@ -3,6 +3,8 @@ import { useQuery, useMutation, gql } from "@apollo/client";
 import { AuthContext } from "../context/auth";
 import { Grid, TextField, Button, Typography, Paper, Box, Avatar } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
 const SEND_MESSAGE = gql`
   mutation sendMessage(
@@ -24,7 +26,7 @@ function Messages() {
   const [conversations, setConversations] = useState([]);
   const theme = useTheme();
   const { user } = useContext(AuthContext);
-
+  
   const authToken = localStorage.getItem('jwtToken');
 
   const { loading: messageLoading, error: messageError, data: messageData } = useQuery(GET_MESSAGES_QUERY, {
@@ -51,10 +53,17 @@ function Messages() {
   }, [conversationData]);
 
   const [sendMessage] = useMutation(SEND_MESSAGE, {
+   
     context: {
       headers: {
-        Authorization: authToken ? `Bearer ${authToken}` : '',
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
       },
+    },
+    onCompleted: () => {
+        console.log('Message sent successfully');
+    },
+    onError: (error) => {
+      console.error('Error sending messages on mutation:', error);
     },
   });
 
@@ -67,17 +76,22 @@ function Messages() {
   };
 
   const handleSendMessage = async () => {
+    
     try {
       const receiverId = selectedConversation ? 
       (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
       null;
+    
     await sendMessage({ variables: { message, receiverId } });
       setMessage("");
       // Optionally, you can update the conversation data after sending the message
     } catch (error) {
+        console.log("JWTOKEN", localStorage.getItem('jwtToken'));
       console.error('Error sending message:', error);
+      
     }
   };
+  
 
   return (
     <Grid container spacing={3}>
