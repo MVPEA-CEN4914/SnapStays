@@ -288,11 +288,16 @@ function UserProfile() {
             sm={3}
             item container 
             direction="column"
+            
             sx={{
-              marginLeft: "1rem",
+              
               borderRadius: "1rem",
               border: "2px solid black",
               backgroundColor: theme.palette.secondary.light,
+              padding: "2rem", // Add padding to make the box just around the text
+              width: "fit-content", // Adjust width to fit the content
+              height: "70px",
+              
             }}
           >
             <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">
@@ -306,6 +311,7 @@ function UserProfile() {
                   "&:hover": {
                     bgcolor: theme.palette.primary.light,
                   },
+                  marginLeft: "7.6rem",
                 }}
               >
                 <AddIcon />
@@ -335,6 +341,7 @@ function UserProfile() {
                   bgcolor: theme.palette.primary.main,
                   "&:hover": {
                     bgcolor: theme.palette.primary.light,
+                    
                   },
                 }}
               >
