@@ -32,14 +32,27 @@ import IconButton from "@mui/material/IconButton";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
+import Upload from "../component/Upload";
+import ClearIcon from "@mui/icons-material/Clear";
+import { Cloudinary } from "@cloudinary/url-gen";
 
 
 function IndividualStay() {
 
     const { user } = useContext(AuthContext);
     const currentUserId = user ? user.id : null; // handle case where user is null 
-  
+    const [cloudName] = useState("dyv2ynif2");
+  const [uploadPreset] = useState("snapstayup");
+
+  const [uwConfig] = useState({
+    cloudName,
+    uploadPreset,
+  });
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName,
+    },
+  });
     const [sendMessage] = useMutation(SEND_MESSAGE);
     const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -109,6 +122,8 @@ function IndividualStay() {
     }));
   };
 
+
+
   const handleSave = () => {
     editListing({ variables: editedListing });
     setIsEditing(false);
@@ -139,6 +154,23 @@ function IndividualStay() {
     return date.toLocaleDateString("en-US", options);
   };
 
+
+
+  const handleDelete = (index) => {
+    const newImages = [...editedListing.images];
+    newImages.splice(index, 1);
+    setEditedListing((prevState) => ({
+      ...prevState,
+      images: newImages,
+    }));
+  };
+
+  const setImageUrl = (imageUrl) => {
+    setEditedListing((prevState) => ({
+      ...prevState,
+      images: [...prevState.images, imageUrl],
+    }));
+  };
   let bathroomType = "";
 
   if (listing.bathroomType === "personal"){
@@ -312,53 +344,124 @@ function IndividualStay() {
       )}         
         </Grid>
         <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
+        {isEditing ? (
+      <Grid container spacing={2} padding={"1rem"}>
+        <Grid item xs={12} sm={6} md={12}>
           <Box
             sx={{
-              width: 400,
-              height: 350,
-              borderRadius: 4,
-              overflow: 'hidden',
-              marginLeft: 'auto',
-              position: 'relative', // Add this line
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "1rem",
             }}
           >
+            {editedListing.images.length < 12 && (
+              <Upload uwConfig={uwConfig} setImageUrl={setImageUrl} />
+            )}
+          </Box>
+        </Grid>
+        {editedListing.images.map((image, index) => (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={index}
+            sx={{ position: "relative" }}
+          >
             <img
-              src={listing.images[currentImageIndex]}
-              alt="Top Right"
+              src={image}
+              alt={`Uploaded ${index}`}
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                border: '3px solid #000',
+                width: "100%",
+                height: "12rem",
+                objectFit: "cover",
+                borderRadius: "1rem",
+                border: "2px solid black",
               }}
             />
-            {/* Add pagination buttons */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                left: 0,
-                right: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+            <IconButton
+              variant="contained"
+              onClick={() => handleDelete(index)}
+              sx={{
+                position: "absolute",
+                top: "1.3rem",
+                right: "0.3rem",
+                height: "2rem",
+                width: "2rem",
+                color: theme.palette.background.default,
+                bgcolor: theme.palette.error.main,
+                "&:hover": {
+                  bgcolor: theme.palette.error.light,
+                },
               }}
             >
-              <Button 
-      color="inherit" variant="contained" onClick={handlePreviousImage}>&#8249;</Button>
-                  <Box
-      sx={{
-        margin: '0 10px',
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        borderRadius: '4px',
-        padding: '4px 8px',
-      }}
-    >
-      {currentImageIndex + 1}/{listing.images.length}
-    </Box>
-              <Button color="inherit" variant="contained" onClick={handleNextImage}>&#8250;</Button>
-            </div>
+              <ClearIcon />
+            </IconButton>
+          </Grid>
+        ))}
+      </Grid>
+    ) : (
+      <Box
+        sx={{
+          width: 400,
+          height: 350,
+          borderRadius: 4,
+          overflow: "hidden",
+          marginLeft: "auto",
+          position: "relative", // Add this line
+        }}
+      >
+        <img
+          src={listing.images[currentImageIndex]}
+          alt="Top Right"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            border: "3px solid #000",
+          }}
+        />
+        {/* Add pagination buttons */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 10,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            color="inherit"
+            variant="contained"
+            onClick={handlePreviousImage}
+          >
+            &#8249;
+          </Button>
+          <Box
+            sx={{
+              margin: "0 10px",
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              borderRadius: "4px",
+              padding: "4px 8px",
+            }}
+          >
+            {currentImageIndex + 1}/{listing.images.length}
           </Box>
+          <Button
+            color="inherit"
+            variant="contained"
+            onClick={handleNextImage}
+          >
+            &#8250;
+          </Button>
+        </div>
+      </Box>
+    )}
         </Grid>
       </Grid>
       <Spacer height="20px" />
