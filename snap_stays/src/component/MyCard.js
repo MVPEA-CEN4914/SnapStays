@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import TempListing from "../images/TempListing.jpg";
 import { gql, useMutation } from "@apollo/client";
+import { Link } from "react-router-dom";
 
 const FAVORITE = gql`
   mutation AddListingToFavorites($listingId: ID!) {
@@ -91,9 +92,11 @@ function MyCard({ listing }) {
         </Typography>
       </CardContent>
       <CardActions sx={{ alignSelf: "stretch" }}>
-        <IconButton variant="contained" color="primary" font="medium">
-          <InfoIcon fontSize="large" />
-        </IconButton>
+      <Link to={`/listing/${listing.id}`} style={{ textDecoration: "none" }}>
+          <IconButton variant="contained" color="primary" font="medium">
+            <InfoIcon fontSize="large" />
+          </IconButton>
+        </Link>
         <IconButton variant="contained" color="error" onClick={handleFavorite}>
           <DeleteIcon fontSize="large" />
         </IconButton>

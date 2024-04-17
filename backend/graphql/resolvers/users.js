@@ -7,6 +7,7 @@ const Listing = require("../../models/Listing");
 
 const User = require("../../models/User");
 const { findById } = require("../../models/User");
+const cloudinary = require("cloudinary").v2;
 
 const {
   validateRegisterInput,
@@ -14,6 +15,24 @@ const {
   validateForgotPasswordInput,
   validateResetPasswordInput,
 } = require("../../util/validators");
+
+// Configure Cloudinary with your credentials
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+async function deleteImage(publicId) {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error("Error deleting image from Cloudinary:", error);
+    throw error;
+  }
+}
 
 function generateToken(user) {
   return jwt.sign(
@@ -324,9 +343,21 @@ module.exports = {
       user.username = username;
     }
     // Update user's image URL if provided
-    if (image) {
-      user.image = image;
+  if (image !== null) {
+    if (user.image) {
+      // Delete the old image if it exists
+      const publicId = parsePublicIdFromUrl(user.image);
+      await deleteImage(publicId);
     }
+    user.image = image;
+  } else {
+    // If image is set to null, delete the old image
+    if (user.image) {
+      const publicId = parsePublicIdFromUrl(user.image);
+      await deleteImage(publicId);
+    }
+    user.image = null;
+  }
 
     // Save changes to the database
     await user.save();
@@ -335,3 +366,13 @@ module.exports = {
     }   
   },
 };
+
+function parsePublicIdFromUrl(imageUrl) {
+  // Example URL: https://res.cloudinary.com/dyv2ynif2/image/upload/v1712198299/zzawepfsfllevhgd9og2.jpg
+  // Extract the public ID between 'upload/' and the '.jpg'
+  const startIndex = imageUrl.indexOf("upload/") + "upload/".length;
+  const endIndex = imageUrl.lastIndexOf(".");
+  const publicId = imageUrl.substring(startIndex, endIndex);
+  // Remove the version number at the beginning of the public ID
+  return publicId.split("/")[1]; // Extracting the part after the version number
+}
