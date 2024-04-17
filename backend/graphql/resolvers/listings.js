@@ -91,23 +91,25 @@ module.exports = {
     },
     async getGeocode(_, { address }) {
       const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+      )}&key=${apiKey}`;
       //const url = "https://maps.googleapis.com/maps/api/geocode/json?address=1600%20Amphitheatre%20Parkway,%20Mountain%20View,%20CA&key=AIzaSyC6S5cWS_2Bt8JurLZuM3VOWTtGaWkRXyU";
 
       try {
-        console.log('url:', url);
+        console.log("url:", url);
         const response = await fetch(url);
         const data = await response.json();
-        console.log('data from geocode:', data);
+        console.log("data from geocode:", data);
 
         const location = data.results[0].geometry.location;
         return {
           latitude: location.lat,
-          longitude: location.lng
+          longitude: location.lng,
         };
       } catch (error) {
-        console.error('Error:', error);
-        throw new Error('Failed to fetch geocode data');
+        console.error("Error:", error);
+        throw new Error("Failed to fetch geocode data");
       }
     },
   },
@@ -153,6 +155,84 @@ module.exports = {
       await newListing.save();
 
       return newListing;
+    },
+    async editListing(
+      _,
+      {
+        id,
+        title,
+        price,
+        location,
+        numberOfRoommates,
+        bathroomType,
+        leaseStartDate,
+        leaseEndDate,
+        isFurnished,
+        utilitiesIncluded,
+        petsAllowed,
+        description,
+        images,
+      }
+    ) {
+      try {
+        // Find the listing by its ID
+        const listing = await Listing.findById(id);
+        if (!listing) {
+          throw new Error("Listing not found");
+        }
+        // Check if each field needs to be updated and update if necessary
+        if (title !== undefined) {
+          listing.title = title;
+        }
+        if (price !== undefined) {
+          listing.price = price;
+        }
+        if (location !== undefined) {
+          listing.location = location;
+        }
+        if (numberOfRoommates !== undefined) {
+          listing.numberOfRoommates = numberOfRoommates;
+        }
+        if (bathroomType !== undefined) {
+          listing.bathroomType = bathroomType;
+        }
+        if (leaseStartDate !== undefined) {
+          listing.leaseStartDate = leaseStartDate;
+        }
+        if (leaseEndDate !== undefined) {
+          listing.leaseEndDate = leaseEndDate;
+        }
+        if (isFurnished !== undefined) {
+          listing.isFurnished = isFurnished;
+        }
+        if (utilitiesIncluded !== undefined) {
+          listing.utilitiesIncluded = utilitiesIncluded;
+        }
+        if (petsAllowed !== undefined) {
+          listing.petsAllowed = petsAllowed;
+        }
+        if (description !== undefined) {
+          listing.description = description;
+        }
+        if (images !== undefined) {
+          const imagesToDelete = listing.images.filter(
+            (oldImage) => !images.includes(oldImage)
+          );
+          for (const imageUrl of imagesToDelete) {
+            // Delete the image from Cloudinary
+            const publicId = parsePublicIdFromUrl(imageUrl);
+            await deleteImage(publicId);
+          }
+          listing.images = images;
+        }
+
+        // Save the changes to the database
+        await listing.save();
+
+        return listing;
+      } catch (err) {
+        throw new Error(err);
+      }
     },
 
     async deleteListing(_, { listingId }, context) {
