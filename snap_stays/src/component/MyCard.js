@@ -31,7 +31,11 @@ function MyCard({ listing }) {
         Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
       },
     },
-    onCompleted: () => setIsFavorite(!isFavorite), // Toggle favorite status on completion
+    onCompleted: () => 
+    {
+      setIsFavorite(!isFavorite); // Toggle favorite status on completion
+      window.location.reload();
+    }
   });
 
   const handleFavorite = () => {

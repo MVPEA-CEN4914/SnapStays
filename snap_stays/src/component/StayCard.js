@@ -26,7 +26,7 @@ const FAVORITE = gql`
   }
 `;
 
-function StayCard({ listing, isFavorited }) {
+function StayCard({ listing, isFavorited, onFavoriteChange}) {
   const theme = useTheme();
   const [isFavorite, setIsFavorite] = useState(isFavorited);
 
@@ -37,7 +37,11 @@ function StayCard({ listing, isFavorited }) {
         Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
       },
     },
-    onCompleted: () => setIsFavorite(!isFavorite),
+    onCompleted: () => {
+      const newFavoriteStatus = !isFavorite;
+      setIsFavorite(newFavoriteStatus);
+      onFavoriteChange(listing.id, newFavoriteStatus);
+    },
   });
 
   const handleFavorite = (e) => {
