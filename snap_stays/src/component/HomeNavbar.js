@@ -137,7 +137,7 @@ function HomeNavbar() {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem component={RouterLink} to="userprofile">
+              <MenuItem onClick={() => { window.location.href="/userprofile"; }}>
                 <Avatar src={userDetail.image} /> {user.fullName}
               </MenuItem>
               <Divider />
