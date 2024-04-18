@@ -277,11 +277,11 @@ function UserProfile() {
             <Typography
               variant="h5"
               fontFamily="Josefin Sans"
-              sx={{ paddingTop: "1rem" }}
+              //sx={{ paddingTop: "1rem" }}
             >
               <b>About:</b>{" "}
               {userDetail.about ||
-                "No information available because we need to add about to user DB model"}
+                "Enter your About information by clicking the Edit button"}
             </Typography>
           </Grid>
           <Grid
