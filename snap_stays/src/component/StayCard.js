@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
 import {
   Card,
   CardHeader,
@@ -10,7 +9,8 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star"; // Import for filled star
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
 import { gql, useMutation } from "@apollo/client";
 import TempListing from "../images/TempListing.jpg";
 import { Link } from "react-router-dom";
