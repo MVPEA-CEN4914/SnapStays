@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import React, { useState, useEffect, useContext, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import { AuthContext } from "../context/auth";
 import { Grid, TextField, Button, Typography, Paper, Box, Avatar, Modal } from "@mui/material";
-import { Grid, TextField, Button, Typography, Paper, Box, Avatar, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import { useNavigate } from 'react-router-dom';
 import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 
 const SEND_MESSAGE = gql`
@@ -38,7 +32,6 @@ function Messages() {
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const theme = useTheme();
   const { user } = useContext(AuthContext);
   const messagesEndRef = useRef(null);
@@ -46,14 +39,6 @@ function Messages() {
 
   const authToken = localStorage.getItem('jwtToken');
 
-  useEffect(() => {
-    const storedConversationId = localStorage.getItem('selectedConversationId');
-    console.log("Stored Conversation ID: ", storedConversationId);
-    if (storedConversationId) {
-      const selected = conversations.find(conversation => conversation.id === storedConversationId);
-      setSelectedConversation(selected);
-    }
-  }, [conversations]);
   useEffect(() => {
     const storedConversationId = localStorage.getItem('selectedConversationId');
     console.log("Stored Conversation ID: ", storedConversationId);
@@ -84,10 +69,9 @@ function Messages() {
   }, [selectedConversation]);
 
   const [sendMessage] = useMutation(SEND_MESSAGE, {
-   
     context: {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        Authorization: authToken ? `Bearer ${authToken}` : '',
       },
       onCompleted: async () => {
         // Refetch conversations here if needed
@@ -106,7 +90,6 @@ function Messages() {
   };
 
   const handleSendMessage = async () => {
-    
     try {
       const receiverId = selectedConversation ? 
       (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
@@ -116,69 +99,8 @@ function Messages() {
       setMessage("");
       scrollToBottom(); // Scroll to bottom after sending message
     } catch (error) {
-        console.log("JWTOKEN", localStorage.getItem('jwtToken'));
       console.error('Error sending message:', error);
-      
     }
-  };
-  
-
-  const handleDeleteConversation = async (conversationId) => {
-    try {
-      // Call the deleteConversation mutation
-      const result = await deleteConversationMutation({
-        variables: { conversationId },
-      });
-
-      // If the mutation is successful, remove the conversation from the state
-      if (result.data.deleteConversation) {
-        const { id, message } = result.data.deleteConversation;
-        console.log(`Conversation with ID ${id} deleted: ${message}`);
-        
-        setConversations(prevConversations =>
-          prevConversations.filter(conversation => conversation.id !== selectedConversation.id)
-        );
-        setSelectedConversation(null);
-        localStorage.removeItem('selectedConversationId'); // Clear selected conversation from localStorage
-      }
-      // Close the modal after deletion
-      setShowModal(false);
-    } catch (error) {
-      console.error('Error deleting conversation:', error);
-    }
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleDeleteConversation = async (conversationId) => {
-    try {
-      // Call the deleteConversation mutation
-      const result = await deleteConversationMutation({
-        variables: { conversationId },
-      });
-
-      // If the mutation is successful, remove the conversation from the state
-      if (result.data.deleteConversation) {
-        const { id, message } = result.data.deleteConversation;
-        console.log(`Conversation with ID ${id} deleted: ${message}`);
-        
-        setConversations(prevConversations =>
-          prevConversations.filter(conversation => conversation.id !== selectedConversation.id)
-        );
-        setSelectedConversation(null);
-        localStorage.removeItem('selectedConversationId'); // Clear selected conversation from localStorage
-      }
-      // Close the modal after deletion
-      setShowModal(false);
-    } catch (error) {
-      console.error('Error deleting conversation:', error);
-    }
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleDeleteConversation = async (conversationId) => {
