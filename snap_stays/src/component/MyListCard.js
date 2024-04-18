@@ -27,6 +27,7 @@ function MyListCard({ listing }) {
     },
     onCompleted: () => {
       console.log("delete successful");
+      window.location.reload();
     },
     onError: (err) => {
       console.log("not successful: ", err);
