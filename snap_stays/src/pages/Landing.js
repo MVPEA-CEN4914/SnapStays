@@ -128,34 +128,6 @@ function Landing() {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <div //left dark brown bar
-          style={{
-            width: "12vw",
-            height: "5vh",
-            left: "0vw",
-            top: "110vh",
-            position: "absolute",
-            transform: "rotate(-65deg)",
-            transformOrigin: "center",
-            background: "#2B2B2B",
-            borderRadius: "10px",
-            border: "3px #2B2B2B solid",
-          }}
-        ></div>
-        <div //right dark brown bar
-          style={{
-            width: "12vw",
-            height: "5vh",
-            left: "87vw",
-            top: "50vw",
-            position: "absolute",
-            transform: "rotate(65deg)",
-            transformOrigin: "center",
-            background: "#2B2B2B",
-            borderRadius: "10px",
-            border: "3px #2B2B2B solid",
-          }}
-        ></div>
         <Grid //a bit of white space for stair transition
           item
           xs={12}
