@@ -95,6 +95,7 @@ function Messages() {
       (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
       null;
        await sendMessage({ variables: { message, receiverId } });
+      window.location.reload();
       setMessage("");
       scrollToBottom(); // Scroll to bottom after sending message
     } catch (error) {
