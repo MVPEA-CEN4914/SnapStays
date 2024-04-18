@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import { AuthContext } from "../context/auth";
 import { Grid, TextField, Button, Typography, Paper, Box, Avatar, Modal } from "@mui/material";
+import { Grid, TextField, Button, Typography, Paper, Box, Avatar, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { useNavigate } from 'react-router-dom';
@@ -35,14 +38,22 @@ function Messages() {
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const theme = useTheme();
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-    const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const [deleteConversationMutation] = useMutation(DELETE_CONVERSATION);
 
   const authToken = localStorage.getItem('jwtToken');
 
+  useEffect(() => {
+    const storedConversationId = localStorage.getItem('selectedConversationId');
+    console.log("Stored Conversation ID: ", storedConversationId);
+    if (storedConversationId) {
+      const selected = conversations.find(conversation => conversation.id === storedConversationId);
+      setSelectedConversation(selected);
+    }
+  }, [conversations]);
   useEffect(() => {
     const storedConversationId = localStorage.getItem('selectedConversationId');
     console.log("Stored Conversation ID: ", storedConversationId);
@@ -78,13 +89,6 @@ function Messages() {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
       },
-    },
-    onCompleted: () => {
-        console.log('Message sent successfully');
-        navigate("/messages")
-    },
-    onError: (error) => {
-      console.error('Error sending messages on mutation:', error);
       onCompleted: async () => {
         // Refetch conversations here if needed
         scrollToBottom();
@@ -107,8 +111,8 @@ function Messages() {
       const receiverId = selectedConversation ? 
       (selectedConversation.participants[1].id === user.id ? selectedConversation.participants[0].id : selectedConversation.participants[1].id) :
       null;
-    
        await sendMessage({ variables: { message, receiverId } });
+      window.location.reload();
       setMessage("");
       scrollToBottom(); // Scroll to bottom after sending message
     } catch (error) {
@@ -118,6 +122,64 @@ function Messages() {
     }
   };
   
+
+  const handleDeleteConversation = async (conversationId) => {
+    try {
+      // Call the deleteConversation mutation
+      const result = await deleteConversationMutation({
+        variables: { conversationId },
+      });
+
+      // If the mutation is successful, remove the conversation from the state
+      if (result.data.deleteConversation) {
+        const { id, message } = result.data.deleteConversation;
+        console.log(`Conversation with ID ${id} deleted: ${message}`);
+        
+        setConversations(prevConversations =>
+          prevConversations.filter(conversation => conversation.id !== selectedConversation.id)
+        );
+        setSelectedConversation(null);
+        localStorage.removeItem('selectedConversationId'); // Clear selected conversation from localStorage
+      }
+      // Close the modal after deletion
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    }
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleDeleteConversation = async (conversationId) => {
+    try {
+      // Call the deleteConversation mutation
+      const result = await deleteConversationMutation({
+        variables: { conversationId },
+      });
+
+      // If the mutation is successful, remove the conversation from the state
+      if (result.data.deleteConversation) {
+        const { id, message } = result.data.deleteConversation;
+        console.log(`Conversation with ID ${id} deleted: ${message}`);
+        
+        setConversations(prevConversations =>
+          prevConversations.filter(conversation => conversation.id !== selectedConversation.id)
+        );
+        setSelectedConversation(null);
+        localStorage.removeItem('selectedConversationId'); // Clear selected conversation from localStorage
+      }
+      // Close the modal after deletion
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    }
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleDeleteConversation = async (conversationId) => {
     try {
@@ -183,8 +245,7 @@ function Messages() {
                 {conversation ? (conversation.participants[1].id === user.id ? conversation.participants[0].fullName : conversation.participants[1].fullName) : ''}
               </Typography>
             </div>
-            {/* Conditionally render delete button */}
-            {selectedConversation === conversation && (
+            {/* Conditionally render delete button  {selectedConversation === conversation && (
               <DeleteOutlineTwoToneIcon
                 onMouseEnter={(e) => e.currentTarget.style.color = 'red'}
                 onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
@@ -195,6 +256,7 @@ function Messages() {
                 style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }} // Position the icon
               />
             )}
+            */}
           </Paper>
         ))}
       </Grid>

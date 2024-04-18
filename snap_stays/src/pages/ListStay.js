@@ -97,6 +97,7 @@ function ListStay() {
       // Handle successful listing creation
       console.log("Listing created: ", values);
       navigate("/find-stay");
+      window.location.reload();
     },
     onError: (apiError) => {
       // Handle API call errors

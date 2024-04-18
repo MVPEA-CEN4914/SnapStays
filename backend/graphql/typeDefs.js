@@ -12,7 +12,7 @@ module.exports = gql`
     password: String!
     createdAt: String!
     verified: Boolean!
-    image: String 
+    image: String
     about: String
     favorites: [Listing]
   }
@@ -40,6 +40,7 @@ module.exports = gql`
     message: String!
   }
   type Conversation {
+    id: ID!
     id: ID!
     participants: [User]
     messages: [Message]
@@ -110,8 +111,29 @@ module.exports = gql`
     forgotPassword(email: String!): User!
     resetPassword(resetPasswordInput: ResetPasswordInput): User!
     addListingToFavorites(listingId: ID!): User!
-    editUserProfile(id:ID!,fullName: String, username: String, about: String, image: String): User!
+    editUserProfile(
+      id: ID!
+      fullName: String
+      username: String
+      about: String
+      image: String
+    ): User!
     sendMessage(message: String!, receiverId: ID!): Message!
     deleteConversation(conversationId: ID!): String!
+    editListing(
+    id: ID!
+    title: String
+    price: Float
+    numberOfRoommates: Int
+    bathroomType: String
+    location: String
+    leaseStartDate: Date
+    leaseEndDate: Date
+    isFurnished: Boolean
+    utilitiesIncluded: Boolean
+    petsAllowed: Boolean
+    description: String
+    images: [String]
+  ): Listing!
   }
 `;

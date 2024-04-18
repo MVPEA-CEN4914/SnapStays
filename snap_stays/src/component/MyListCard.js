@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import TempListing from "../images/TempListing.jpg";
 import { gql, useMutation } from "@apollo/client";
+import { Link } from "react-router-dom";
 
 const DELETE = gql`
   mutation DeleteListing($listingId: ID!) {
@@ -26,6 +27,7 @@ function MyListCard({ listing }) {
     },
     onCompleted: () => {
       console.log("delete successful");
+      window.location.reload();
     },
     onError: (err) => {
       console.log("not successful: ", err);
@@ -91,9 +93,11 @@ function MyListCard({ listing }) {
         </Typography>
       </CardContent>
       <CardActions sx={{ alignSelf: "stretch" }}>
+      <Link to={`/listing/${listing.id}`} style={{ textDecoration: "none" }}>
         <IconButton variant="contained" color="primary">
           <EditIcon fontSize="large"/>
         </IconButton>
+        </Link>
         <IconButton variant="contained" color="error" onClick={handleDelete}>
           <DeleteIcon fontSize="large"/>
         </IconButton>
