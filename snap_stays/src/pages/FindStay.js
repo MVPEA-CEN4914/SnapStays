@@ -55,6 +55,14 @@ function FindStay() {
   const currentUserId = user ? user.id : null; // handle case where user is null 
   const [userFavorites, setUserFavorites] = useState([]);
 
+  function updateUserFavorites(listingId, isFavorited) {
+    if (isFavorited) {
+      setUserFavorites(prevFavorites => [...prevFavorites, listingId]);
+    } else {
+      setUserFavorites(prevFavorites => prevFavorites.filter(id => id !== listingId));
+    }
+  }
+
   const { data: userData } = useQuery(GET_USER_QUERY, {
     variables: { userId: currentUserId },
     skip: !currentUserId, //skip query if user is not logged in 
@@ -187,6 +195,7 @@ function FindStay() {
                 key={listing.id}
                 listing={listing}
                 isFavorited={userFavorites.includes(listing.id)}
+                onFavoriteChange={updateUserFavorites}
               />
             ))}
           </Grid>
