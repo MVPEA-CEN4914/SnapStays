@@ -622,19 +622,7 @@ const EDIT_LISTING = gql`
     }
   }
 `;
-const SEND_MESSAGE = gql`
-  mutation sendMessage(
-    $message: String!,
-    $receiverId: ID!
-  ) {
-    sendMessage(
-      message: $message
-      receiverId: $receiverId
-    ){
-      message
-    }
-  }
-`;
+
 
 export default IndividualStay;
 

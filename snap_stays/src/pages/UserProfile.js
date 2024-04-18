@@ -277,41 +277,14 @@ function UserProfile() {
             <Typography
               variant="h5"
               fontFamily="Josefin Sans"
-              sx={{ paddingTop: "1rem" }}
+              //sx={{ paddingTop: "1rem" }}
             >
               <b>About:</b>{" "}
               {userDetail.about ||
                 "No information available because we need to add about to user DB model"}
             </Typography>
           </Grid>
-          <Grid
-            sm={3}
-            item container 
-            direction="column"
-            sx={{
-              marginLeft: "1rem",
-              borderRadius: "1rem",
-              border: "2px solid black",
-              backgroundColor: theme.palette.secondary.light,
-            }}
-          >
-            <Typography variant="h4" fontFamily="Josefin Sans" fontWeight="500">
-              Messages
-              <IconButton
-                variant="contained"
-                href="/messages"
-                sx={{
-                  color: theme.palette.background.default,
-                  bgcolor: theme.palette.primary.main,
-                  "&:hover": {
-                    bgcolor: theme.palette.primary.light,
-                  },
-                }}
-              >
-                <AddIcon />
-              </IconButton>
-            </Typography>
-          </Grid>
+          
         </Grid>
 
         {/*My Listings grid*/}
