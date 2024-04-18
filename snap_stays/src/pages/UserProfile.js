@@ -264,7 +264,7 @@ function UserProfile() {
               </Dialog>
             </Grid>
           </Grid>
-          <Grid sm={7} item container direction="column">
+          <Grid sm={10} item container direction="column" sx={{marginLeft: "0rem"}}>
             <Typography variant="h5" fontFamily="Josefin Sans">
               <b>Name:</b> {userDetail.fullName}
             </Typography>
