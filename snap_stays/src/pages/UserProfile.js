@@ -281,7 +281,7 @@ function UserProfile() {
             >
               <b>About:</b>{" "}
               {userDetail.about ||
-                "No information available because we need to add about to user DB model"}
+                "Click the Edit button to enter information about yourself."}
             </Typography>
           </Grid>
           
