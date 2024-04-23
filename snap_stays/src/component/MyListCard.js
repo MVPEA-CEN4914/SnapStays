@@ -49,6 +49,15 @@ function MyListCard({ listing }) {
     return date.toLocaleDateString("en-US", options);
   };
 
+  let titleShort = listing.title;
+  if (titleShort.length > 35) {
+    titleShort = titleShort.substring(0, 35) + "...";
+  }
+  let locShort = listing.location;
+  if (locShort.length > 45) {
+    locShort = locShort.substring(0, 45) + "...";
+  }
+
   return (
     <Card
       sx={{
@@ -78,11 +87,11 @@ function MyListCard({ listing }) {
       </CardMedia>
       <CardContent>
         <Typography gutterBottom variant="h6">
-          {listing.title}
+          {titleShort}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           <b>Location: </b>
-          {listing.location}
+          {locShort}
           <br></br>
           <b>Lease Dates: </b>
           {`${formatDate(listing.leaseStartDate)} - ${formatDate(

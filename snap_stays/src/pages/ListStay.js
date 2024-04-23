@@ -28,7 +28,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Upload from "../component/Upload";
 import { Cloudinary } from "@cloudinary/url-gen";
 
-const nums = ["1", "2", "3", "4"];
+const nums = ["1", "2", "3", "4", "+5"];
 
 function ListStay() {
   const theme = useTheme();
@@ -75,7 +75,7 @@ function ListStay() {
       price: parseFloat(values.price),
       leaseStartDate: dateStart,
       leaseEndDate: dateEnd,
-      numberOfRoommates: parseInt(values.numberOfRoommates),
+      numberOfRoommates: values.numberOfRoommates == "+5" ? 5 : parseInt(values.numberOfRoommates),
       bathroomType: values.bathroomType,
       isFurnished: values.isFurnished,
       utilitiesIncluded: values.utilitiesIncluded,

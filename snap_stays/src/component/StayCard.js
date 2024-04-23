@@ -69,8 +69,8 @@ function StayCard({ listing, isFavorited, onFavoriteChange}) {
     titleShort = titleShort.substring(0, 18) + "...";
   }
   let locShort = listing.location;
-  if (locShort.length > 45) {
-    locShort = locShort.substring(0, 45) + "...";
+  if (locShort.length > 40) {
+    locShort = locShort.substring(0, 40) + "...";
   }
 
   return (

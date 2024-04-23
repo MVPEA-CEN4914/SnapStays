@@ -14,7 +14,7 @@ import Slider from "@mui/material/Slider";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
 
-const nums = ["1", "2", "3", "4", "any"];
+const nums = ["1", "2", "3", "4", "5+", "any"];
 
 function Filter({ onClose, selectedFilters, open }) {
   const theme = useTheme();

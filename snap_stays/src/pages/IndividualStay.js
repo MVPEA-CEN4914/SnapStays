@@ -32,7 +32,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-const nums = ["1", "2", "3", "4"];
+const nums = ["1", "2", "3", "4", "+5"];
 
 function IndividualStay() {
   const { user } = useContext(AuthContext);
@@ -94,7 +94,7 @@ function IndividualStay() {
         parsedValue = parseFloat(value);
         break;
       case "numberOfRoommates":
-        parsedValue = parseInt(value);
+        parsedValue = value == "+5" ? 5 : parseInt(value);
         break;
       case "isFurnished":
       case "utilitiesIncluded":
@@ -212,6 +212,19 @@ function IndividualStay() {
                 />
                 <Button variant="contained" onClick={handleSave}>
                   Save
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate("/userprofile")}
+                  sx={{
+                    backgroundColor: theme.palette.secondary.main,
+                    marginLeft: "1rem",
+                    "&:hover": {
+                      backgroundColor: theme.palette.secondary.light,
+                    },
+                  }}
+                >
+                  Cancel
                 </Button>
               </>
             ) : (

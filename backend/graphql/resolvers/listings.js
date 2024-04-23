@@ -66,7 +66,7 @@ module.exports = {
       if (price && price.length > 0) {
         filter.price = { $gt: price[0], $lt: price[1] };
       }
-      if (numberOfRoommates != "any") {
+      if ((numberOfRoommates != "any") && (numberOfRoommates != "+5") ) {
         filter.numberOfRoommates = parseInt(numberOfRoommates);
       }
       if (bathroomType != "any") {
