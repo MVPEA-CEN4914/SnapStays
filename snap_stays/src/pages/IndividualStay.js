@@ -172,6 +172,13 @@ function IndividualStay() {
     furnished = "No";
   }
 
+  let utilities = "";
+  if (listing.utilitiesIncluded) {
+    utilities = "Yes";
+  } else {
+    utilities = "No";
+  }
+
   let petsAllowed = "";
 
   if (listing.petsAllowed) {
@@ -434,7 +441,7 @@ function IndividualStay() {
                   color: listing.isFurnished ? "black" : "grey",
                 }}
               >
-                Furnished: {furnished}
+                Furnished
               </Typography>
               <Typography
                 variant="h5"
@@ -447,7 +454,7 @@ function IndividualStay() {
                   color: listing.utilitiesIncluded ? "black" : "grey",
                 }}
               >
-                Furnished: {furnished}
+                Utilities Included
               </Typography>
               <Typography
                 variant="h5"
@@ -458,7 +465,7 @@ function IndividualStay() {
                   color: listing.petsAllowed ? "black" : "grey",
                 }}
               >
-                Pets Allowed: {petsAllowed}
+                Pets Allowed
               </Typography>
             </>
           )}
